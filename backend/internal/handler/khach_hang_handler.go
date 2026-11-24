@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"miumiu-rent-stuff/internal/model"
+	"miumiu-rent-stuff/internal/common"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -30,24 +31,12 @@ func (h *KhachHangHandler) GetAll(c *gin.Context) {
 		q = q.Where("ten LIKE ? OR so_dien_thoai LIKE ?", like, like)
 	}
 
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
-	if page < 1 {
-		page = 1
-	}
-	if limit < 1 || limit > 100 {
-		limit = 20
-	}
-	offset := (page - 1) * limit
-
-	var total int64
-	q.Count(&total)
-
-	if err := q.Offset(offset).Limit(limit).Order("id DESC").Find(&list).Error; err != nil {
+	result, err := pagination.Paginate(c, q, &list, "id DESC")
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể lấy danh sách khách hàng"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": list, "total": total, "page": page, "limit": limit})
+	c.JSON(http.StatusOK, result)
 }
 
 // GET /api/v1/khach-hang/:id

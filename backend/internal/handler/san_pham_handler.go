@@ -6,11 +6,11 @@ import (
 	"strconv"
 
 	"miumiu-rent-stuff/internal/model"
+	"miumiu-rent-stuff/internal/common"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
-
 type SanPhamHandler struct {
 	db *gorm.DB
 }
@@ -29,24 +29,12 @@ func (h *SanPhamHandler) GetAll(c *gin.Context) {
 		q = q.Where("trang_thai = ?", tt)
 	}
 
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
-	if page < 1 {
-		page = 1
-	}
-	if limit < 1 || limit > 100 {
-		limit = 20
-	}
-	offset := (page - 1) * limit
-
-	var total int64
-	q.Count(&total)
-
-	if err := q.Offset(offset).Limit(limit).Order("id DESC").Find(&items).Error; err != nil {
+	result, err := pagination.Paginate(c, q, &items, "id DESC")
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể lấy danh sách sản phẩm"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": items, "total": total, "page": page, "limit": limit})
+	c.JSON(http.StatusOK, result)
 }
 
 // GET /api/v1/san-pham/:id
