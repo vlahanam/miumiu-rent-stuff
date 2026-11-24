@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS thue_do (
     CONSTRAINT fk_thuedo_khachhang FOREIGN KEY (khach_hang_id) REFERENCES khach_hang (id) ON DELETE RESTRICT,
     CONSTRAINT fk_thuedo_nguoidung FOREIGN KEY (nguoi_dung_id) REFERENCES nguoi_dung (id) ON DELETE RESTRICT,
     CONSTRAINT chk_thuedo_loai_coc CHECK (loai_coc IN (1, 2, 3)),
-    CONSTRAINT chk_thuedo_ngay CHECK (ngay_hen_tra IS NULL OR ngay_bat_dau IS NULL OR ngay_hen_tra >= ngay_bat_dau)
-    CONSTRAINT chk_thuedo_trang_thai CHECK (trang_thai IN (1, 2, 3, 4, 5)),
+    CONSTRAINT chk_thuedo_ngay CHECK (ngay_hen_tra IS NULL OR ngay_bat_dau IS NULL OR ngay_hen_tra >= ngay_bat_dau),
+    CONSTRAINT chk_thuedo_trang_thai CHECK (trang_thai IN (1, 2, 3, 4, 5))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------------------------

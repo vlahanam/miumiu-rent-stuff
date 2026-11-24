@@ -30,14 +30,37 @@ func Setup(db *gorm.DB) *gin.Engine {
 	// API v1 routes
 	v1 := r.Group("/api/v1")
 	{
-		itemHandler := handler.NewItemHandler(db)
-		items := v1.Group("/items")
+		// --- Sản phẩm ---
+		sanPhamHandler := handler.NewSanPhamHandler(db)
+		sanPham := v1.Group("/san-pham")
 		{
-			items.GET("", itemHandler.GetAll)
-			items.GET("/:id", itemHandler.GetByID)
-			items.POST("", itemHandler.Create)
-			items.PUT("/:id", itemHandler.Update)
-			items.DELETE("/:id", itemHandler.Delete)
+			sanPham.GET("", sanPhamHandler.GetAll)
+			sanPham.GET("/:id", sanPhamHandler.GetByID)
+			sanPham.POST("", sanPhamHandler.Create)
+			sanPham.PUT("/:id", sanPhamHandler.Update)
+			sanPham.DELETE("/:id", sanPhamHandler.Delete)
+		}
+
+		// --- Khách hàng ---
+		khachHangHandler := handler.NewKhachHangHandler(db)
+		khachHang := v1.Group("/khach-hang")
+		{
+			khachHang.GET("", khachHangHandler.GetAll)
+			khachHang.GET("/:id", khachHangHandler.GetByID)
+			khachHang.POST("", khachHangHandler.Create)
+			khachHang.PUT("/:id", khachHangHandler.Update)
+			khachHang.DELETE("/:id", khachHangHandler.Delete)
+		}
+
+		// --- Thuê đồ ---
+		thueDoHandler := handler.NewThueDoHandler(db)
+		thueDo := v1.Group("/thue-do")
+		{
+			thueDo.GET("", thueDoHandler.GetAll)
+			thueDo.GET("/:id", thueDoHandler.GetByID)
+			thueDo.POST("", thueDoHandler.Create)
+			thueDo.PUT("/:id", thueDoHandler.Update)
+			thueDo.DELETE("/:id", thueDoHandler.Delete)
 		}
 	}
 
