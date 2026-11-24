@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+.next/
+dist/
+*.exe
+server
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Docker volumes (local)
+mysql_data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+*.test
+*.out
+coverage.txt
+
+# Logs
+*.log
