@@ -4,27 +4,41 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
-	"miumiu-rent-stuff/internal/model"
 	"miumiu-rent-stuff/internal/common"
+	"miumiu-rent-stuff/internal/hub"
+	"miumiu-rent-stuff/internal/middleware"
+	"miumiu-rent-stuff/internal/model"
+	"miumiu-rent-stuff/internal/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
 
 type ThueDoHandler struct {
-	db *gorm.DB
+	db      *gorm.DB
+	svc     *service.ThueDoService
+	wsHub   *hub.Hub
 }
 
-func NewThueDoHandler(db *gorm.DB) *ThueDoHandler {
-	return &ThueDoHandler{db: db}
+func NewThueDoHandler(db *gorm.DB, wsHub *hub.Hub) *ThueDoHandler {
+	return &ThueDoHandler{
+		db:    db,
+		svc:   service.NewThueDoService(db),
+		wsHub: wsHub,
+	}
 }
 
 // GET /api/v1/thue-do
-// Query params: trang_thai, khach_hang_id, page, limit
+// Query params: trang_thai, khach_hang_id, search (mã phiếu), page, limit
 func (h *ThueDoHandler) GetAll(c *gin.Context) {
 	var list []model.ThueDo
 	q := h.db.Model(&model.ThueDo{}).Preload("KhachHang").Preload("ChiTiet").Preload("ChiTiet.SanPham")
+
+	// Kiểm tra + cập nhật quá hạn
+	service.UpdateQuaHan(h.db)
 
 	if tt := c.Query("trang_thai"); tt != "" {
 		q = q.Where("trang_thai = ?", tt)
@@ -32,10 +46,16 @@ func (h *ThueDoHandler) GetAll(c *gin.Context) {
 	if khID := c.Query("khach_hang_id"); khID != "" {
 		q = q.Where("khach_hang_id = ?", khID)
 	}
+	if search := c.Query("search"); search != "" {
+		q = q.Where("ma_phieu_thue LIKE ?", "%"+search+"%")
+	}
 
-	result, err := pagination.Paginate(c, q, &list, "id DESC")
+	// Sắp xếp: active trước (1,2,4), rồi mới đến 3,5
+	orderBy := "CASE trang_thai WHEN 4 THEN 1 WHEN 2 THEN 2 WHEN 1 THEN 3 ELSE 4 END ASC, id DESC"
+
+	result, err := common.Paginate(c, q, &list, orderBy)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể lấy danh sách phiếu thuê"})
+		common.InternalError(c, "Không thể lấy danh sách phiếu thuê")
 		return
 	}
 	c.JSON(http.StatusOK, result)
@@ -45,7 +65,7 @@ func (h *ThueDoHandler) GetAll(c *gin.Context) {
 func (h *ThueDoHandler) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID không hợp lệ"})
+		common.BadRequest(c, "ID không hợp lệ")
 		return
 	}
 
@@ -56,170 +76,299 @@ func (h *ThueDoHandler) GetByID(c *gin.Context) {
 		Preload("ChiTiet.SanPham").
 		First(&td, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Không tìm thấy phiếu thuê"})
+			common.NotFound(c, "Không tìm thấy phiếu thuê")
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Lỗi hệ thống"})
+		common.InternalError(c, "Lỗi hệ thống")
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": td})
+
+	// Kiểm tra quá hạn on-the-fly
+	if td.TrangThai == 2 && td.NgayHenTra != nil && td.NgayHenTra.Before(time.Now()) {
+		h.db.Model(&td).Update("trang_thai", 4)
+		td.TrangThai = 4
+		if h.wsHub != nil {
+			h.wsHub.Broadcast("phieu_qua_han", gin.H{"ids": []uint{td.ID}})
+		}
+	}
+
+	common.OK(c, td)
 }
 
 // POST /api/v1/thue-do
 func (h *ThueDoHandler) Create(c *gin.Context) {
 	var input model.CreateThueDoInput
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		common.BadRequest(c, err.Error())
 		return
 	}
 	if err := input.Validate(); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err})
+		common.ValidationError(c, err)
 		return
 	}
 
-	loaiCoc := input.LoaiCoc
-	if loaiCoc == 0 {
-		loaiCoc = 1
-	}
-	trangThai := input.TrangThai
-	if trangThai == 0 {
-		trangThai = 1
+	// Lấy user_id từ JWT context
+	nguoiDungID := middleware.GetUserID(c)
+	if nguoiDungID == 0 {
+		common.Unauthorized(c, "Không xác định được người dùng")
+		return
 	}
 
-	td := model.ThueDo{
-		MaPhieuThue:  input.MaPhieuThue,
-		KhachHangID:  input.KhachHangID,
-		NguoiDungID:  input.NguoiDungID,
-		NgayBatDau:   input.NgayBatDau,
-		NgayHenTra:   input.NgayHenTra,
-		SoNgayThue:   input.SoNgayThue,
-		TongTienThue: input.TongTienThue,
-		LoaiCoc:      loaiCoc,
-		TienCoc:      input.TienCoc,
-		TienPhat:     input.TienPhat,
-		TrangThai:    trangThai,
-		GhiChu:       input.GhiChu,
-	}
-
-	err := h.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&td).Error; err != nil {
-			return err
-		}
-
-		for _, ct := range input.ChiTiet {
-			chiTiet := model.ChiTietThueDo{
-				ThueDoID:   td.ID,
-				SanPhamID:  ct.SanPhamID,
-				GiaThuNgay: ct.GiaThuNgay,
-				TienCoc:    ct.TienCoc,
-			}
-			if err := tx.Create(&chiTiet).Error; err != nil {
-				return err
-			}
-		}
-		return nil
-	})
+	td, err := h.svc.TaoPhieu(input, nguoiDungID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể tạo phiếu thuê"})
+		common.BadRequest(c, err.Error())
 		return
 	}
 
-	// Reload with associations
-	h.db.Preload("KhachHang").Preload("ChiTiet").Preload("ChiTiet.SanPham").First(&td, td.ID)
-	c.JSON(http.StatusCreated, gin.H{"data": td})
+	// Push WS event
+	if h.wsHub != nil {
+		h.wsHub.Broadcast("phieu_moi", td)
+	}
+
+	common.Created(c, td)
 }
 
 // PUT /api/v1/thue-do/:id
+// Quy tắc: Chờ xác nhận → sửa tự do (kể cả chi_tiet); Đang thuê → chỉ so_ngay_thue, tien_phat, ghi_chu
 func (h *ThueDoHandler) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID không hợp lệ"})
+		common.BadRequest(c, "ID không hợp lệ")
 		return
 	}
 
 	var td model.ThueDo
-	if err := h.db.First(&td, id).Error; err != nil {
+	if err := h.db.Preload("ChiTiet").First(&td, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Không tìm thấy phiếu thuê"})
+			common.NotFound(c, "Không tìm thấy phiếu thuê")
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Lỗi hệ thống"})
+		common.InternalError(c, "Lỗi hệ thống")
+		return
+	}
+
+	// Phiếu Đã trả hoặc Đã hủy → không sửa
+	if td.TrangThai == 3 || td.TrangThai == 5 {
+		common.Forbidden(c, "Phiếu đã kết thúc, không thể sửa")
 		return
 	}
 
 	var input model.UpdateThueDoInput
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		common.BadRequest(c, err.Error())
 		return
 	}
 	if err := input.Validate(); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err})
+		common.ValidationError(c, err)
 		return
 	}
 
-	updates := map[string]interface{}{}
-	if input.NgayBatDau != nil {
-		updates["ngay_bat_dau"] = input.NgayBatDau
-	}
-	if input.NgayHenTra != nil {
-		updates["ngay_hen_tra"] = input.NgayHenTra
-	}
-	if input.SoNgayThue != nil {
-		updates["so_ngay_thue"] = *input.SoNgayThue
-	}
-	if input.NgayTraThucTe != nil {
-		updates["ngay_tra_thuc_te"] = input.NgayTraThucTe
-	}
-	if input.TongTienThue != nil {
-		updates["tong_tien_thue"] = *input.TongTienThue
-	}
-	if input.LoaiCoc != nil {
-		updates["loai_coc"] = *input.LoaiCoc
-	}
-	if input.TienCoc != nil {
-		updates["tien_coc"] = *input.TienCoc
-	}
-	if input.TienPhat != nil {
-		updates["tien_phat"] = *input.TienPhat
-	}
-	if input.TrangThai != nil {
-		updates["trang_thai"] = *input.TrangThai
-	}
-	if input.GhiChu != nil {
-		updates["ghi_chu"] = *input.GhiChu
-	}
+	err = h.db.Transaction(func(tx *gorm.DB) error {
+		updates := map[string]interface{}{}
 
-	if err := h.db.Model(&td).Updates(updates).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể cập nhật phiếu thuê"})
+		if td.TrangThai == 1 {
+			// Chờ xác nhận: sửa tự do
+			if input.NgayBatDau != nil {
+				updates["ngay_bat_dau"] = input.NgayBatDau
+			}
+			if input.LoaiCoc != nil {
+				updates["loai_coc"] = *input.LoaiCoc
+			}
+			if input.TienCoc != nil {
+				updates["tien_coc"] = *input.TienCoc
+			}
+
+			// Nếu có chi_tiet mới → replace toàn bộ
+			if len(input.ChiTiet) > 0 {
+				// Xóa chi tiết cũ
+				if err := tx.Where("thue_do_id = ?", td.ID).Delete(&model.ChiTietThueDo{}).Error; err != nil {
+					return err
+				}
+
+				// Lấy ngày bắt đầu và hẹn trả mới
+				ngayBD := td.NgayBatDau
+				if input.NgayBatDau != nil {
+					ngayBD = input.NgayBatDau
+				}
+				soNgay := *td.SoNgayThue
+				if input.SoNgayThue != nil {
+					soNgay = *input.SoNgayThue
+				}
+				ngayHenTra := ngayBD.Add(time.Duration(soNgay) * 24 * time.Hour)
+				updates["ngay_hen_tra"] = ngayHenTra
+				updates["so_ngay_thue"] = soNgay
+
+				phamTramCoc := h.svc.LayPhamTramCoc()
+				var newChiTiet []model.ChiTietThueDo
+
+				for _, ct := range input.ChiTiet {
+					var sp model.SanPham
+					if err := tx.First(&sp, ct.SanPhamID).Error; err != nil {
+						return err
+					}
+					if sp.TrangThai == 3 {
+						return errors.New("sản phẩm " + sp.TenSanPham + " đang bảo dưỡng")
+					}
+					svc := service.NewThueDoService(tx)
+					if ngayBD != nil {
+						if err := svc.KiemTraTrungLich(sp.ID, *ngayBD, ngayHenTra, td.ID); err != nil {
+							return err
+						}
+					}
+					tienCocSP := sp.GiaGocSanPham.Mul(phamTramCoc).Div(newDecimal(100))
+					newChiTiet = append(newChiTiet, model.ChiTietThueDo{
+						ThueDoID:    td.ID,
+						SanPhamID:   sp.ID,
+						GiaThueNgay: sp.GiaThueNgay,
+						TienCoc:     tienCocSP,
+					})
+				}
+
+				for i := range newChiTiet {
+					if err := tx.Create(&newChiTiet[i]).Error; err != nil {
+						return err
+					}
+				}
+
+				// Tính lại tổng tiền
+				tongTien := service.TinhTongTienThue(newChiTiet, soNgay)
+				updates["tong_tien_thue"] = tongTien
+			} else if input.SoNgayThue != nil {
+				updates["so_ngay_thue"] = *input.SoNgayThue
+				if td.NgayBatDau != nil {
+					ngayHenTra := td.NgayBatDau.Add(time.Duration(*input.SoNgayThue) * 24 * time.Hour)
+					updates["ngay_hen_tra"] = ngayHenTra
+				}
+				// Tính lại tổng tiền
+				chiTiet := td.ChiTiet
+				tongTien := service.TinhTongTienThue(chiTiet, *input.SoNgayThue)
+				updates["tong_tien_thue"] = tongTien
+			}
+		} else if td.TrangThai == 2 || td.TrangThai == 4 {
+			// Đang thuê / Quá hạn: chỉ sửa so_ngay_thue, tien_phat, ghi_chu
+			if input.SoNgayThue != nil {
+				updates["so_ngay_thue"] = *input.SoNgayThue
+				if td.NgayBatDau != nil {
+					ngayHenTra := td.NgayBatDau.Add(time.Duration(*input.SoNgayThue) * 24 * time.Hour)
+					updates["ngay_hen_tra"] = ngayHenTra
+					// Tính lại tổng tiền
+					chiTiet := td.ChiTiet
+					tongTien := service.TinhTongTienThue(chiTiet, *input.SoNgayThue)
+					updates["tong_tien_thue"] = tongTien
+				}
+			}
+			if input.TienPhat != nil {
+				updates["tien_phat"] = *input.TienPhat
+			}
+		}
+
+		if input.GhiChu != nil {
+			updates["ghi_chu"] = *input.GhiChu
+		}
+
+		if input.NgayHenTra != nil && td.TrangThai == 1 {
+			updates["ngay_hen_tra"] = input.NgayHenTra
+		}
+
+		if len(updates) > 0 {
+			return tx.Model(&td).Updates(updates).Error
+		}
+		return nil
+	})
+
+	if err != nil {
+		common.BadRequest(c, err.Error())
 		return
 	}
 
-	h.db.Preload("KhachHang").Preload("ChiTiet").Preload("ChiTiet.SanPham").First(&td, td.ID)
-	c.JSON(http.StatusOK, gin.H{"data": td})
+	h.db.Preload("KhachHang").Preload("ChiTiet").Preload("ChiTiet.SanPham").First(&td, id)
+	if h.wsHub != nil {
+		h.wsHub.Broadcast("phieu_cap_nhat", td)
+	}
+	common.OK(c, td)
 }
 
-// DELETE /api/v1/thue-do/:id
-func (h *ThueDoHandler) Delete(c *gin.Context) {
+// POST /api/v1/thue-do/:id/giao-do
+func (h *ThueDoHandler) GiaoDo(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID không hợp lệ"})
+		common.BadRequest(c, "ID không hợp lệ")
 		return
 	}
 
-	var td model.ThueDo
-	if err := h.db.First(&td, id).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Không tìm thấy phiếu thuê"})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Lỗi hệ thống"})
+	td, err := h.svc.GiaoDo(uint(id))
+	if err != nil {
+		common.BadRequest(c, err.Error())
 		return
 	}
 
-	// chi_tiet_thue_do sẽ bị xóa cascade theo FK
-	if err := h.db.Delete(&td).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể xóa phiếu thuê"})
+	if h.wsHub != nil {
+		h.wsHub.Broadcast("phieu_cap_nhat", td)
+	}
+	common.OK(c, td)
+}
+
+// POST /api/v1/thue-do/:id/tra-do
+func (h *ThueDoHandler) TraDo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		common.BadRequest(c, "ID không hợp lệ")
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Xóa phiếu thuê thành công"})
+
+	var input model.TraDoInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		common.BadRequest(c, err.Error())
+		return
+	}
+	if err := input.Validate(); err != nil {
+		common.ValidationError(c, err)
+		return
+	}
+
+	td, xuLyCoc, err := h.svc.TraDo(uint(id), input)
+	if err != nil {
+		common.BadRequest(c, err.Error())
+		return
+	}
+
+	if h.wsHub != nil {
+		h.wsHub.Broadcast("phieu_cap_nhat", td)
+	}
+	c.JSON(http.StatusOK, gin.H{"data": td, "xu_ly_coc": xuLyCoc})
+}
+
+// POST /api/v1/thue-do/:id/huy
+func (h *ThueDoHandler) HuyPhieu(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		common.BadRequest(c, "ID không hợp lệ")
+		return
+	}
+
+	var input model.HuyPhieuInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		common.BadRequest(c, err.Error())
+		return
+	}
+	if err := input.Validate(); err != nil {
+		common.ValidationError(c, err)
+		return
+	}
+
+	td, err := h.svc.HuyPhieu(uint(id), input)
+	if err != nil {
+		common.BadRequest(c, err.Error())
+		return
+	}
+
+	if h.wsHub != nil {
+		h.wsHub.Broadcast("phieu_cap_nhat", td)
+	}
+	common.OK(c, td)
+}
+
+// helper
+func newDecimal(v int64) decimal.Decimal {
+	return decimal.NewFromInt(v)
 }
