@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"os"
 	"strings"
 
 	"miumiu-rent-stuff/internal/common"
+	"miumiu-rent-stuff/internal/config"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -19,25 +19,36 @@ type Claims struct {
 
 // AuthRequired kiểm tra Bearer JWT token trong Authorization header
 func AuthRequired() gin.HandlerFunc {
+	return AuthRequiredWithSecret(config.Load().JWTSecret, false)
+}
+
+// AuthRequiredWithSecret kiểm tra JWT với secret được truyền vào.
+// Nếu allowQueryToken = true (dùng cho WebSocket), cho phép đọc ?token=... khi thiếu Authorization header.
+func AuthRequiredWithSecret(secret string, allowQueryToken bool) gin.HandlerFunc {
+	if secret == "" {
+		secret = config.Load().JWTSecret
+	}
+
 	return func(c *gin.Context) {
+		var tokenStr string
+
 		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
+		if authHeader != "" {
+			parts := strings.SplitN(authHeader, " ", 2)
+			if len(parts) != 2 || parts[0] != "Bearer" || strings.TrimSpace(parts[1]) == "" {
+				common.Unauthorized(c, "Định dạng Authorization không hợp lệ")
+				c.Abort()
+				return
+			}
+			tokenStr = strings.TrimSpace(parts[1])
+		} else if allowQueryToken {
+			tokenStr = strings.TrimSpace(c.Query("token"))
+		}
+
+		if tokenStr == "" {
 			common.Unauthorized(c, "Yêu cầu đăng nhập")
 			c.Abort()
 			return
-		}
-
-		parts := strings.SplitN(authHeader, " ", 2)
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			common.Unauthorized(c, "Định dạng Authorization không hợp lệ")
-			c.Abort()
-			return
-		}
-
-		tokenStr := parts[1]
-		secret := os.Getenv("JWT_SECRET")
-		if secret == "" {
-			secret = "miumiu-secret-key-change-in-production"
 		}
 
 		claims := &Claims{}

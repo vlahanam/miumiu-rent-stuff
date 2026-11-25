@@ -35,23 +35,24 @@ func (h *BaoCaoHandler) GetDoanhThu(c *gin.Context) {
 
 // GET /api/v1/bao-cao/phieu-thue?trang_thai=&tu_ngay=&den_ngay=
 func (h *BaoCaoHandler) GetPhieuThue(c *gin.Context) {
+	service.UpdateQuaHan(h.db)
+
 	var list []model.ThueDo
 	q := h.db.Model(&model.ThueDo{}).Preload("KhachHang").Preload("ChiTiet").Preload("ChiTiet.SanPham")
 
 	if tt := c.Query("trang_thai"); tt != "" {
 		q = q.Where("trang_thai = ?", tt)
 	}
-	if tuNgay := c.Query("tu_ngay"); tuNgay != "" {
-		q = q.Where("ngay_tao >= ?", tuNgay)
-	}
-	if denNgay := c.Query("den_ngay"); denNgay != "" {
-		q = q.Where("ngay_tao <= ?", denNgay)
-	}
+	q = service.ApplyDateRangeFilter(q, "ngay_tao", c.Query("tu_ngay"), c.Query("den_ngay"))
 
 	result, err := common.Paginate(c, q, &list, "id DESC")
 	if err != nil {
 		common.InternalError(c, "Không thể lấy báo cáo phiếu thuê")
 		return
+	}
+	if list == nil {
+		list = []model.ThueDo{}
+		result.Data = list
 	}
 	c.JSON(http.StatusOK, result)
 }
@@ -80,11 +81,11 @@ func (h *BaoCaoHandler) GetKhachHang(c *gin.Context) {
 func (h *BaoCaoHandler) XuatExcel(c *gin.Context) {
 	loai := c.DefaultQuery("loai", "phieu_thue")
 	params := map[string]string{
-		"thang":     c.Query("thang"),
-		"nam":       c.Query("nam"),
+		"thang":      c.Query("thang"),
+		"nam":        c.Query("nam"),
 		"trang_thai": c.Query("trang_thai"),
-		"tu_ngay":   c.Query("tu_ngay"),
-		"den_ngay":  c.Query("den_ngay"),
+		"tu_ngay":    c.Query("tu_ngay"),
+		"den_ngay":   c.Query("den_ngay"),
 	}
 
 	data, filename, err := h.svc.XuatExcel(loai, params)
@@ -102,11 +103,11 @@ func (h *BaoCaoHandler) XuatExcel(c *gin.Context) {
 func (h *BaoCaoHandler) XuatCSV(c *gin.Context) {
 	loai := c.DefaultQuery("loai", "phieu_thue")
 	params := map[string]string{
-		"thang":     c.Query("thang"),
-		"nam":       c.Query("nam"),
+		"thang":      c.Query("thang"),
+		"nam":        c.Query("nam"),
 		"trang_thai": c.Query("trang_thai"),
-		"tu_ngay":   c.Query("tu_ngay"),
-		"den_ngay":  c.Query("den_ngay"),
+		"tu_ngay":    c.Query("tu_ngay"),
+		"den_ngay":   c.Query("den_ngay"),
 	}
 
 	data, filename, err := h.svc.XuatCSV(loai, params)

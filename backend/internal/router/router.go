@@ -1,6 +1,7 @@
 package router
 
 import (
+	"miumiu-rent-stuff/internal/config"
 	"miumiu-rent-stuff/internal/handler"
 	"miumiu-rent-stuff/internal/hub"
 	"miumiu-rent-stuff/internal/middleware"
@@ -10,6 +11,14 @@ import (
 )
 
 func Setup(db *gorm.DB, wsHub *hub.Hub) *gin.Engine {
+	return SetupWithConfig(db, wsHub, config.Load())
+}
+
+func SetupWithConfig(db *gorm.DB, wsHub *hub.Hub, cfg *config.Config) *gin.Engine {
+	if cfg == nil {
+		cfg = config.Load()
+	}
+
 	r := gin.Default()
 
 	// Middleware toàn cục
@@ -20,6 +29,7 @@ func Setup(db *gorm.DB, wsHub *hub.Hub) *gin.Engine {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, X-Request-ID")
+		c.Header("Access-Control-Expose-Headers", "Content-Disposition, X-Request-ID")
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
@@ -33,8 +43,8 @@ func Setup(db *gorm.DB, wsHub *hub.Hub) *gin.Engine {
 	})
 
 	// Khởi tạo handlers
-	authHandler := handler.NewAuthHandler(db)
-	sanPhamHandler := handler.NewSanPhamHandler(db)
+	authHandler := handler.NewAuthHandlerWithConfig(db, cfg.JWTSecret, cfg.JWTExpiryHours)
+	sanPhamHandler := handler.NewSanPhamHandlerWithHub(db, wsHub)
 	khachHangHandler := handler.NewKhachHangHandler(db)
 	thueDoHandler := handler.NewThueDoHandler(db, wsHub)
 	caiDatHandler := handler.NewCaiDatHandler(db)
@@ -50,9 +60,12 @@ func Setup(db *gorm.DB, wsHub *hub.Hub) *gin.Engine {
 			auth.POST("/login", authHandler.Login)
 		}
 
-		// --- Routes cần đăng nhập ---
+		// --- WebSocket (hỗ trợ cả Authorization header và ?token= cho trình duyệt) ---
+		v1.GET("/ws", middleware.AuthRequiredWithSecret(cfg.JWTSecret, true), wsHandler.ServeWS)
+
+		// --- Routes cần đăng nhập (Bearer header) ---
 		protected := v1.Group("")
-		protected.Use(middleware.AuthRequired())
+		protected.Use(middleware.AuthRequiredWithSecret(cfg.JWTSecret, false))
 		{
 			// Auth profile
 			protectedAuth := protected.Group("/auth")
@@ -115,9 +128,6 @@ func Setup(db *gorm.DB, wsHub *hub.Hub) *gin.Engine {
 				baoCao.GET("/xuat-excel", baoCaoHandler.XuatExcel)
 				baoCao.GET("/xuat-csv", baoCaoHandler.XuatCSV)
 			}
-
-			// WebSocket
-			protected.GET("/ws", wsHandler.ServeWS)
 		}
 	}
 

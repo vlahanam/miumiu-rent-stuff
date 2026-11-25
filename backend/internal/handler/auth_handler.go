@@ -3,11 +3,11 @@ package handler
 import (
 	"errors"
 	"net/http"
-	"os"
-	"strconv"
+	"strings"
 	"time"
 
 	"miumiu-rent-stuff/internal/common"
+	"miumiu-rent-stuff/internal/config"
 	"miumiu-rent-stuff/internal/model"
 
 	"github.com/gin-gonic/gin"
@@ -17,11 +17,28 @@ import (
 )
 
 type AuthHandler struct {
-	db *gorm.DB
+	db             *gorm.DB
+	jwtSecret      string
+	jwtExpiryHours int
 }
 
 func NewAuthHandler(db *gorm.DB) *AuthHandler {
-	return &AuthHandler{db: db}
+	cfg := config.Load()
+	return NewAuthHandlerWithConfig(db, cfg.JWTSecret, cfg.JWTExpiryHours)
+}
+
+func NewAuthHandlerWithConfig(db *gorm.DB, jwtSecret string, jwtExpiryHours int) *AuthHandler {
+	if jwtSecret == "" {
+		jwtSecret = config.Load().JWTSecret
+	}
+	if jwtExpiryHours <= 0 {
+		jwtExpiryHours = 24
+	}
+	return &AuthHandler{
+		db:             db,
+		jwtSecret:      jwtSecret,
+		jwtExpiryHours: jwtExpiryHours,
+	}
 }
 
 // POST /api/v1/auth/login
@@ -31,13 +48,14 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		common.BadRequest(c, err.Error())
 		return
 	}
+	input.Email = strings.TrimSpace(strings.ToLower(input.Email))
 	if err := input.Validate(); err != nil {
 		common.ValidationError(c, err)
 		return
 	}
 
 	var user model.NguoiDung
-	if err := h.db.Where("email = ?", input.Email).First(&user).Error; err != nil {
+	if err := h.db.Where("LOWER(email) = ?", input.Email).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			common.Unauthorized(c, "Email hoặc mật khẩu không đúng")
 			return
@@ -51,7 +69,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := generateJWT(user.ID, user.Email)
+	token, err := h.generateJWT(user.ID, user.Email)
 	if err != nil {
 		common.InternalError(c, "Không thể tạo token")
 		return
@@ -59,7 +77,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": gin.H{
-			"token":     token,
+			"token":      token,
 			"nguoi_dung": user.ToPublic(),
 		},
 	})
@@ -70,7 +88,11 @@ func (h *AuthHandler) GetProfile(c *gin.Context) {
 	userID := c.GetUint("user_id")
 	var user model.NguoiDung
 	if err := h.db.First(&user, userID).Error; err != nil {
-		common.NotFound(c, "Không tìm thấy tài khoản")
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			common.NotFound(c, "Không tìm thấy tài khoản")
+			return
+		}
+		common.InternalError(c, "Lỗi hệ thống")
 		return
 	}
 	common.OK(c, user.ToPublic())
@@ -82,7 +104,11 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 
 	var user model.NguoiDung
 	if err := h.db.First(&user, userID).Error; err != nil {
-		common.NotFound(c, "Không tìm thấy tài khoản")
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			common.NotFound(c, "Không tìm thấy tài khoản")
+			return
+		}
+		common.InternalError(c, "Lỗi hệ thống")
 		return
 	}
 
@@ -90,6 +116,10 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		common.BadRequest(c, err.Error())
 		return
+	}
+	if input.Ten != nil {
+		trimmed := strings.TrimSpace(*input.Ten)
+		input.Ten = &trimmed
 	}
 	if err := input.Validate(); err != nil {
 		common.ValidationError(c, err)
@@ -99,12 +129,16 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 	updates := map[string]interface{}{}
 
 	if input.Ten != nil {
+		if *input.Ten == "" {
+			common.BadRequest(c, "Tên người dùng không được để trống")
+			return
+		}
 		updates["ten"] = *input.Ten
 	}
 
 	// Đổi mật khẩu: cần kiểm tra mật khẩu cũ
-	if input.MatKhauMoi != nil {
-		if input.MatKhauCu == nil {
+	if input.MatKhauMoi != nil && *input.MatKhauMoi != "" {
+		if input.MatKhauCu == nil || *input.MatKhauCu == "" {
 			common.BadRequest(c, "Cần nhập mật khẩu cũ để đổi mật khẩu")
 			return
 		}
@@ -136,26 +170,14 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 }
 
 // generateJWT tạo JWT token cho user
-func generateJWT(userID uint, email string) (string, error) {
-	secret := os.Getenv("JWT_SECRET")
-	if secret == "" {
-		secret = "miumiu-secret-key-change-in-production"
-	}
-
-	expiryHours := 24
+func (h *AuthHandler) generateJWT(userID uint, email string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
 		"email":   email,
-		"exp":     time.Now().Add(time.Duration(expiryHours) * time.Hour).Unix(),
+		"exp":     time.Now().Add(time.Duration(h.jwtExpiryHours) * time.Hour).Unix(),
 		"iat":     time.Now().Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(secret))
-}
-
-// getUint lấy uint từ gin context
-func init() {
-	// Đăng ký helper method cho gin.Context
-	_ = strconv.Atoi
+	return token.SignedString([]byte(h.jwtSecret))
 }

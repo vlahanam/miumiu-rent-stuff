@@ -1,6 +1,8 @@
 package model
 
 import (
+	"errors"
+	"strings"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -35,6 +37,7 @@ type SanPhamDetail struct {
 
 // LichSuThue là thông tin tóm tắt mỗi lần thuê trong lịch sử
 type LichSuThue struct {
+	ThueDoID     uint       `json:"thue_do_id"`
 	MaPhieuThue  string     `json:"ma_phieu_thue"`
 	TenKhachHang string     `json:"ten_khach_hang"`
 	NgayBatDau   *time.Time `json:"ngay_bat_dau"`
@@ -42,10 +45,49 @@ type LichSuThue struct {
 	TrangThai    uint8      `json:"trang_thai"`
 }
 
+var maxDecimal12_2 = decimal.RequireFromString("9999999999.99")
+
+func validateNonNegativeDecimal(fieldLabel string) validation.Rule {
+	return validation.By(func(value interface{}) error {
+		switch v := value.(type) {
+		case decimal.Decimal:
+			if v.IsNegative() {
+				return errors.New(fieldLabel + " không được âm")
+			}
+			if v.GreaterThan(maxDecimal12_2) {
+				return errors.New(fieldLabel + " vượt quá giới hạn cho phép")
+			}
+		case *decimal.Decimal:
+			if v == nil {
+				return nil
+			}
+			if v.IsNegative() {
+				return errors.New(fieldLabel + " không được âm")
+			}
+			if v.GreaterThan(maxDecimal12_2) {
+				return errors.New(fieldLabel + " vượt quá giới hạn cho phép")
+			}
+		}
+		return nil
+	})
+}
+
+func validateNonEmptyOptionalString(emptyErr string) validation.Rule {
+	return validation.By(func(value interface{}) error {
+		ptr, ok := value.(*string)
+		if !ok || ptr == nil {
+			return nil
+		}
+		if strings.TrimSpace(*ptr) == "" {
+			return errors.New(emptyErr)
+		}
+		return nil
+	})
+}
+
 // CreateSanPhamInput dùng cho POST /san-pham
-// Không có slug (tự sinh), không có trang_thai (mặc định 1)
+// Không có ma_san_pham (tự sinh với prefix MIU-), không có slug (tự sinh), không có trang_thai (mặc định 1)
 type CreateSanPhamInput struct {
-	MaSanPham     string          `json:"ma_san_pham"      binding:"required"`
 	TenSanPham    string          `json:"ten_san_pham"     binding:"required"`
 	HinhAnh       *string         `json:"hinh_anh"`
 	GiaGocSanPham decimal.Decimal `json:"gia_goc_san_pham"`
@@ -54,14 +96,12 @@ type CreateSanPhamInput struct {
 
 func (i CreateSanPhamInput) Validate() error {
 	return validation.ValidateStruct(&i,
-		validation.Field(&i.MaSanPham,
-			validation.Required.Error("Mã sản phẩm không được để trống"),
-			validation.Length(1, 30).Error("Mã sản phẩm tối đa 30 ký tự"),
-		),
 		validation.Field(&i.TenSanPham,
 			validation.Required.Error("Tên sản phẩm không được để trống"),
 			validation.Length(1, 255).Error("Tên sản phẩm tối đa 255 ký tự"),
 		),
+		validation.Field(&i.GiaGocSanPham, validateNonNegativeDecimal("Giá gốc sản phẩm")),
+		validation.Field(&i.GiaThueNgay, validateNonNegativeDecimal("Giá thuê theo ngày")),
 	)
 }
 
@@ -77,11 +117,15 @@ type UpdateSanPhamInput struct {
 func (i UpdateSanPhamInput) Validate() error {
 	return validation.ValidateStruct(&i,
 		validation.Field(&i.MaSanPham,
+			validateNonEmptyOptionalString("Mã sản phẩm không được để trống"),
 			validation.Length(1, 30).Error("Mã sản phẩm tối đa 30 ký tự"),
 		),
 		validation.Field(&i.TenSanPham,
+			validateNonEmptyOptionalString("Tên sản phẩm không được để trống"),
 			validation.Length(1, 255).Error("Tên sản phẩm tối đa 255 ký tự"),
 		),
+		validation.Field(&i.GiaGocSanPham, validateNonNegativeDecimal("Giá gốc sản phẩm")),
+		validation.Field(&i.GiaThueNgay, validateNonNegativeDecimal("Giá thuê theo ngày")),
 	)
 }
 

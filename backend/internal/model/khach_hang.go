@@ -9,15 +9,22 @@ import (
 
 // KhachHang maps to table `khach_hang`
 type KhachHang struct {
-	ID           uint      `json:"id"            gorm:"primaryKey;autoIncrement"`
-	Ten          string    `json:"ten"           gorm:"column:ten;type:varchar(100);not null"`
-	SoDienThoai  string    `json:"so_dien_thoai" gorm:"column:so_dien_thoai;type:varchar(20);uniqueIndex;not null"`
-	DiaChi       *string   `json:"dia_chi"       gorm:"column:dia_chi;type:varchar(255)"`
-	NgayTao      time.Time `json:"ngay_tao"      gorm:"column:ngay_tao;autoCreateTime"`
-	NgayCapNhat  time.Time `json:"ngay_cap_nhat" gorm:"column:ngay_cap_nhat;autoUpdateTime"`
+	ID          uint      `json:"id"            gorm:"primaryKey;autoIncrement"`
+	Ten         string    `json:"ten"           gorm:"column:ten;type:varchar(100);not null"`
+	SoDienThoai string    `json:"so_dien_thoai" gorm:"column:so_dien_thoai;type:varchar(20);uniqueIndex;not null"`
+	DiaChi      *string   `json:"dia_chi"       gorm:"column:dia_chi;type:varchar(255)"`
+	NgayTao     time.Time `json:"ngay_tao"      gorm:"column:ngay_tao;autoCreateTime"`
+	NgayCapNhat time.Time `json:"ngay_cap_nhat" gorm:"column:ngay_cap_nhat;autoUpdateTime"`
 }
 
 func (KhachHang) TableName() string { return "khach_hang" }
+
+// KhachHangListItem là item trả về trong danh sách khách hàng kèm số lần thuê và trạng thái đang thuê
+type KhachHangListItem struct {
+	KhachHang
+	SoLanThue       int64 `json:"so_lan_thue"`
+	SoPhieuDangThue int64 `json:"so_phieu_dang_thue"`
+}
 
 // CreateKhachHangInput dùng cho POST /khach-hang
 type CreateKhachHangInput struct {
@@ -36,6 +43,29 @@ func (i CreateKhachHangInput) Validate() error {
 			validation.Required.Error("Số điện thoại không được để trống"),
 			validation.Length(1, 20).Error("Số điện thoại tối đa 20 ký tự"),
 			is.Digit.Error("Số điện thoại chỉ chứa chữ số"),
+		),
+		validation.Field(&i.DiaChi,
+			validation.Length(0, 255).Error("Địa chỉ tối đa 255 ký tự"),
+		),
+	)
+}
+
+// TimTheoSDTInput dùng cho POST /khach-hang/tim-theo-sdt
+type TimTheoSDTInput struct {
+	SoDienThoai string  `json:"so_dien_thoai" binding:"required"`
+	Ten         *string `json:"ten"`
+	DiaChi      *string `json:"dia_chi"`
+}
+
+func (i TimTheoSDTInput) Validate() error {
+	return validation.ValidateStruct(&i,
+		validation.Field(&i.SoDienThoai,
+			validation.Required.Error("Số điện thoại không được để trống"),
+			validation.Length(1, 20).Error("Số điện thoại tối đa 20 ký tự"),
+			is.Digit.Error("Số điện thoại chỉ chứa chữ số"),
+		),
+		validation.Field(&i.Ten,
+			validation.Length(0, 100).Error("Tên tối đa 100 ký tự"),
 		),
 		validation.Field(&i.DiaChi,
 			validation.Length(0, 255).Error("Địa chỉ tối đa 255 ký tự"),

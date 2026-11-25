@@ -51,7 +51,7 @@ Màn hình **Tổng quan** gom các việc cần làm trong ngày (xem phần IV
 
 | Trường | Cột DB | Bắt buộc | Mô tả |
 |---|---|---|---|
-| Mã sản phẩm (SKU) | `ma_san_pham` | Có | Admin nhập, không trùng, tối đa 30 ký tự. Ví dụ: MiuMiu-001. |
+| Mã sản phẩm (SKU) | `ma_san_pham` | Tự động | Hệ thống tự sinh với tiền tố `MIU-`, không trùng, tối đa 30 ký tự. Ví dụ: MIU-001. |
 | Tên sản phẩm | `ten_san_pham` | Có | Tên hiển thị, dùng để tìm kiếm. |
 | Đường dẫn (slug) | `slug` | Tự động | Sinh từ tên, không trùng; người dùng không cần nhập. |
 | Hình ảnh | `hinh_anh` (TEXT) | Không | Một hoặc nhiều ảnh, ảnh đầu tiên là ảnh đại diện. Lưu đường dẫn (nhiều ảnh dùng danh sách JSON). |
@@ -222,7 +222,7 @@ Trang quản lý chỉ có vài màn hình, mỗi màn hình làm đúng một v
 - Danh sách sản phẩm hiển thị dạng thẻ có ảnh, giá thuê và trạng thái để chọn nhanh.
 - Tiền hiển thị dạng 1.200.000đ, ngày giờ theo định dạng Việt Nam.
 - Việc không thể quay lại (hủy phiếu, xóa) luôn có bước xác nhận.
-- Báo lỗi cụ thể, ví dụ "Áo MiuMiu-003 đã có lịch thuê từ 12/12 đến 14/12".
+- Báo lỗi cụ thể, ví dụ "Áo MIU-003 đã có lịch thuê từ 12/12 đến 14/12".
 
 ## V. Các điểm đã chốt và lưu ý
 

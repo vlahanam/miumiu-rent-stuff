@@ -4,9 +4,12 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"miumiu-rent-stuff/internal/common"
+	"miumiu-rent-stuff/internal/database"
 	"miumiu-rent-stuff/internal/model"
+	"miumiu-rent-stuff/internal/service"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -20,23 +23,54 @@ func NewKhachHangHandler(db *gorm.DB) *KhachHangHandler {
 	return &KhachHangHandler{db: db}
 }
 
-// GET /api/v1/khach-hang
-// Query params: search, page, limit
-func (h *KhachHangHandler) GetAll(c *gin.Context) {
-	var list []model.KhachHang
-	q := h.db.Model(&model.KhachHang{})
+func normalizePhone(s string) string {
+	return strings.ReplaceAll(strings.TrimSpace(s), " ", "")
+}
 
-	if search := c.Query("search"); search != "" {
+// GET /api/v1/khach-hang
+// Query params: search, filter (dang_thue|khach_moi), page, limit
+func (h *KhachHangHandler) GetAll(c *gin.Context) {
+	p := common.ParseParams(c)
+	base := h.db.Model(&model.KhachHang{})
+
+	if search := strings.TrimSpace(c.Query("search")); search != "" {
 		like := "%" + search + "%"
-		q = q.Where("ten LIKE ? OR so_dien_thoai LIKE ?", like, like)
+		normalized := "%" + normalizePhone(search) + "%"
+		base = base.Where("ten LIKE ? OR so_dien_thoai LIKE ? OR so_dien_thoai LIKE ?", like, like, normalized)
 	}
 
-	result, err := common.Paginate(c, q, &list, "id DESC")
-	if err != nil {
+	switch c.Query("filter") {
+	case "dang_thue":
+		base = base.Where("EXISTS (SELECT 1 FROM thue_do td WHERE td.khach_hang_id = khach_hang.id AND td.trang_thai IN (1, 2, 4))")
+	case "khach_moi":
+		base = base.Where("NOT EXISTS (SELECT 1 FROM thue_do td WHERE td.khach_hang_id = khach_hang.id AND td.trang_thai = 3)")
+	}
+
+	var total int64
+	if err := base.Count(&total).Error; err != nil {
 		common.InternalError(c, "Không thể lấy danh sách khách hàng")
 		return
 	}
-	c.JSON(http.StatusOK, result)
+
+	list := make([]model.KhachHangListItem, 0)
+	if err := base.
+		Select(`khach_hang.*,
+			(SELECT COUNT(*) FROM thue_do td WHERE td.khach_hang_id = khach_hang.id AND td.trang_thai = 3) AS so_lan_thue,
+			(SELECT COUNT(*) FROM thue_do td WHERE td.khach_hang_id = khach_hang.id AND td.trang_thai IN (1, 2, 4)) AS so_phieu_dang_thue`).
+		Order("khach_hang.id DESC").
+		Offset(p.Offset).
+		Limit(p.Limit).
+		Find(&list).Error; err != nil {
+		common.InternalError(c, "Không thể lấy danh sách khách hàng")
+		return
+	}
+
+	c.JSON(http.StatusOK, common.Result{
+		Data:  list,
+		Total: total,
+		Page:  p.Page,
+		Limit: p.Limit,
+	})
 }
 
 // GET /api/v1/khach-hang/:id
@@ -48,6 +82,8 @@ func (h *KhachHangHandler) GetByID(c *gin.Context) {
 		return
 	}
 
+	service.UpdateQuaHan(h.db)
+
 	var kh model.KhachHang
 	if err := h.db.First(&kh, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -58,17 +94,17 @@ func (h *KhachHangHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	// Lịch sử thuê - đang thuê hoặc quá hạn (trang_thai IN 1,2,4)
-	var dangThue []model.ThueDo
+	// Lịch sử thuê - đang thuê, chờ xác nhận hoặc quá hạn (trang_thai IN 1,2,4)
+	dangThue := make([]model.ThueDo, 0)
 	h.db.Where("khach_hang_id = ? AND trang_thai IN (1, 2, 4)", kh.ID).
 		Preload("ChiTiet").Preload("ChiTiet.SanPham").
 		Order("id DESC").Find(&dangThue)
 
 	// Lịch sử đã trả/hủy
-	var daKet []model.ThueDo
+	daKet := make([]model.ThueDo, 0)
 	h.db.Where("khach_hang_id = ? AND trang_thai IN (3, 5)", kh.ID).
 		Preload("ChiTiet").Preload("ChiTiet.SanPham").
-		Order("id DESC").Limit(20).Find(&daKet)
+		Order("id DESC").Limit(50).Find(&daKet)
 
 	// Đếm số lần thuê (Đã trả)
 	var soLanThue int64
@@ -91,6 +127,8 @@ func (h *KhachHangHandler) Create(c *gin.Context) {
 		common.BadRequest(c, err.Error())
 		return
 	}
+	input.Ten = strings.TrimSpace(input.Ten)
+	input.SoDienThoai = normalizePhone(input.SoDienThoai)
 	if err := input.Validate(); err != nil {
 		common.ValidationError(c, err)
 		return
@@ -103,6 +141,10 @@ func (h *KhachHangHandler) Create(c *gin.Context) {
 	}
 
 	if err := h.db.Create(&kh).Error; err != nil {
+		if database.IsDuplicateKeyError(err) {
+			common.Conflict(c, "Số điện thoại đã tồn tại trong danh sách khách hàng")
+			return
+		}
 		common.InternalError(c, "Không thể tạo khách hàng")
 		return
 	}
@@ -112,13 +154,18 @@ func (h *KhachHangHandler) Create(c *gin.Context) {
 // POST /api/v1/khach-hang/tim-theo-sdt
 // Tìm khách theo SĐT; nếu chưa có thì tạo mới
 func (h *KhachHangHandler) TimTheoSDT(c *gin.Context) {
-	var input struct {
-		SoDienThoai string  `json:"so_dien_thoai" binding:"required"`
-		Ten         *string `json:"ten"`
-		DiaChi      *string `json:"dia_chi"`
-	}
+	var input model.TimTheoSDTInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		common.BadRequest(c, err.Error())
+		return
+	}
+	input.SoDienThoai = normalizePhone(input.SoDienThoai)
+	if input.Ten != nil {
+		trimmed := strings.TrimSpace(*input.Ten)
+		input.Ten = &trimmed
+	}
+	if err := input.Validate(); err != nil {
+		common.ValidationError(c, err)
 		return
 	}
 
@@ -148,6 +195,10 @@ func (h *KhachHangHandler) TimTheoSDT(c *gin.Context) {
 		DiaChi:      input.DiaChi,
 	}
 	if err := h.db.Create(&kh).Error; err != nil {
+		if database.IsDuplicateKeyError(err) {
+			common.Conflict(c, "Số điện thoại đã tồn tại")
+			return
+		}
 		common.InternalError(c, "Không thể tạo khách hàng mới")
 		return
 	}
@@ -177,6 +228,14 @@ func (h *KhachHangHandler) Update(c *gin.Context) {
 		common.BadRequest(c, err.Error())
 		return
 	}
+	if input.Ten != nil {
+		trimmed := strings.TrimSpace(*input.Ten)
+		input.Ten = &trimmed
+	}
+	if input.SoDienThoai != nil {
+		normalized := normalizePhone(*input.SoDienThoai)
+		input.SoDienThoai = &normalized
+	}
 	if err := input.Validate(); err != nil {
 		common.ValidationError(c, err)
 		return
@@ -193,10 +252,18 @@ func (h *KhachHangHandler) Update(c *gin.Context) {
 		updates["dia_chi"] = *input.DiaChi
 	}
 
-	if err := h.db.Model(&kh).Updates(updates).Error; err != nil {
-		common.InternalError(c, "Không thể cập nhật khách hàng")
-		return
+	if len(updates) > 0 {
+		if err := h.db.Model(&kh).Updates(updates).Error; err != nil {
+			if database.IsDuplicateKeyError(err) {
+				common.Conflict(c, "Số điện thoại đã được sử dụng bởi khách hàng khác")
+				return
+			}
+			common.InternalError(c, "Không thể cập nhật khách hàng")
+			return
+		}
 	}
+
+	h.db.First(&kh, id)
 	common.OK(c, kh)
 }
 

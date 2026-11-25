@@ -8,10 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
-// GenerateMaPhieu sinh mã phiếu tự động dạng DT-XXXX
-// Lấy MAX(id) hiện tại và +1 để dự đoán ID tiếp theo
+// GenerateMaPhieu sinh mã phiếu tự động dạng DT-XXXX đảm bảo không trùng
 func GenerateMaPhieu(db *gorm.DB) string {
 	var maxID uint
 	db.Model(&model.ThueDo{}).Select("COALESCE(MAX(id), 0)").Scan(&maxID)
-	return fmt.Sprintf("DT-%04d", maxID+1)
+
+	for next := maxID + 1; ; next++ {
+		candidate := fmt.Sprintf("DT-%04d", next)
+		var count int64
+		db.Model(&model.ThueDo{}).Where("ma_phieu_thue = ?", candidate).Count(&count)
+		if count == 0 {
+			return candidate
+		}
+	}
 }

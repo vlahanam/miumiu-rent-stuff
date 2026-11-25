@@ -1,112 +1,276 @@
 'use client'
 
+import { useCallback, useEffect, useState } from 'react'
+import Link from 'next/link'
 import TopBar from '@/components/TopBar'
 import BottomNav from '@/components/BottomNav'
 import AddButton from '@/components/AddButton'
-import { useState } from 'react'
-
-function FakeMapImage() {
-  return (
-    <div className="w-full h-24 rounded-lg bg-tertiary-fixed/30 flex items-center justify-center relative overflow-hidden shadow-inner">
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="grid grid-cols-5 gap-0.5 opacity-20">
-          {Array.from({ length: 25 }).map((_, i) => (
-            <div key={i} className="w-6 h-5 bg-on-surface rounded-sm" />
-          ))}
-        </div>
-      </div>
-      <div className="relative z-10 flex flex-col items-center gap-1">
-        <span className="material-symbols-outlined text-primary-container text-[32px]">pin_drop</span>
-        <span className="font-label-sm text-label-sm text-on-surface bg-surface/80 px-2 py-0.5 rounded-full">
-          124 Phố Huế, Hai Bà Trưng
-        </span>
-      </div>
-    </div>
-  )
-}
+import NumberInput from '@/components/NumberInput'
+import { useAuth } from '@/components/AuthProvider'
+import { useToast } from '@/components/ToastProvider'
+import { ApiError, authApi, baoCaoApi, caiDatApi } from '@/lib/api'
+import { formatCurrency, parseFormattedNumber } from '@/lib/format'
+import type { CaiDat, DoanhThuThang } from '@/types'
 
 export default function CaiDatPage() {
-  const [depositRate, setDepositRate] = useState(85)
+  const { user, logout, refreshUser } = useAuth()
+  const toast = useToast()
+
+  const [settings, setSettings] = useState<CaiDat[]>([])
+  const [depositRateInput, setDepositRateInput] = useState('85')
+  const depositRate = Math.max(0, Math.min(100, parseFormattedNumber(depositRateInput, true)))
+  const [shopPhone, setShopPhone] = useState('0365193713')
+  const [extraDrafts, setExtraDrafts] = useState<Record<string, string>>({})
+  const [monthlyRev, setMonthlyRev] = useState<DoanhThuThang | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [savingKey, setSavingKey] = useState('')
+  const [exportingType, setExportingType] = useState('')
+
+  // Account modals
   const [showPasswordModal, setShowPasswordModal] = useState(false)
-  const [toast, setToast] = useState('')
+  const [oldPass, setOldPass] = useState('')
+  const [newPass, setNewPass] = useState('')
+  const [confirmPass, setConfirmPass] = useState('')
+  const [showProfileModal, setShowProfileModal] = useState(false)
+  const [profileName, setProfileName] = useState('')
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+  const [accountBusy, setAccountBusy] = useState(false)
 
-  const showToast = (msg: string) => {
-    setToast(msg)
-    setTimeout(() => setToast(''), 2400)
+  const loadData = useCallback(async () => {
+    setLoading(true)
+    try {
+      const [list, rev] = await Promise.all([
+        caiDatApi.getAll(),
+        baoCaoApi.getDoanhThu().catch(() => null),
+      ])
+      setSettings(list)
+      setMonthlyRev(rev)
+
+      const coc = list.find((c) => c.khoa === 'pham_tram_gia_coc')
+      if (coc?.gia_tri) {
+        const parsed = parseFloat(coc.gia_tri)
+        if (!Number.isNaN(parsed)) setDepositRateInput(String(parsed))
+      }
+      const phone = list.find((c) => c.khoa === 'so_dien_thoai_lien_he')
+      if (phone?.gia_tri) setShopPhone(phone.gia_tri)
+
+      const extras: Record<string, string> = {}
+      list
+        .filter((c) => c.khoa !== 'pham_tram_gia_coc' && c.khoa !== 'so_dien_thoai_lien_he')
+        .forEach((c) => {
+          extras[c.khoa] = c.gia_tri || ''
+        })
+      setExtraDrafts(extras)
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : 'Không thể tải cài đặt')
+    } finally {
+      setLoading(false)
+    }
+  }, [toast])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
+
+  const handleSaveSetting = async (khoa: string, value: string, label: string) => {
+    setSavingKey(khoa)
+    try {
+      await caiDatApi.updateByKhoa(khoa, value)
+      toast.success(`Đã lưu ${label}`)
+      await loadData()
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : `Không thể lưu ${label}`)
+    } finally {
+      setSavingKey('')
+    }
   }
 
-  const simulateExport = (fileName: string) => {
-    setTimeout(() => {
-      showToast(`Đã xuất tệp ${fileName} thành công`)
-    }, 900)
+  const handleExport = async (
+    loai: 'doanh_thu' | 'san_pham' | 'phieu_thue' | 'khach_hang',
+    format: 'excel' | 'csv'
+  ) => {
+    setExportingType(`${loai}-${format}`)
+    try {
+      const name =
+        format === 'excel'
+          ? await baoCaoApi.downloadExcel({ loai })
+          : await baoCaoApi.downloadCSV({ loai })
+      toast.success(`Đã tải xuống ${name}`)
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : 'Không thể xuất file')
+    } finally {
+      setExportingType('')
+    }
   }
+
+  const handleUpdateName = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!profileName.trim()) {
+      toast.error('Tên không được để trống')
+      return
+    }
+    setAccountBusy(true)
+    try {
+      await authApi.updateMe({ ten: profileName.trim() })
+      await refreshUser()
+      setShowProfileModal(false)
+      toast.success('Đã cập nhật tên tài khoản')
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : 'Không thể cập nhật tài khoản')
+    } finally {
+      setAccountBusy(false)
+    }
+  }
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!oldPass || !newPass) {
+      toast.error('Vui lòng nhập đầy đủ mật khẩu hiện tại và mật khẩu mới')
+      return
+    }
+    if (newPass.length < 6) {
+      toast.error('Mật khẩu mới tối thiểu 6 ký tự')
+      return
+    }
+    if (newPass !== confirmPass) {
+      toast.error('Xác nhận mật khẩu mới chưa khớp')
+      return
+    }
+    setAccountBusy(true)
+    try {
+      await authApi.updateMe({ mat_khau_cu: oldPass, mat_khau_moi: newPass })
+      setShowPasswordModal(false)
+      setOldPass('')
+      setNewPass('')
+      setConfirmPass('')
+      toast.success('Đã đổi mật khẩu thành công!')
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : 'Không thể đổi mật khẩu')
+    } finally {
+      setAccountBusy(false)
+    }
+  }
+
+  const extraSettings = settings.filter(
+    (c) => c.khoa !== 'pham_tram_gia_coc' && c.khoa !== 'so_dien_thoai_lien_he'
+  )
 
   return (
     <div className="min-h-screen flex flex-col bg-surface">
-      <TopBar title="Cài Đặt" />
+      <TopBar title="Cài Đặt & Báo Cáo" />
 
-      {/* Toast */}
-      {toast && (
-        <div className="fixed top-16 inset-x-4 z-50 flex justify-center pointer-events-none">
-          <div className="bg-primary-container text-on-primary px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 transition-all">
-            <span className="material-symbols-outlined text-[18px] text-tertiary-fixed">check_circle</span>
-            <span className="font-label-md text-label-md">{toast}</span>
-          </div>
-        </div>
-      )}
-
-      <main className="flex-1 flex flex-col relative w-full px-margin pt-14 pb-32 bg-surface">
+      <main className="flex-1 flex flex-col relative w-full max-w-2xl mx-auto px-margin pt-14 pb-32 bg-surface">
         <div className="flex flex-col w-full pb-8 space-y-5 pt-4">
-
           {/* Shop Profile */}
-          <div className="bg-surface-container-lowest rounded-xl p-4 shadow-[0_4px_16px_-2px_rgba(107,33,63,0.06),0_1px_3px_0_rgba(0,0,0,0.03)] flex items-center justify-between gap-3">
+          <div className="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="relative shrink-0 w-14 h-14 rounded-full overflow-hidden shadow-sm bg-primary-fixed/30 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary-container text-[32px]">storefront</span>
-                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-tertiary-container ring-2 ring-surface-container-lowest rounded-full"></span>
+              <div className="relative shrink-0 w-14 h-14 rounded-full bg-primary-fixed/40 flex items-center justify-center">
+                <span className="material-symbols-outlined text-primary-container text-[30px]">
+                  storefront
+                </span>
+                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#236B48] ring-2 ring-surface-container-lowest rounded-full" />
               </div>
               <div className="flex flex-col min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <h2 className="font-headline-md text-headline-md tracking-tight text-on-surface truncate">Thuê Đồ MiuMiu</h2>
-                  <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: '"FILL" 1' }}>verified</span>
+                  <h2 className="font-headline-md text-on-surface truncate">Thuê Đồ MiuMiu</h2>
+                  <span
+                    className="material-symbols-outlined text-secondary text-[18px]"
+                    style={{ fontVariationSettings: '"FILL" 1' }}
+                  >
+                    verified
+                  </span>
                 </div>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Tiệm thuê áo dài & phụ kiện</span>
+                <span className="font-body-sm text-on-surface-variant truncate">
+                  {user ? `${user.ten} • ${user.email}` : 'Tiệm thuê áo dài & phụ kiện'}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Reports Section */}
+          {/* Reports & Export Section */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between px-1">
               <div className="flex items-center gap-1.5 text-primary-container">
                 <span className="material-symbols-outlined text-[19px]">query_stats</span>
-                <h3 className="font-title-sm text-title-sm text-on-surface tracking-tight">Báo cáo & Xuất dữ liệu</h3>
+                <h3 className="font-title-sm text-on-surface">Báo cáo &amp; Xuất dữ liệu</h3>
               </div>
+              <Link
+                href="/bao-cao"
+                className="font-label-sm text-primary-container font-semibold hover:underline"
+              >
+                Mở trang báo cáo →
+              </Link>
             </div>
-            <div className="bg-surface-container-lowest rounded-xl p-1 shadow-[0_4px_16px_-2px_rgba(107,33,63,0.05),0_1px_3px_0_rgba(0,0,0,0.02)] space-y-1">
+
+            <div className="bg-surface-container-lowest rounded-xl p-1.5 shadow-sm space-y-1">
               {[
-                { icon: 'payments', iconBg: 'bg-surface-container', label: 'Doanh thu theo tháng', sub: 'Tháng 11 • 8.500.000đ', file: 'DoanhThu_Thang11.xlsx' },
-                { icon: 'auto_awesome', iconBg: 'bg-secondary-fixed/40', label: 'Hiệu quả sản phẩm', sub: 'Top áo dài đắt khách nhất năm', file: 'Top_SanPham_Hot.xlsx' },
-                { icon: 'assignment', iconBg: 'bg-tertiary-fixed/40', label: 'Danh sách phiếu thuê', sub: 'Lịch sử giao dịch & cọc giữ đồ', file: 'PhieuThue_TongHop.xlsx' },
-                { icon: 'group', iconBg: 'bg-primary-fixed/40', label: 'Danh sách khách hàng', sub: 'Tên, SĐT, lịch sử thuê', file: 'KhachHang_DS.xlsx' },
+                {
+                  loai: 'doanh_thu' as const,
+                  icon: 'payments',
+                  iconBg: 'bg-surface-container',
+                  label: 'Doanh thu theo tháng',
+                  sub: monthlyRev
+                    ? `Tháng ${monthlyRev.thang}/${monthlyRev.nam} • ${formatCurrency(monthlyRev.tong_tien)}`
+                    : 'Tổng tiền thuê & phạt đã trả',
+                },
+                {
+                  loai: 'san_pham' as const,
+                  icon: 'auto_awesome',
+                  iconBg: 'bg-secondary-fixed/40',
+                  label: 'Hiệu quả sản phẩm',
+                  sub: 'Số lần thuê, doanh thu & thu hồi vốn',
+                },
+                {
+                  loai: 'phieu_thue' as const,
+                  icon: 'assignment',
+                  iconBg: 'bg-tertiary-fixed/40',
+                  label: 'Danh sách phiếu thuê',
+                  sub: 'Toàn bộ lịch sử đơn, cọc & trạng thái',
+                },
+                {
+                  loai: 'khach_hang' as const,
+                  icon: 'group',
+                  iconBg: 'bg-primary-fixed/40',
+                  label: 'Danh sách khách hàng',
+                  sub: 'Tên, SĐT, địa chỉ & số lần thuê',
+                },
               ].map((item) => (
-                <div key={item.label} className="p-3 rounded-lg hover:bg-surface-container-low transition-colors flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className={`w-10 h-10 rounded-xl ${item.iconBg} flex items-center justify-center text-primary-container shrink-0`}>
-                      <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
+                <div
+                  key={item.loai}
+                  className="p-3 rounded-lg hover:bg-surface-container-low transition-colors flex items-center justify-between gap-2"
+                >
+                  <Link href="/bao-cao" className="flex items-center gap-3 min-w-0 flex-1">
+                    <div
+                      className={`w-10 h-10 rounded-xl ${item.iconBg} flex items-center justify-center text-primary-container shrink-0`}
+                    >
+                      <span className="material-symbols-outlined text-[21px]">{item.icon}</span>
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="font-title-sm text-title-sm text-on-surface truncate">{item.label}</span>
-                      <span className="font-body-sm text-body-sm text-on-surface-variant truncate">{item.sub}</span>
+                      <span className="font-title-sm text-body-md text-on-surface truncate">
+                        {item.label}
+                      </span>
+                      <span className="font-body-sm text-on-surface-variant truncate">{item.sub}</span>
                     </div>
+                  </Link>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      disabled={exportingType !== ''}
+                      onClick={() => handleExport(item.loai, 'excel')}
+                      className="h-8 px-2.5 rounded-full bg-surface-container hover:bg-primary-container hover:text-on-primary text-primary font-label-sm flex items-center gap-1 transition-all disabled:opacity-50"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">file_download</span>
+                      <span>Excel</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={exportingType !== ''}
+                      onClick={() => handleExport(item.loai, 'csv')}
+                      className="h-8 px-2.5 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-sm transition-all disabled:opacity-50"
+                    >
+                      CSV
+                    </button>
                   </div>
-                  <button
-                    className="h-8 px-3 rounded-full bg-surface-container hover:bg-primary-container hover:text-on-primary text-primary font-label-md text-label-md flex items-center gap-1 transition-all active:scale-95 shrink-0"
-                    onClick={() => simulateExport(item.file)}
-                  >
-                    <span className="material-symbols-outlined text-[16px]">file_download</span>
-                    <span>Xuất file</span>
-                  </button>
                 </div>
               ))}
             </div>
@@ -114,187 +278,372 @@ export default function CaiDatPage() {
 
           {/* Store Config Section */}
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-1.5 text-primary-container">
-                <span className="material-symbols-outlined text-[19px]">tune</span>
-                <h3 className="font-title-sm text-title-sm text-on-surface tracking-tight">Cài đặt vận hành cửa hàng</h3>
-              </div>
+            <div className="flex items-center gap-1.5 px-1 text-primary-container">
+              <span className="material-symbols-outlined text-[19px]">tune</span>
+              <h3 className="font-title-sm text-on-surface">Cài đặt cửa hàng</h3>
             </div>
-            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-[0_4px_16px_-2px_rgba(107,33,63,0.05),0_1px_3px_0_rgba(0,0,0,0.02)] space-y-4">
-              {/* Deposit Rate */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="font-label-md text-label-md text-on-surface">Tỷ lệ tiền cọc tối thiểu (%)</label>
-                  <span className="font-label-sm text-label-sm text-primary font-bold">{depositRate}% giá trị trang phục</span>
-                </div>
-                <div className="relative flex items-center">
-                  <div className="absolute left-3.5 flex items-center pointer-events-none text-on-surface-variant">
-                    <span className="material-symbols-outlined text-[20px]">percent</span>
-                  </div>
-                  <input
-                    className="w-full h-11 pl-10 pr-20 bg-surface-container-low rounded-xl text-on-surface font-title-sm text-title-sm focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-container transition-all"
-                    max={100}
-                    min={0}
-                    type="number"
-                    value={depositRate}
-                    onChange={(e) => setDepositRate(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
-                  />
-                  <div className="absolute right-2 flex items-center gap-1">
-                    <button
-                      className="w-7 h-7 rounded-lg bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high active:scale-95 transition-all"
-                      onClick={() => setDepositRate(Math.max(0, depositRate - 5))}
-                      type="button"
-                    >
-                      <span className="material-symbols-outlined text-[16px]">remove</span>
-                    </button>
-                    <button
-                      className="w-7 h-7 rounded-lg bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high active:scale-95 transition-all"
-                      onClick={() => setDepositRate(Math.min(100, depositRate + 5))}
-                      type="button"
-                    >
-                      <span className="material-symbols-outlined text-[16px]">add</span>
-                    </button>
-                  </div>
-                </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant flex items-start gap-1">
-                  <span className="material-symbols-outlined text-[15px] shrink-0 mt-0.5 text-secondary">info</span>
-                  Khách thanh toán cọc khi giữ lịch thử áo và ký nhận hợp đồng thuê.
-                </p>
-              </div>
 
-              {/* Phone */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="font-label-md text-label-md text-on-surface">Số điện thoại liên hệ Studio</label>
-                </div>
-                <div className="relative flex items-center">
-                  <div className="absolute left-3.5 flex items-center pointer-events-none text-on-surface-variant">
-                    <span className="material-symbols-outlined text-[20px]">call</span>
+            {loading ? (
+              <div className="h-44 rounded-xl bg-surface-container-low animate-pulse" />
+            ) : (
+              <div className="bg-surface-container-lowest rounded-xl p-4 shadow-sm space-y-4">
+                {/* Tỷ lệ tiền cọc */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="font-label-md text-on-surface">
+                      Tỷ lệ tiền cọc gợi ý (%)
+                    </label>
+                    <span className="font-label-sm text-primary font-bold">
+                      {depositRate}% giá gốc sản phẩm
+                    </span>
                   </div>
-                  <input
-                    className="w-full h-11 pl-10 pr-28 bg-surface-container-low rounded-xl text-on-surface font-title-sm text-title-sm tracking-wide focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-container transition-all"
-                    type="tel"
-                    defaultValue="0365193713"
-                  />
-                  <button className="absolute right-2 px-3 h-8 rounded-lg bg-surface-container-high hover:bg-surface-container hover:text-primary text-on-surface font-label-md text-label-md flex items-center gap-1 active:scale-95 transition-all">
-                    <span className="material-symbols-outlined text-[16px]">edit</span>
-                    <span>Chỉnh sửa</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Address */}
-              <div className="p-3 bg-surface-container-low rounded-xl space-y-2">
-                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary-container text-[20px]">pin_drop</span>
-                    <span className="font-title-sm text-title-sm text-on-surface">Địa chỉ showroom</span>
+                    <div className="relative flex-1 flex items-center">
+                      <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px]">
+                        percent
+                      </span>
+                      <NumberInput
+                        allowDecimal
+                        className="w-full h-11 pl-10 pr-20 bg-surface-container-low rounded-xl text-on-surface font-title-sm border border-outline-variant/30 focus:outline-none focus:border-primary-container tabular-nums"
+                        max={100}
+                        min={0}
+                        step={5}
+                        value={depositRateInput}
+                        onValueChange={(raw) => setDepositRateInput(raw)}
+                        onBlur={() => {
+                          if (depositRateInput === '') setDepositRateInput('0')
+                        }}
+                      />
+                      <div className="absolute right-2 flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setDepositRateInput(String(Math.max(0, depositRate - 5)))}
+                          className="w-7 h-7 rounded-lg bg-surface-container flex items-center justify-center"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">remove</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDepositRateInput(String(Math.min(100, depositRate + 5)))}
+                          className="w-7 h-7 rounded-lg bg-surface-container flex items-center justify-center"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">add</span>
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={savingKey === 'pham_tram_gia_coc'}
+                      onClick={() =>
+                        handleSaveSetting('pham_tram_gia_coc', String(depositRate), 'tỷ lệ tiền cọc')
+                      }
+                      className="h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-semibold shrink-0 disabled:opacity-60"
+                    >
+                      {savingKey === 'pham_tram_gia_coc' ? 'Lưu...' : 'Lưu'}
+                    </button>
                   </div>
-                  <button className="font-label-sm text-label-sm text-primary hover:underline">Sửa vị trí</button>
                 </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant pl-7">
-                  124 Phố Huế, Phường Ngô Thì Nhậm, Quận Hai Bà Trưng, Hà Nội
-                </p>
-                <FakeMapImage />
+
+                {/* Số điện thoại liên hệ */}
+                <div className="space-y-2">
+                  <label className="font-label-md text-on-surface">
+                    Số điện thoại liên hệ của shop
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1 flex items-center">
+                      <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px]">
+                        call
+                      </span>
+                      <input
+                        className="w-full h-11 pl-10 pr-3 bg-surface-container-low rounded-xl text-on-surface font-title-sm border border-outline-variant/30 focus:outline-none focus:border-primary-container"
+                        type="tel"
+                        value={shopPhone}
+                        onChange={(e) => setShopPhone(e.target.value)}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      disabled={savingKey === 'so_dien_thoai_lien_he'}
+                      onClick={() =>
+                        handleSaveSetting(
+                          'so_dien_thoai_lien_he',
+                          shopPhone.replace(/\s+/g, '').trim(),
+                          'số điện thoại shop'
+                        )
+                      }
+                      className="h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-semibold shrink-0 disabled:opacity-60"
+                    >
+                      {savingKey === 'so_dien_thoai_lien_he' ? 'Lưu...' : 'Lưu'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Các khóa cài đặt bổ sung (nếu có trong DB) */}
+                {extraSettings.map((item) => (
+                  <div key={item.khoa} className="space-y-1.5 pt-2 border-t border-outline-variant/25">
+                    <label className="font-label-md text-on-surface">
+                      {item.mo_ta || item.khoa}
+                    </label>
+                    <div className="flex items-center gap-2">
+                      {item.kieu_du_lieu === 2 ? (
+                        <NumberInput
+                          allowDecimal
+                          value={extraDrafts[item.khoa] ?? ''}
+                          onValueChange={(raw) =>
+                            setExtraDrafts((prev) => ({ ...prev, [item.khoa]: raw }))
+                          }
+                          className="flex-1 h-10 px-3 bg-surface-container-low rounded-xl border border-outline-variant/30 text-body-md tabular-nums"
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={extraDrafts[item.khoa] ?? ''}
+                          onChange={(e) =>
+                            setExtraDrafts((prev) => ({ ...prev, [item.khoa]: e.target.value }))
+                          }
+                          className="flex-1 h-10 px-3 bg-surface-container-low rounded-xl border border-outline-variant/30 text-body-md"
+                        />
+                      )}
+                      <button
+                        type="button"
+                        disabled={savingKey === item.khoa}
+                        onClick={() => {
+                          const rawVal = extraDrafts[item.khoa] ?? ''
+                          const cleanedVal =
+                            item.kieu_du_lieu === 2 && rawVal.endsWith('.')
+                              ? rawVal.slice(0, -1)
+                              : rawVal
+                          handleSaveSetting(item.khoa, cleanedVal, item.mo_ta || item.khoa)
+                        }}
+                        className="h-10 px-4 rounded-xl bg-surface-container-high hover:bg-primary-container hover:text-on-primary font-label-md shrink-0"
+                      >
+                        Lưu
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
 
           {/* Account & Security */}
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-1.5 text-primary-container">
-                <span className="material-symbols-outlined text-[19px]">security</span>
-                <h3 className="font-title-sm text-title-sm text-on-surface tracking-tight">Tài khoản & Bảo mật</h3>
-              </div>
+            <div className="flex items-center gap-1.5 px-1 text-primary-container">
+              <span className="material-symbols-outlined text-[19px]">security</span>
+              <h3 className="font-title-sm text-on-surface">Tài khoản &amp; Bảo mật</h3>
             </div>
-            <div className="bg-surface-container-lowest rounded-xl p-1 shadow-[0_4px_16px_-2px_rgba(107,33,63,0.05),0_1px_3px_0_rgba(0,0,0,0.02)] space-y-0.5">
-              <div className="p-3 rounded-lg hover:bg-surface-container-low transition-colors flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary-container shrink-0">
-                    <span className="material-symbols-outlined text-[20px]">lock_reset</span>
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-title-sm text-title-sm text-on-surface">Đổi mật khẩu</span>
-                    <span className="font-body-sm text-body-sm text-on-surface-variant">Cập nhật lần cuối 28 ngày trước</span>
-                  </div>
-                </div>
-                <button
-                  className="h-8 px-4 rounded-full bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface font-label-md text-label-md transition-all active:scale-95 shrink-0"
-                  onClick={() => setShowPasswordModal(true)}
-                >
-                  Chỉnh sửa
-                </button>
-              </div>
-              <div className="p-3 rounded-lg hover:bg-surface-container-low transition-colors flex items-center justify-between gap-3">
+            <div className="bg-surface-container-lowest rounded-xl p-1.5 shadow-sm space-y-1">
+              <div className="p-3 rounded-lg flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary-container shrink-0">
                     <span className="material-symbols-outlined text-[20px]">manage_accounts</span>
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="font-title-sm text-title-sm text-on-surface">Thông tin tài khoản</span>
-                    <span className="font-body-sm text-body-sm text-on-surface-variant">admin@miumiu.vn</span>
+                    <span className="font-title-sm text-body-md text-on-surface truncate">
+                      {user?.ten || 'Tài khoản'}
+                    </span>
+                    <span className="font-body-sm text-on-surface-variant truncate">
+                      {user?.email || '—'}
+                    </span>
                   </div>
                 </div>
-                <button className="h-8 px-4 rounded-full bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface font-label-md text-label-md transition-all active:scale-95 shrink-0">
-                  Sửa
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProfileName(user?.ten || '')
+                    setShowProfileModal(true)
+                  }}
+                  className="h-8 px-4 rounded-full bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface font-label-md shrink-0"
+                >
+                  Đổi tên
+                </button>
+              </div>
+
+              <div className="p-3 rounded-lg flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary-container shrink-0">
+                    <span className="material-symbols-outlined text-[20px]">lock_reset</span>
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-title-sm text-body-md text-on-surface">Đổi mật khẩu</span>
+                    <span className="font-body-sm text-on-surface-variant">
+                      Bảo mật tài khoản đăng nhập
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordModal(true)}
+                  className="h-8 px-4 rounded-full bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface font-label-md shrink-0"
+                >
+                  Thay đổi
                 </button>
               </div>
             </div>
           </div>
 
           {/* Logout */}
-          <div className="pt-2">
+          <div className="pt-1">
             <button
-              className="w-full h-12 rounded-xl bg-error-container/60 hover:bg-error-container text-on-error-container flex items-center justify-center gap-2 font-title-sm text-title-sm active:scale-[0.98] transition-all"
-              onClick={() => { if (confirm('Bạn có chắc muốn đăng xuất khỏi MiuMiu?')) showToast('Đang đăng xuất an toàn...') }}
+              type="button"
+              onClick={() => setShowLogoutConfirm(true)}
+              className="w-full h-12 rounded-xl bg-error-container/70 hover:bg-error-container text-on-error-container flex items-center justify-center gap-2 font-title-sm active:scale-[0.98] transition-all"
             >
               <span className="material-symbols-outlined text-[20px] text-error">logout</span>
               <span className="font-semibold text-error">Đăng xuất tài khoản</span>
             </button>
           </div>
-
         </div>
       </main>
 
-      {/* Password Modal */}
-      {showPasswordModal && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end justify-center px-margin pb-6">
-          <div className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl space-y-4">
+      {/* Edit Name Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+          <form
+            onSubmit={handleUpdateName}
+            className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl space-y-4"
+          >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-primary-container">
-                <span className="material-symbols-outlined text-[22px]">password</span>
-                <h4 className="font-title-sm text-title-sm text-on-surface">Cập nhật mật khẩu</h4>
-              </div>
+              <h4 className="font-headline-md text-on-surface">Đổi tên hiển thị</h4>
               <button
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant"
-                onClick={() => setShowPasswordModal(false)}
+                type="button"
+                onClick={() => setShowProfileModal(false)}
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <label className="font-label-sm text-label-sm text-on-surface-variant">Mật khẩu hiện tại</label>
-                <input className="w-full h-10 px-3 rounded-lg bg-surface-container-low text-on-surface text-body-md focus:outline-none focus:ring-2 focus:ring-primary-container" placeholder="••••••••" type="password" />
-              </div>
-              <div className="space-y-1">
-                <label className="font-label-sm text-label-sm text-on-surface-variant">Mật khẩu mới</label>
-                <input className="w-full h-10 px-3 rounded-lg bg-surface-container-low text-on-surface text-body-md focus:outline-none focus:ring-2 focus:ring-primary-container" placeholder="Tối thiểu 8 ký tự" type="password" />
-              </div>
-            </div>
-            <div className="flex gap-2 pt-1">
+            <input
+              type="text"
+              required
+              maxLength={100}
+              value={profileName}
+              onChange={(e) => setProfileName(e.target.value)}
+              placeholder="Nhập tên mới"
+              className="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
+            />
+            <div className="flex gap-2">
               <button
-                className="flex-1 h-10 rounded-xl bg-surface-container font-label-md text-label-md text-on-surface"
-                onClick={() => setShowPasswordModal(false)}
+                type="button"
+                onClick={() => setShowProfileModal(false)}
+                className="flex-1 h-10 rounded-xl bg-surface-container font-label-md"
               >
                 Huỷ
               </button>
               <button
-                className="flex-1 h-10 rounded-xl bg-primary-container text-on-primary font-label-md text-label-md shadow-md active:scale-95 transition-transform"
-                onClick={() => { setShowPasswordModal(false); showToast('Đã đổi mật khẩu thành công!') }}
+                type="submit"
+                disabled={accountBusy}
+                className="flex-1 h-10 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
               >
-                Lưu thay đổi
+                {accountBusy ? 'Đang lưu...' : 'Lưu tên'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+          <form
+            onSubmit={handleChangePassword}
+            className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl space-y-4"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-primary-container">
+                <span className="material-symbols-outlined text-[22px]">password</span>
+                <h4 className="font-headline-md text-on-surface">Đổi mật khẩu</h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPasswordModal(false)}
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="font-label-sm text-on-surface-variant">Mật khẩu hiện tại *</label>
+                <input
+                  type="password"
+                  required
+                  value={oldPass}
+                  onChange={(e) => setOldPass(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="font-label-sm text-on-surface-variant">Mật khẩu mới *</label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={newPass}
+                  onChange={(e) => setNewPass(e.target.value)}
+                  placeholder="Tối thiểu 6 ký tự"
+                  className="w-full h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="font-label-sm text-on-surface-variant">Xác nhận mật khẩu mới *</label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={confirmPass}
+                  onChange={(e) => setConfirmPass(e.target.value)}
+                  placeholder="Nhập lại mật khẩu mới"
+                  className="w-full h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setShowPasswordModal(false)}
+                className="flex-1 h-10 rounded-xl bg-surface-container font-label-md"
+              >
+                Huỷ
+              </button>
+              <button
+                type="submit"
+                disabled={accountBusy}
+                className="flex-1 h-10 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+              >
+                {accountBusy ? 'Đang lưu...' : 'Lưu thay đổi'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Logout Confirm Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+          <div className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl space-y-4">
+            <h4 className="font-headline-md text-on-surface">Đăng xuất khỏi MiuMiu?</h4>
+            <p className="font-body-sm text-on-surface-variant">
+              Bạn sẽ cần đăng nhập lại bằng email và mật khẩu để tiếp tục sử dụng.
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 h-10 rounded-xl bg-surface-container font-label-md"
+              >
+                Ở lại
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLogoutConfirm(false)
+                  logout()
+                }}
+                className="flex-1 h-10 rounded-xl bg-error text-on-error font-label-md font-bold"
+              >
+                Đăng xuất
               </button>
             </div>
           </div>
