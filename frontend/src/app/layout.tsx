@@ -1,12 +1,9 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
-
 export const metadata: Metadata = {
-  title: 'MiuMiu Rent Stuff',
-  description: 'Dịch vụ cho thuê trang phục cao cấp',
+  title: 'MiuMiu - Tiệm Thuê Áo Dài',
+  description: 'Hệ thống quản lý tiệm thuê áo dài MiuMiu',
 }
 
 export default function RootLayout({
@@ -16,8 +13,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      <body className={inter.className}>
-        <main>{children}</main>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+      </head>
+      <body className="bg-surface font-body-md text-on-surface antialiased min-h-screen">
+        {children}
       </body>
     </html>
   )

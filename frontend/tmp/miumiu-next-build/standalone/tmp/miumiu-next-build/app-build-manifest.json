@@ -1,0 +1,74 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/chunks/app/_not-found/page-bf1fc369eb77e8f8.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/css/f1fcf563abbdc61f.css",
+      "static/chunks/app/layout-c8b2e3038121aea8.js"
+    ],
+    "/cai-dat/page": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/chunks/463-d2610c6394355422.js",
+      "static/chunks/app/cai-dat/page-7337209b0bc25a5c.js"
+    ],
+    "/don-thue/tao-moi/page": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/chunks/463-d2610c6394355422.js",
+      "static/chunks/app/don-thue/tao-moi/page-71b05255b0ab5637.js"
+    ],
+    "/don-thue/page": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/chunks/463-d2610c6394355422.js",
+      "static/chunks/app/don-thue/page-fc568bdf7ac955d6.js"
+    ],
+    "/items/page": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/chunks/app/items/page-d84bc2f118a007ba.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/chunks/463-d2610c6394355422.js",
+      "static/chunks/app/page-55a86857ff500895.js"
+    ],
+    "/khach-hang/page": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/chunks/463-d2610c6394355422.js",
+      "static/chunks/app/khach-hang/page-da1ba11f5f3b30c5.js"
+    ],
+    "/san-pham/page": [
+      "static/chunks/webpack-9edee2920554d0a5.js",
+      "static/chunks/4bd1b696-d7266ff7e407fd8a.js",
+      "static/chunks/517-321862be18fffe35.js",
+      "static/chunks/main-app-2bf430cd0d13dc23.js",
+      "static/chunks/463-d2610c6394355422.js",
+      "static/chunks/app/san-pham/page-793ce7cb3e7722f5.js"
+    ]
+  }
+}

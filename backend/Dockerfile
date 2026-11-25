@@ -1,5 +1,5 @@
 # ── Development stage ─────────────────────────────────────────────────────────
-FROM golang:1.23-alpine AS dev
+FROM golang:1.26-alpine AS dev
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ EXPOSE 8080
 CMD ["go", "run", "./cmd/server"]
 
 # ── Build stage ───────────────────────────────────────────────────────────────
-FROM golang:1.23-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 WORKDIR /app
 
