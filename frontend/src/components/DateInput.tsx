@@ -22,7 +22,7 @@ export interface DateInputProps {
   value: string
   /** Callback nhận chuỗi chuẩn cùng định dạng (hoặc '' khi xóa) */
   onChange: (value: string) => void
-  /** 'date' hiển thị dd/mm/yyyy; 'datetime' hiển thị dd/mm/yyyy HH:mm */
+  /** 'date' hiển thị dd/mm/yyyy; 'datetime' hiển thị HH:mm dd/mm/yyyy */
   mode?: 'date' | 'datetime'
   placeholder?: string
   clearable?: boolean
@@ -242,16 +242,26 @@ export default function DateInput({
     const cursorAtEnd = (e.target.selectionStart ?? next.length) === next.length
     const isTypingForward = next.length > draft.length
 
-    // Hỗ trợ tự chèn '/' (và ' ', ':' ở chế độ datetime) khi người dùng gõ nối tiếp ở cuối chuỗi
+    // Hỗ trợ tự chèn ký tự phân cách khi người dùng gõ nối tiếp ở cuối chuỗi:
+    // - mode='datetime': HH:mm dd/mm/yyyy (':', ' ', '/', '/')
+    // - mode='date':     dd/mm/yyyy ('/', '/')
     if (isTypingForward && cursorAtEnd) {
-      if (/^\d{2}$/.test(next)) {
-        next = `${next}/`
-      } else if (/^\d{2}\/\d{2}$/.test(next)) {
-        next = `${next}/`
-      } else if (mode === 'datetime' && /^\d{2}\/\d{2}\/\d{4}$/.test(next)) {
-        next = `${next} `
-      } else if (mode === 'datetime' && /^\d{2}\/\d{2}\/\d{4} \d{2}$/.test(next)) {
-        next = `${next}:`
+      if (mode === 'datetime') {
+        if (/^\d{2}$/.test(next)) {
+          next = `${next}:`
+        } else if (/^\d{2}:\d{2}$/.test(next)) {
+          next = `${next} `
+        } else if (/^\d{2}:\d{2} \d{2}$/.test(next)) {
+          next = `${next}/`
+        } else if (/^\d{2}:\d{2} \d{2}\/\d{2}$/.test(next)) {
+          next = `${next}/`
+        }
+      } else {
+        if (/^\d{2}$/.test(next)) {
+          next = `${next}/`
+        } else if (/^\d{2}\/\d{2}$/.test(next)) {
+          next = `${next}/`
+        }
       }
     }
 
@@ -263,8 +273,8 @@ export default function DateInput({
     }
 
     if (mode === 'datetime') {
-      // Chỉ commit live khi người dùng đã gõ đủ dd/mm/yyyy HH:mm (tránh nhảy giờ 1 chữ số khi đang gõ)
-      if (/^\d{2}\s*[/\-.]\s*\d{2}\s*[/\-.]\s*\d{4}[\s,T]+\d{2}\s*:\s*\d{2}$/.test(next.trim())) {
+      // Chỉ commit live khi người dùng đã gõ đủ HH:mm dd/mm/yyyy (tránh nhảy ngày/năm khi đang gõ)
+      if (/^\d{2}\s*:\s*\d{2}[\s,]+\d{2}\s*[/\-.]\s*\d{2}\s*[/\-.]\s*\d{4}$/.test(next.trim())) {
         const parsed = parseDateTimeInputDisplay(next, {
           hours: selectedParts?.hours ?? 0,
           minutes: selectedParts?.minutes ?? 0,
@@ -382,7 +392,7 @@ export default function DateInput({
     return arr
   }, [viewYear, todayY])
 
-  const defaultPlaceholder = mode === 'datetime' ? 'dd/mm/yyyy HH:mm' : 'dd/mm/yyyy'
+  const defaultPlaceholder = mode === 'datetime' ? 'HH:mm dd/mm/yyyy' : 'dd/mm/yyyy'
   const showClearBtn = clearable && Boolean(value) && !disabled
 
   return (
@@ -452,6 +462,49 @@ export default function DateInput({
             style={popoverStyle}
             className="z-[80] bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-2xl p-3.5 overflow-y-auto select-none"
           >
+            {/* Bộ chọn giờ/phút 24h đặt trước lịch để khớp trình tự HH:mm dd/mm/yyyy */}
+            {mode === 'datetime' && (
+              <div className="mb-3 pb-3 border-b border-outline-variant/20 flex items-center justify-between gap-2">
+                <span className="font-label-sm text-on-surface-variant flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[1rem] text-primary-container">
+                    schedule
+                  </span>
+                  Giờ (24h)
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <select
+                    aria-label="Chọn giờ"
+                    value={String(selectedParts?.hours ?? 0).padStart(2, '0')}
+                    onChange={(e) =>
+                      handleTimeChange(Number(e.target.value), selectedParts?.minutes ?? 0)
+                    }
+                    className="h-8 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
+                  >
+                    {HOURS.map((h) => (
+                      <option key={h} value={h}>
+                        {h}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="font-bold text-on-surface-variant">:</span>
+                  <select
+                    aria-label="Chọn phút"
+                    value={String(selectedParts?.minutes ?? 0).padStart(2, '0')}
+                    onChange={(e) =>
+                      handleTimeChange(selectedParts?.hours ?? 0, Number(e.target.value))
+                    }
+                    className="h-8 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
+                  >
+                    {MINUTES.map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
             {/* Header tháng / năm */}
             <div className="flex items-center justify-between gap-1.5 mb-3">
               <button
@@ -542,49 +595,6 @@ export default function DateInput({
                 )
               })}
             </div>
-
-            {/* Bộ chọn giờ/phút 24h cho chế độ datetime */}
-            {mode === 'datetime' && (
-              <div className="mt-3 pt-3 border-t border-outline-variant/20 flex items-center justify-between gap-2">
-                <span className="font-label-sm text-on-surface-variant flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[1rem] text-primary-container">
-                    schedule
-                  </span>
-                  Giờ (24h)
-                </span>
-                <div className="flex items-center gap-1.5">
-                  <select
-                    aria-label="Chọn giờ"
-                    value={String(selectedParts?.hours ?? 0).padStart(2, '0')}
-                    onChange={(e) =>
-                      handleTimeChange(Number(e.target.value), selectedParts?.minutes ?? 0)
-                    }
-                    className="h-8 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
-                  >
-                    {HOURS.map((h) => (
-                      <option key={h} value={h}>
-                        {h}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="font-bold text-on-surface-variant">:</span>
-                  <select
-                    aria-label="Chọn phút"
-                    value={String(selectedParts?.minutes ?? 0).padStart(2, '0')}
-                    onChange={(e) =>
-                      handleTimeChange(selectedParts?.hours ?? 0, Number(e.target.value))
-                    }
-                    className="h-8 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
-                  >
-                    {MINUTES.map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
 
             {/* Thanh hành động nhanh */}
             <div className="mt-3 pt-2.5 border-t border-outline-variant/20 flex items-center justify-between gap-2">

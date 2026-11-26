@@ -551,7 +551,12 @@ export default function TongQuanPage() {
                                     <span className="material-symbols-outlined text-[0.9375rem] text-tertiary shrink-0">today</span>
                                     <span>
                                       {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)} (
-                                      {isToday ? `Hôm nay ${formatTime(order.ngay_bat_dau)}` : 'Ngày mai lấy'})
+                                      {isToday
+                                        ? formatTime(order.ngay_bat_dau)
+                                          ? `${formatTime(order.ngay_bat_dau)} hôm nay`
+                                          : 'Hôm nay'
+                                        : 'Ngày mai lấy'}
+                                      )
                                     </span>
                                   </div>
                                 </div>

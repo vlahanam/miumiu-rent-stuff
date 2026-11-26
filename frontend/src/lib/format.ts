@@ -201,7 +201,7 @@ export function formatDateTime(iso?: string | null): string {
   if (!iso) return '—'
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return '—'
-  return `${formatDate(iso)} ${formatTime(iso)}`
+  return `${formatTime(iso)} ${formatDate(iso)}`
 }
 
 export function formatVietnameseToday(now = new Date()): string {
@@ -285,7 +285,7 @@ export function parseDateInputDisplay(display: string): string | null {
 }
 
 /**
- * Chuyển chuỗi ngày giờ chuẩn 'YYYY-MM-DDTHH:mm' sang hiển thị 'dd/mm/yyyy HH:mm'.
+ * Chuyển chuỗi ngày giờ chuẩn 'YYYY-MM-DDTHH:mm' sang hiển thị 'HH:mm dd/mm/yyyy'.
  */
 export function formatDateTimeInputDisplay(value?: string | null): string {
   if (!value) return ''
@@ -299,11 +299,12 @@ export function formatDateTimeInputDisplay(value?: string | null): string {
   if (!isValidCalendarDate(year, month, day) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
     return ''
   }
-  return `${m[3]}/${m[2]}/${m[1]} ${m[4]}:${m[5]}`
+  return `${m[4]}:${m[5]} ${m[3]}/${m[2]}/${m[1]}`
 }
 
 /**
- * Phân tích chuỗi ngày giờ người dùng nhập ('dd/mm/yyyy HH:mm' hoặc chỉ 'dd/mm/yyyy')
+ * Phân tích chuỗi ngày giờ người dùng nhập theo trình tự giờ phút ngày tháng năm
+ * ('HH:mm dd/mm/yyyy', 'H:m d/m/yyyy', 'HHmmddmmyyyy' hoặc chỉ 'dd/mm/yyyy')
  * sang chuỗi chuẩn 'YYYY-MM-DDTHH:mm'. Trả về '' nếu rỗng, null nếu không hợp lệ.
  */
 export function parseDateTimeInputDisplay(
@@ -314,15 +315,30 @@ export function parseDateTimeInputDisplay(
   if (!trimmed) return ''
 
   const withTime =
-    /^(\d{1,2})\s*[/\-.]\s*(\d{1,2})\s*[/\-.]\s*(\d{4})[\s,T]+(\d{1,2})\s*:\s*(\d{1,2})$/.exec(
+    /^(\d{1,2})\s*:\s*(\d{1,2})[\s,]+(\d{1,2})\s*[/\-.]\s*(\d{1,2})\s*[/\-.]\s*(\d{4})$/.exec(
       trimmed
     )
   if (withTime) {
-    const day = Number(withTime[1])
-    const month = Number(withTime[2])
-    const year = Number(withTime[3])
-    const hours = Number(withTime[4])
-    const minutes = Number(withTime[5])
+    const hours = Number(withTime[1])
+    const minutes = Number(withTime[2])
+    const day = Number(withTime[3])
+    const month = Number(withTime[4])
+    const year = Number(withTime[5])
+    if (!isValidCalendarDate(year, month, day) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      return null
+    }
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(
+      hours
+    ).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+  }
+
+  const compact = /^(\d{2})(\d{2})(\d{2})(\d{2})(\d{4})$/.exec(trimmed)
+  if (compact) {
+    const hours = Number(compact[1])
+    const minutes = Number(compact[2])
+    const day = Number(compact[3])
+    const month = Number(compact[4])
+    const year = Number(compact[5])
     if (!isValidCalendarDate(year, month, day) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
       return null
     }

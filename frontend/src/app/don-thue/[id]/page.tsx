@@ -370,67 +370,51 @@ function DonThueDetailContent() {
                 </div>
 
                 {/* Action buttons by status */}
-                <div className="flex flex-wrap gap-2 print:hidden">
-                  {order.trang_thai === 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => openGiaoDoModal(order)}
-                        className="flex-1 sm:flex-none min-w-fit h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
-                      >
-                        <span className="material-symbols-outlined text-[1.125rem]">local_shipping</span>
-                        <span>Giao đồ cho khách</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => openSuaModal(order)}
-                        className="shrink-0 h-11 px-3.5 sm:px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
-                      >
-                        <span className="material-symbols-outlined text-[1.125rem]">edit</span>
-                        <span>Sửa</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={openHuyModal}
-                        className="shrink-0 h-11 px-3.5 sm:px-4 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-error-container transition-colors"
-                      >
-                        <span className="material-symbols-outlined text-[1.125rem]">cancel</span>
-                        <span>Hủy</span>
-                      </button>
-                    </>
-                  )}
-
-                  {(order.trang_thai === 2 || order.trang_thai === 4) && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => openTraDoModal(order)}
-                        className="flex-1 sm:flex-none min-w-fit h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
-                      >
-                        <span className="material-symbols-outlined text-[1.125rem]">assignment_turned_in</span>
-                        <span>Khách đã trả đồ</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => openSuaModal(order)}
-                        className="shrink-0 h-11 px-3.5 sm:px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
-                      >
-                        <span className="material-symbols-outlined text-[1.125rem]">update</span>
-                        <span>Gia hạn / Sửa</span>
-                      </button>
-                      {order.trang_thai === 2 && (
+                {(order.trang_thai === 1 || order.trang_thai === 2 || order.trang_thai === 4) && (
+                  <div className="flex flex-wrap gap-2 print:hidden">
+                    {order.trang_thai === 1 && (
+                      <>
                         <button
                           type="button"
-                          onClick={openHuyModal}
-                          className="shrink-0 h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-error-container transition-colors"
+                          onClick={() => openGiaoDoModal(order)}
+                          className="flex-1 sm:flex-none min-w-fit h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
                         >
-                          <span className="material-symbols-outlined text-[1.125rem]">cancel</span>
-                          <span>Hủy</span>
+                          <span className="material-symbols-outlined text-[1.125rem]">local_shipping</span>
+                          <span>Giao đồ cho khách</span>
                         </button>
-                      )}
-                    </>
-                  )}
-                </div>
+                        <button
+                          type="button"
+                          onClick={() => openSuaModal(order)}
+                          className="shrink-0 h-11 px-3.5 sm:px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[1.125rem]">edit</span>
+                          <span>Sửa</span>
+                        </button>
+                      </>
+                    )}
+
+                    {(order.trang_thai === 2 || order.trang_thai === 4) && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => openTraDoModal(order)}
+                          className="flex-1 sm:flex-none min-w-fit h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
+                        >
+                          <span className="material-symbols-outlined text-[1.125rem]">assignment_turned_in</span>
+                          <span>Khách đã trả đồ</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openSuaModal(order)}
+                          className="shrink-0 h-11 px-3.5 sm:px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[1.125rem]">update</span>
+                          <span>Gia hạn / Sửa</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
 
               {order.trang_thai === 4 && (
@@ -482,7 +466,7 @@ function DonThueDetailContent() {
                               {ct.san_pham?.ma_san_pham || `ID ${ct.san_pham_id}`}
                             </div>
                           </div>
-                          <div className="flex sm:flex-col sm:items-end gap-2 sm:gap-0.5 shrink-0 tabular-nums">
+                          <div className="flex items-center sm:flex-col sm:items-end gap-2 sm:gap-0.5 shrink-0 tabular-nums">
                             <span className="font-currency-lg text-[0.875rem] text-on-surface font-bold">
                               {formatCurrency(ct.gia_thue_ngay)}
                               <span className="text-[0.6875rem] font-normal text-on-surface-variant">/ngày</span>
@@ -653,100 +637,143 @@ function DonThueDetailContent() {
                 </section>
               </div>
             </div>
+
+            {/* Khu vực hủy phiếu đặt ở cuối trang để tránh thao tác nhầm */}
+            {(order.trang_thai === 1 || order.trang_thai === 2) && (
+              <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-error/20 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 print:hidden">
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <h2 className="font-title-sm text-title-sm text-on-surface">
+                    Hủy phiếu thuê
+                  </h2>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant">
+                    {order.trang_thai === 2
+                      ? 'Hủy phiếu sẽ tự động trả các sản phẩm đang thuê về trạng thái Trống lịch.'
+                      : 'Hủy phiếu đặt trước và giải phóng lịch thuê của các sản phẩm trong đơn.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={openHuyModal}
+                  className="w-full sm:w-auto shrink-0 h-11 px-4 lg:px-5 rounded-xl bg-error-container/70 hover:bg-error-container text-on-error-container font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all"
+                >
+                  <span className="material-symbols-outlined text-[1.125rem]">cancel</span>
+                  <span>Hủy phiếu</span>
+                </button>
+              </section>
+            )}
           </>
         )}
       </div>
 
       {/* Modal Giao đồ */}
       {activeModal === 'giao-do' && order && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="giao-do-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => !busy && setActiveModal('none')}
+          />
+
           <form
             onSubmit={handleGiaoDo}
-            className="w-full max-w-md bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-4"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline-md text-headline-md text-on-surface">
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h3
+                id="giao-do-modal-title"
+                className="font-headline-md text-headline-md font-bold text-on-surface"
+              >
                 Xác nhận giao đồ — {order.ma_phieu_thue}
               </h3>
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"
               >
-                <span className="material-symbols-outlined text-[1.125rem]">close</span>
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
               </button>
             </div>
 
-            <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Phiếu sẽ chuyển sang <strong>Đang thuê</strong> và các sản phẩm sẽ chuyển sang{' '}
-              <strong>Đã cho thuê</strong>. Xác nhận hình thức cọc đã nhận:
-            </p>
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-4">
+              <p className="font-body-sm text-body-sm text-on-surface-variant">
+                Phiếu sẽ chuyển sang <strong>Đang thuê</strong> và các sản phẩm sẽ chuyển sang{' '}
+                <strong>Đã cho thuê</strong>. Xác nhận hình thức cọc đã nhận:
+              </p>
 
-            <div className="flex flex-wrap gap-1.5">
-              {[
-                { value: 1 as LoaiCoc, label: 'Tiền mặt' },
-                { value: 2 as LoaiCoc, label: 'Chuyển khoản' },
-                { value: 3 as LoaiCoc, label: 'Giữ CCCD' },
-              ].map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setGiaoLoaiCoc(opt.value)}
-                  className={`flex-1 min-w-fit h-10 px-3 rounded-xl font-label-sm text-label-sm font-semibold ${
-                    giaoLoaiCoc === opt.value
-                      ? 'bg-primary-container text-on-primary'
-                      : 'bg-surface-container-low text-on-surface-variant'
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { value: 1 as LoaiCoc, label: 'Tiền mặt' },
+                  { value: 2 as LoaiCoc, label: 'Chuyển khoản' },
+                  { value: 3 as LoaiCoc, label: 'Giữ CCCD' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setGiaoLoaiCoc(opt.value)}
+                    className={`flex-1 min-w-fit h-10 px-3 rounded-xl font-label-sm text-label-sm font-semibold ${
+                      giaoLoaiCoc === opt.value
+                        ? 'bg-primary-container text-on-primary'
+                        : 'bg-surface-container-low text-on-surface-variant'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+
+              {giaoLoaiCoc === 3 ? (
+                <label className="flex items-center gap-2.5 p-3 rounded-xl bg-[#FFF8E7] text-[#946E18]">
+                  <input
+                    type="checkbox"
+                    checked={giaoCCCD}
+                    onChange={(e) => setGiaoCCCD(e.target.checked)}
+                    className="w-5 h-5 accent-primary-container"
+                  />
+                  <span className="font-body-sm font-medium">Đã giữ CCCD của khách</span>
+                </label>
+              ) : (
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Tiền cọc đã thu (VND)</label>
+                  <NumberInput
+                    min={0}
+                    step={10000}
+                    value={giaoTienCoc}
+                    onValueChange={setGiaoTienCoc}
+                    placeholder="0"
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface font-title-sm tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
+              )}
+
+              <input
+                type="text"
+                value={giaoGhiChu}
+                onChange={(e) => setGiaoGhiChu(e.target.value)}
+                placeholder="Ghi chú khi giao đồ (không bắt buộc)"
+                className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+              />
             </div>
 
-            {giaoLoaiCoc === 3 ? (
-              <label className="flex items-center gap-2.5 p-3 rounded-xl bg-[#FFF8E7] text-[#946E18]">
-                <input
-                  type="checkbox"
-                  checked={giaoCCCD}
-                  onChange={(e) => setGiaoCCCD(e.target.checked)}
-                  className="w-5 h-5 accent-primary-container"
-                />
-                <span className="font-body-sm font-medium">Đã giữ CCCD của khách</span>
-              </label>
-            ) : (
-              <div className="flex flex-col gap-1">
-                <label className="font-label-sm text-on-surface-variant">Tiền cọc đã thu (VND)</label>
-                <NumberInput
-                  min={0}
-                  step={10000}
-                  value={giaoTienCoc}
-                  onValueChange={setGiaoTienCoc}
-                  placeholder="0"
-                  className="h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 font-title-sm tabular-nums"
-                />
-              </div>
-            )}
-
-            <input
-              type="text"
-              value={giaoGhiChu}
-              onChange={(e) => setGiaoGhiChu(e.target.value)}
-              placeholder="Ghi chú khi giao đồ (không bắt buộc)"
-              className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm"
-            />
-
-            <div className="flex gap-2">
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="shrink-0 min-w-[5.5rem] h-11 px-4 rounded-xl bg-surface-container font-label-md text-on-surface"
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Đóng
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {busy ? 'Đang xử lý...' : 'Xác nhận giao đồ'}
               </button>
@@ -757,147 +784,166 @@ function DonThueDetailContent() {
 
       {/* Modal Trả đồ */}
       {activeModal === 'tra-do' && order && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="tra-do-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => !busy && setActiveModal('none')}
+          />
+
           <form
             onSubmit={handleTraDo}
-            className="w-full max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-4"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline-md text-headline-md text-on-surface">
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h3
+                id="tra-do-modal-title"
+                className="font-headline-md text-headline-md font-bold text-on-surface"
+              >
                 Khách trả đồ — {order.ma_phieu_thue}
               </h3>
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"
               >
-                <span className="material-symbols-outlined text-[1.125rem]">close</span>
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
               </button>
             </div>
 
-            {/* Trạng thái từng sản phẩm sau khi trả */}
-            <div className="flex flex-col gap-2">
-              <span className="font-label-md text-on-surface">Tình trạng từng sản phẩm sau trả:</span>
-              {(order.chi_tiet || []).map((ct) => {
-                const chosen = traItemStatus[ct.san_pham_id] || 1
-                return (
-                  <div
-                    key={ct.id}
-                    className="p-2.5 rounded-xl bg-surface-container-low flex flex-wrap sm:flex-nowrap items-center justify-between gap-2"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <div className="font-body-sm font-semibold text-on-surface truncate">
-                        {ct.san_pham?.ten_san_pham || `SP #${ct.san_pham_id}`}
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-4">
+              {/* Trạng thái từng sản phẩm sau khi trả */}
+              <div className="flex flex-col gap-2">
+                <span className="font-label-md text-on-surface">Tình trạng từng sản phẩm sau trả:</span>
+                {(order.chi_tiet || []).map((ct) => {
+                  const chosen = traItemStatus[ct.san_pham_id] || 1
+                  return (
+                    <div
+                      key={ct.id}
+                      className="p-2.5 rounded-xl bg-surface-container-low flex flex-wrap sm:flex-nowrap items-center justify-between gap-2"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="font-body-sm font-semibold text-on-surface truncate">
+                          {ct.san_pham?.ten_san_pham || `SP #${ct.san_pham_id}`}
+                        </div>
+                        <div className="font-label-sm text-primary-container">
+                          {ct.san_pham?.ma_san_pham}
+                        </div>
                       </div>
-                      <div className="font-label-sm text-primary-container">
-                        {ct.san_pham?.ma_san_pham}
+                      <div className="flex gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setTraItemStatus((prev) => ({ ...prev, [ct.san_pham_id]: 1 }))
+                          }
+                          className={`px-2.5 py-1.5 rounded-lg font-label-sm text-[0.6875rem] font-semibold ${
+                            chosen === 1
+                              ? 'bg-[#236B48] text-white'
+                              : 'bg-surface-container-lowest text-on-surface-variant'
+                          }`}
+                        >
+                          Trống lịch
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setTraItemStatus((prev) => ({ ...prev, [ct.san_pham_id]: 3 }))
+                          }
+                          className={`px-2.5 py-1.5 rounded-lg font-label-sm text-[0.6875rem] font-semibold ${
+                            chosen === 3
+                              ? 'bg-on-surface text-surface'
+                              : 'bg-surface-container-lowest text-on-surface-variant'
+                          }`}
+                        >
+                          Bảo dưỡng
+                        </button>
                       </div>
                     </div>
-                    <div className="flex gap-1 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setTraItemStatus((prev) => ({ ...prev, [ct.san_pham_id]: 1 }))
-                        }
-                        className={`px-2.5 py-1.5 rounded-lg font-label-sm text-[0.6875rem] font-semibold ${
-                          chosen === 1
-                            ? 'bg-[#236B48] text-white'
-                            : 'bg-surface-container-lowest text-on-surface-variant'
-                        }`}
-                      >
-                        Trống lịch
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setTraItemStatus((prev) => ({ ...prev, [ct.san_pham_id]: 3 }))
-                        }
-                        className={`px-2.5 py-1.5 rounded-lg font-label-sm text-[0.6875rem] font-semibold ${
-                          chosen === 3
-                            ? 'bg-on-surface text-surface'
-                            : 'bg-surface-container-lowest text-on-surface-variant'
-                        }`}
-                      >
-                        Bảo dưỡng
-                      </button>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
 
-            {/* Tiền phạt & Ghi chú */}
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface-variant">
-                Tiền phạt (trễ hạn / hư hỏng — để 0 nếu không phạt)
-              </label>
-              <NumberInput
-                min={0}
-                step={10000}
-                value={traTienPhat}
-                onValueChange={setTraTienPhat}
-                placeholder="0"
-                className="h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 font-title-sm tabular-nums"
+              {/* Tiền phạt & Ghi chú */}
+              <div className="flex flex-col gap-1">
+                <label className="font-label-sm text-on-surface-variant">
+                  Tiền phạt (trễ hạn / hư hỏng — để 0 nếu không phạt)
+                </label>
+                <NumberInput
+                  min={0}
+                  step={10000}
+                  value={traTienPhat}
+                  onValueChange={setTraTienPhat}
+                  placeholder="0"
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface font-title-sm tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                />
+              </div>
+
+              <textarea
+                rows={2}
+                value={traGhiChu}
+                onChange={(e) => setTraGhiChu(e.target.value)}
+                placeholder="Ghi chú lý do phạt hoặc tình trạng đồ..."
+                className="w-full p-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-sm resize-none focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
               />
+
+              {/* Tính hoàn cọc trực tiếp */}
+              <div
+                className={`p-3.5 rounded-xl flex flex-col gap-1 ${
+                  order.loai_coc === 3
+                    ? 'bg-[#FFF8E7] text-[#946E18]'
+                    : previewRefund < 0
+                    ? 'bg-error-container text-on-error-container'
+                    : 'bg-[#EAF5EE] text-[#236B48]'
+                }`}
+              >
+                {order.loai_coc === 3 ? (
+                  <>
+                    <span className="font-label-md font-bold">Trả lại CCCD cho khách</span>
+                    {previewFine > 0 && (
+                      <span className="font-body-sm">
+                        Khách cần thanh toán tiền phạt: <strong>{formatCurrency(previewFine)}</strong>
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-between font-body-sm">
+                      <span>Cọc đã thu:</span>
+                      <span className="font-semibold tabular-nums">{formatCurrency(tienCoc)}</span>
+                    </div>
+                    <div className="flex justify-between font-body-sm">
+                      <span>Tiền phạt:</span>
+                      <span className="font-semibold tabular-nums">-{formatCurrency(previewFine)}</span>
+                    </div>
+                    <div className="flex justify-between font-title-sm font-bold pt-1 border-t border-current/20">
+                      <span>{previewRefund >= 0 ? 'Hoàn lại khách:' : 'Khách cần trả thêm:'}</span>
+                      <span className="tabular-nums">{formatCurrency(Math.abs(previewRefund))}</span>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
-            <textarea
-              rows={2}
-              value={traGhiChu}
-              onChange={(e) => setTraGhiChu(e.target.value)}
-              placeholder="Ghi chú lý do phạt hoặc tình trạng đồ..."
-              className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm resize-none"
-            />
-
-            {/* Tính hoàn cọc trực tiếp */}
-            <div
-              className={`p-3.5 rounded-xl flex flex-col gap-1 ${
-                order.loai_coc === 3
-                  ? 'bg-[#FFF8E7] text-[#946E18]'
-                  : previewRefund < 0
-                  ? 'bg-error-container text-on-error-container'
-                  : 'bg-[#EAF5EE] text-[#236B48]'
-              }`}
-            >
-              {order.loai_coc === 3 ? (
-                <>
-                  <span className="font-label-md font-bold">Trả lại CCCD cho khách</span>
-                  {previewFine > 0 && (
-                    <span className="font-body-sm">
-                      Khách cần thanh toán tiền phạt: <strong>{formatCurrency(previewFine)}</strong>
-                    </span>
-                  )}
-                </>
-              ) : (
-                <>
-                  <div className="flex justify-between font-body-sm">
-                    <span>Cọc đã thu:</span>
-                    <span className="font-semibold tabular-nums">{formatCurrency(tienCoc)}</span>
-                  </div>
-                  <div className="flex justify-between font-body-sm">
-                    <span>Tiền phạt:</span>
-                    <span className="font-semibold tabular-nums">-{formatCurrency(previewFine)}</span>
-                  </div>
-                  <div className="flex justify-between font-title-sm font-bold pt-1 border-t border-current/20">
-                    <span>{previewRefund >= 0 ? 'Hoàn lại khách:' : 'Khách cần trả thêm:'}</span>
-                    <span className="tabular-nums">{formatCurrency(Math.abs(previewRefund))}</span>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="flex gap-2">
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="shrink-0 min-w-[5.5rem] h-11 px-4 rounded-xl bg-surface-container font-label-md text-on-surface"
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Đóng
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {busy ? 'Đang xử lý...' : 'Xác nhận đã trả'}
               </button>
@@ -908,51 +954,72 @@ function DonThueDetailContent() {
 
       {/* Modal Hủy phiếu */}
       {activeModal === 'huy' && order && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="huy-phieu-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => !busy && setActiveModal('none')}
+          />
+
           <form
             onSubmit={handleHuy}
-            className="w-full max-w-md bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-4"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline-md text-headline-md text-error">
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h3
+                id="huy-phieu-modal-title"
+                className="font-headline-md text-headline-md font-bold text-error"
+              >
                 Hủy phiếu {order.ma_phieu_thue}
               </h3>
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"
               >
-                <span className="material-symbols-outlined text-[1.125rem]">close</span>
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
               </button>
             </div>
-            <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Thao tác này không thể hoàn tác.{' '}
-              {order.trang_thai === 2 &&
-                'Các sản phẩm đang giao trong phiếu sẽ tự động trở về trạng thái Trống lịch.'}
-            </p>
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface">Lý do hủy phiếu *</label>
-              <textarea
-                rows={3}
-                required
-                value={huyLyDo}
-                onChange={(e) => setHuyLyDo(e.target.value)}
-                placeholder="Nhập lý do hủy (ví dụ: Khách đổi lịch sự kiện...)"
-                className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm resize-none"
-              />
+
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-4">
+              <p className="font-body-sm text-body-sm text-on-surface-variant">
+                Thao tác này không thể hoàn tác.{' '}
+                {order.trang_thai === 2 &&
+                  'Các sản phẩm đang giao trong phiếu sẽ tự động trở về trạng thái Trống lịch.'}
+              </p>
+              <div className="flex flex-col gap-1">
+                <label className="font-label-sm text-on-surface">Lý do hủy phiếu *</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={huyLyDo}
+                  onChange={(e) => setHuyLyDo(e.target.value)}
+                  placeholder="Nhập lý do hủy (ví dụ: Khách đổi lịch sự kiện...)"
+                  className="w-full p-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-sm resize-none focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                />
+              </div>
             </div>
-            <div className="flex gap-2">
+
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="shrink-0 min-w-[6rem] h-11 px-4 rounded-xl bg-surface-container font-label-md text-on-surface"
+                className="shrink-0 min-w-[6rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Quay lại
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 px-4 rounded-xl bg-error text-on-error font-label-md font-bold disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-error hover:opacity-90 text-on-error font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {busy ? 'Đang hủy...' : 'Xác nhận hủy phiếu'}
               </button>
@@ -963,180 +1030,199 @@ function DonThueDetailContent() {
 
       {/* Modal Sửa phiếu */}
       {activeModal === 'sua' && order && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sua-phieu-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => !busy && setActiveModal('none')}
+          />
+
           <form
             onSubmit={handleSua}
-            className="w-full max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline-md text-headline-md text-on-surface">
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h3
+                id="sua-phieu-modal-title"
+                className="font-headline-md text-headline-md font-bold text-on-surface"
+              >
                 {order.trang_thai === 1 ? 'Sửa phiếu đặt trước' : 'Gia hạn & cập nhật phiếu'}
               </h3>
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"
               >
-                <span className="material-symbols-outlined text-[1.125rem]">close</span>
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
               </button>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface-variant">Số ngày thuê</label>
-              <NumberInput
-                min={1}
-                max={65535}
-                step={1}
-                value={editSoNgayInput}
-                onValueChange={setEditSoNgayInput}
-                onBlur={() => {
-                  if (!editSoNgayInput || parseFormattedNumber(editSoNgayInput) < 1) {
-                    setEditSoNgayInput('1')
-                  }
-                }}
-                className="h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 font-title-sm tabular-nums"
-              />
-            </div>
-
-            {order.trang_thai === 1 ? (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <div className="flex flex-col gap-1">
-                    <label className="font-label-sm text-on-surface-variant">Ngày bắt đầu</label>
-                    <DateInput
-                      mode="datetime"
-                      aria-label="Ngày bắt đầu"
-                      value={editNgayBD}
-                      onChange={setEditNgayBD}
-                      className="h-10 pl-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="font-label-sm text-on-surface-variant">Ngày hẹn trả</label>
-                    <DateInput
-                      mode="datetime"
-                      aria-label="Ngày hẹn trả"
-                      value={editNgayHT}
-                      onChange={setEditNgayHT}
-                      className="h-10 pl-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="font-label-sm text-on-surface-variant">Loại cọc</label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      { v: 1 as LoaiCoc, l: 'Tiền mặt' },
-                      { v: 2 as LoaiCoc, l: 'Chuyển khoản' },
-                      { v: 3 as LoaiCoc, l: 'CCCD' },
-                    ].map((o) => (
-                      <button
-                        key={o.v}
-                        type="button"
-                        onClick={() => setEditLoaiCoc(o.v)}
-                        className={`flex-1 min-w-fit h-9 px-3 rounded-lg font-label-sm text-label-sm font-semibold ${
-                          editLoaiCoc === o.v
-                            ? 'bg-primary-container text-on-primary'
-                            : 'bg-surface-container-low text-on-surface-variant'
-                        }`}
-                      >
-                        {o.l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {editLoaiCoc !== 3 && (
-                  <div className="flex flex-col gap-1">
-                    <label className="font-label-sm text-on-surface-variant">Tiền cọc (VND)</label>
-                    <NumberInput
-                      min={0}
-                      step={10000}
-                      value={editTienCoc}
-                      onValueChange={setEditTienCoc}
-                      placeholder="0"
-                      className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md tabular-nums"
-                    />
-                  </div>
-                )}
-
-                {allProducts.length > 0 && (
-                  <div className="flex flex-col gap-1.5">
-                    <label className="font-label-sm text-on-surface-variant">
-                      Sản phẩm trong phiếu ({editProductIds.length})
-                    </label>
-                    <div className="max-h-44 overflow-y-auto flex flex-col gap-1.5 p-2 rounded-xl bg-surface-container-low">
-                      {allProducts.map((sp) => {
-                        const checked = editProductIds.includes(sp.id)
-                        return (
-                          <label
-                            key={sp.id}
-                            className="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-surface-container cursor-pointer text-body-sm"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <input
-                                type="checkbox"
-                                checked={checked}
-                                onChange={() =>
-                                  setEditProductIds((prev) =>
-                                    prev.includes(sp.id)
-                                      ? prev.filter((x) => x !== sp.id)
-                                      : [...prev, sp.id]
-                                  )
-                                }
-                                className="accent-primary-container"
-                              />
-                              <span className="truncate">
-                                {sp.ma_san_pham} — {sp.ten_san_pham}
-                              </span>
-                            </div>
-                            <span className="font-label-sm text-primary-container shrink-0">
-                              {formatCurrency(sp.gia_thue_ngay)}
-                            </span>
-                          </label>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-              </>
-            ) : (
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-3.5">
               <div className="flex flex-col gap-1">
-                <label className="font-label-sm text-on-surface-variant">Tiền phạt (VND)</label>
+                <label className="font-label-sm text-on-surface-variant">Số ngày thuê</label>
                 <NumberInput
-                  min={0}
-                  step={10000}
-                  value={editTienPhat}
-                  onValueChange={setEditTienPhat}
-                  placeholder="0"
-                  className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md tabular-nums"
+                  min={1}
+                  max={65535}
+                  step={1}
+                  value={editSoNgayInput}
+                  onValueChange={setEditSoNgayInput}
+                  onBlur={() => {
+                    if (!editSoNgayInput || parseFormattedNumber(editSoNgayInput) < 1) {
+                      setEditSoNgayInput('1')
+                    }
+                  }}
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface font-title-sm tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
                 />
               </div>
-            )}
 
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface-variant">Ghi chú</label>
-              <textarea
-                rows={2}
-                value={editGhiChu}
-                onChange={(e) => setEditGhiChu(e.target.value)}
-                className="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm resize-none"
-              />
+              {order.trang_thai === 1 ? (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <div className="flex flex-col gap-1">
+                      <label className="font-label-sm text-on-surface-variant">Ngày bắt đầu</label>
+                      <DateInput
+                        mode="datetime"
+                        aria-label="Ngày bắt đầu"
+                        value={editNgayBD}
+                        onChange={setEditNgayBD}
+                        className="h-11 pl-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="font-label-sm text-on-surface-variant">Ngày hẹn trả</label>
+                      <DateInput
+                        mode="datetime"
+                        aria-label="Ngày hẹn trả"
+                        value={editNgayHT}
+                        onChange={setEditNgayHT}
+                        className="h-11 pl-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="font-label-sm text-on-surface-variant">Loại cọc</label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { v: 1 as LoaiCoc, l: 'Tiền mặt' },
+                        { v: 2 as LoaiCoc, l: 'Chuyển khoản' },
+                        { v: 3 as LoaiCoc, l: 'CCCD' },
+                      ].map((o) => (
+                        <button
+                          key={o.v}
+                          type="button"
+                          onClick={() => setEditLoaiCoc(o.v)}
+                          className={`flex-1 min-w-fit h-10 px-3 rounded-xl font-label-sm text-label-sm font-semibold ${
+                            editLoaiCoc === o.v
+                              ? 'bg-primary-container text-on-primary'
+                              : 'bg-surface-container-low text-on-surface-variant'
+                          }`}
+                        >
+                          {o.l}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {editLoaiCoc !== 3 && (
+                    <div className="flex flex-col gap-1">
+                      <label className="font-label-sm text-on-surface-variant">Tiền cọc (VND)</label>
+                      <NumberInput
+                        min={0}
+                        step={10000}
+                        value={editTienCoc}
+                        onValueChange={setEditTienCoc}
+                        placeholder="0"
+                        className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                      />
+                    </div>
+                  )}
+
+                  {allProducts.length > 0 && (
+                    <div className="flex flex-col gap-1.5">
+                      <label className="font-label-sm text-on-surface-variant">
+                        Sản phẩm trong phiếu ({editProductIds.length})
+                      </label>
+                      <div className="max-h-44 overflow-y-auto flex flex-col gap-1.5 p-2 rounded-xl bg-surface-container-low">
+                        {allProducts.map((sp) => {
+                          const checked = editProductIds.includes(sp.id)
+                          return (
+                            <label
+                              key={sp.id}
+                              className="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-surface-container cursor-pointer text-body-sm"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={() =>
+                                    setEditProductIds((prev) =>
+                                      prev.includes(sp.id)
+                                        ? prev.filter((x) => x !== sp.id)
+                                        : [...prev, sp.id]
+                                    )
+                                  }
+                                  className="accent-primary-container"
+                                />
+                                <span className="truncate">
+                                  {sp.ma_san_pham} — {sp.ten_san_pham}
+                                </span>
+                              </div>
+                              <span className="font-label-sm text-primary-container shrink-0">
+                                {formatCurrency(sp.gia_thue_ngay)}
+                              </span>
+                            </label>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Tiền phạt (VND)</label>
+                  <NumberInput
+                    min={0}
+                    step={10000}
+                    value={editTienPhat}
+                    onValueChange={setEditTienPhat}
+                    placeholder="0"
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
+              )}
+
+              <div className="flex flex-col gap-1">
+                <label className="font-label-sm text-on-surface-variant">Ghi chú</label>
+                <textarea
+                  rows={2}
+                  value={editGhiChu}
+                  onChange={(e) => setEditGhiChu(e.target.value)}
+                  className="w-full p-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-sm resize-none focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                />
+              </div>
             </div>
 
-            <div className="flex gap-2 pt-1">
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="shrink-0 min-w-[5.5rem] h-11 px-4 rounded-xl bg-surface-container font-label-md text-on-surface"
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {busy ? 'Đang lưu...' : 'Lưu thay đổi'}
               </button>

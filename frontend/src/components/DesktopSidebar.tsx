@@ -160,17 +160,49 @@ export default function DesktopSidebar() {
 
       {/* Logout Confirm Modal */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl space-y-4">
-            <h4 className="font-headline-md text-on-surface">Đăng xuất khỏi MiuMiu?</h4>
-            <p className="font-body-sm text-on-surface-variant">
-              Bạn sẽ cần đăng nhập lại bằng email và mật khẩu để tiếp tục sử dụng.
-            </p>
-            <div className="flex gap-2">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sidebar-logout-modal-title"
+          className="fixed inset-0 z-[70] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => setShowLogoutConfirm(false)}
+          />
+
+          <div className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10">
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h4
+                id="sidebar-logout-modal-title"
+                className="font-headline-md text-headline-md font-bold text-on-surface"
+              >
+                Đăng xuất khỏi MiuMiu?
+              </h4>
               <button
                 type="button"
                 onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 h-10 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high font-label-md whitespace-nowrap transition-colors"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"
+              >
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
+              </button>
+            </div>
+
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4">
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                Bạn sẽ cần đăng nhập lại bằng email và mật khẩu để tiếp tục sử dụng.
+              </p>
+            </div>
+
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold whitespace-nowrap transition-colors"
               >
                 Ở lại
               </button>
@@ -180,7 +212,7 @@ export default function DesktopSidebar() {
                   setShowLogoutConfirm(false)
                   logout()
                 }}
-                className="flex-1 h-10 px-4 rounded-xl bg-error text-on-error font-label-md font-bold whitespace-nowrap hover:opacity-90 transition-opacity"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-error hover:opacity-90 text-on-error font-title-sm text-title-sm font-bold whitespace-nowrap shadow-md active:scale-95 transition-all"
               >
                 Đăng xuất
               </button>

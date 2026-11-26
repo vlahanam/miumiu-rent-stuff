@@ -514,42 +514,68 @@ export default function CaiDatPage() {
 
       {/* Edit Name Modal */}
       {showProfileModal && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="edit-profile-name-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => !accountBusy && setShowProfileModal(false)}
+          />
+
           <form
             onSubmit={handleUpdateName}
-            className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl space-y-4"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
-            <div className="flex items-center justify-between">
-              <h4 className="font-headline-md text-on-surface">Đổi tên hiển thị</h4>
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h4
+                id="edit-profile-name-modal-title"
+                className="font-headline-md text-headline-md font-bold text-on-surface"
+              >
+                Đổi tên hiển thị
+              </h4>
               <button
                 type="button"
                 onClick={() => setShowProfileModal(false)}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"
               >
-                <span className="material-symbols-outlined text-[1.125rem]">close</span>
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
               </button>
             </div>
-            <input
-              type="text"
-              required
-              maxLength={100}
-              value={profileName}
-              onChange={(e) => setProfileName(e.target.value)}
-              placeholder="Nhập tên mới"
-              className="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
-            />
-            <div className="flex gap-2">
+
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-3.5">
+              <div className="flex flex-col gap-1">
+                <label className="font-label-sm text-on-surface-variant">Tên hiển thị *</label>
+                <input
+                  type="text"
+                  required
+                  maxLength={100}
+                  value={profileName}
+                  onChange={(e) => setProfileName(e.target.value)}
+                  placeholder="Nhập tên mới"
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                />
+              </div>
+            </div>
+
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setShowProfileModal(false)}
-                className="shrink-0 min-w-[5.5rem] h-10 px-4 rounded-xl bg-surface-container font-label-md"
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={accountBusy}
-                className="flex-1 h-10 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {accountBusy ? 'Đang lưu...' : 'Lưu tên'}
               </button>
@@ -560,26 +586,46 @@ export default function CaiDatPage() {
 
       {/* Password Modal */}
       {showPasswordModal && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="change-password-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => !accountBusy && setShowPasswordModal(false)}
+          />
+
           <form
             onSubmit={handleChangePassword}
-            className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl space-y-4"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
               <div className="flex items-center gap-2 text-primary-container">
                 <span className="material-symbols-outlined text-[1.375rem]">password</span>
-                <h4 className="font-headline-md text-on-surface">Đổi mật khẩu</h4>
+                <h4
+                  id="change-password-modal-title"
+                  className="font-headline-md text-headline-md font-bold text-on-surface"
+                >
+                  Đổi mật khẩu
+                </h4>
               </div>
               <button
                 type="button"
                 onClick={() => setShowPasswordModal(false)}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"
               >
-                <span className="material-symbols-outlined text-[1.125rem]">close</span>
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
               </button>
             </div>
-            <div className="space-y-3">
-              <div className="space-y-1">
+
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-3.5">
+              <div className="flex flex-col gap-1">
                 <label className="font-label-sm text-on-surface-variant">Mật khẩu hiện tại *</label>
                 <input
                   type="password"
@@ -587,46 +633,49 @@ export default function CaiDatPage() {
                   value={oldPass}
                   onChange={(e) => setOldPass(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="font-label-sm text-on-surface-variant">Mật khẩu mới *</label>
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={newPass}
-                  onChange={(e) => setNewPass(e.target.value)}
-                  placeholder="Tối thiểu 6 ký tự"
-                  className="w-full h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="font-label-sm text-on-surface-variant">Xác nhận mật khẩu mới *</label>
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={confirmPass}
-                  onChange={(e) => setConfirmPass(e.target.value)}
-                  placeholder="Nhập lại mật khẩu mới"
-                  className="w-full h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Mật khẩu mới *</label>
+                  <input
+                    type="password"
+                    required
+                    minLength={6}
+                    value={newPass}
+                    onChange={(e) => setNewPass(e.target.value)}
+                    placeholder="Tối thiểu 6 ký tự"
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Xác nhận mật khẩu mới *</label>
+                  <input
+                    type="password"
+                    required
+                    minLength={6}
+                    value={confirmPass}
+                    onChange={(e) => setConfirmPass(e.target.value)}
+                    placeholder="Nhập lại mật khẩu mới"
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
               </div>
             </div>
-            <div className="flex gap-2 pt-1">
+
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setShowPasswordModal(false)}
-                className="shrink-0 min-w-[5.5rem] h-10 px-4 rounded-xl bg-surface-container font-label-md"
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={accountBusy}
-                className="flex-1 h-10 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {accountBusy ? 'Đang lưu...' : 'Lưu thay đổi'}
               </button>
@@ -637,17 +686,49 @@ export default function CaiDatPage() {
 
       {/* Logout Confirm Modal */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl space-y-4">
-            <h4 className="font-headline-md text-on-surface">Đăng xuất khỏi MiuMiu?</h4>
-            <p className="font-body-sm text-on-surface-variant">
-              Bạn sẽ cần đăng nhập lại bằng email và mật khẩu để tiếp tục sử dụng.
-            </p>
-            <div className="flex gap-2">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="settings-logout-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => setShowLogoutConfirm(false)}
+          />
+
+          <div className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10">
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h4
+                id="settings-logout-modal-title"
+                className="font-headline-md text-headline-md font-bold text-on-surface"
+              >
+                Đăng xuất khỏi MiuMiu?
+              </h4>
               <button
                 type="button"
                 onClick={() => setShowLogoutConfirm(false)}
-                className="shrink-0 min-w-[5.5rem] h-10 px-4 rounded-xl bg-surface-container font-label-md"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors shrink-0"
+              >
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
+              </button>
+            </div>
+
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4">
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                Bạn sẽ cần đăng nhập lại bằng email và mật khẩu để tiếp tục sử dụng.
+              </p>
+            </div>
+
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Ở lại
               </button>
@@ -657,7 +738,7 @@ export default function CaiDatPage() {
                   setShowLogoutConfirm(false)
                   logout()
                 }}
-                className="flex-1 h-10 px-4 rounded-xl bg-error text-on-error font-label-md font-bold"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-error hover:opacity-90 text-on-error font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all"
               >
                 Đăng xuất
               </button>

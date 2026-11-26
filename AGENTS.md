@@ -142,7 +142,7 @@ Go `1.26`, Gin `v1.10`, GORM `v1.25` + MySQL driver, `ozzo-validation/v4`, `shop
 - **Hệ thiết kế hiện hành (`demo-frontend/aodai_design/DESIGN.md` & `frontend/tailwind.config.ts`):**
   - Mobile-first, Material 3 tông **mận chín burgundy** (`primary: #4f0929`, `primary-container: #6b213f`), nền ấm `surface: #fff8f8`, nhấn champagne (`secondary: #7d571e`), ngọc bích (`tertiary: #002c24` / `tertiary-container: #18433a`), cảnh báo đỏ (`error: #ba1a1a`).
   - Font **Plus Jakarta Sans** (`font-headline-*`, `font-title-sm`, `font-body-*`, `font-label-*`, `font-currency-lg`), icon **Material Symbols Outlined** (`material-symbols-outlined`).
-  - Tiền hiển thị định dạng Việt Nam (ví dụ `1.200.000đ`), ngày giờ định dạng Việt Nam (`dd/mm/yyyy`).
+  - Tiền hiển thị định dạng Việt Nam (ví dụ `1.200.000đ`), ngày giờ định dạng Việt Nam (`dd/mm/yyyy` cho ngày, `HH:mm dd/mm/yyyy` cho giờ phút ngày tháng năm).
   - Khung màn hình chung: `TopBar` (`h-14`), `BottomNav` (`h-16`, 5 tab: Tổng quan `/`, Đơn thuê `/don-thue`, Sản phẩm `/san-pham`, Khách hàng `/khach-hang`, Cài đặt `/cai-dat`), `AddButton` FAB → `/don-thue/tao-moi`.
 
 ### 5.2 Hiện trạng Frontend (rất quan trọng khi làm việc với `frontend/`)
