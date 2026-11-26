@@ -177,7 +177,7 @@ export default function DateInput({
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
     const vw = window.innerWidth
     const vh = window.innerHeight
-    const width = Math.min(19.5 * rem, vw - 1.5 * rem)
+    const width = Math.min(20.5 * rem, vw - 1.5 * rem)
     const estHeight = (mode === 'datetime' ? 24.375 : 20.625) * rem
 
     const left = Math.min(Math.max(12, rect.left), vw - width - 12)
@@ -478,7 +478,7 @@ export default function DateInput({
                     onChange={(e) =>
                       handleTimeChange(Number(e.target.value), selectedParts?.minutes ?? 0)
                     }
-                    className="h-8 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
+                    className="h-9 lg:h-8 min-w-0 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
                   >
                     {HOURS.map((h) => (
                       <option key={h} value={h}>
@@ -493,7 +493,7 @@ export default function DateInput({
                     onChange={(e) =>
                       handleTimeChange(selectedParts?.hours ?? 0, Number(e.target.value))
                     }
-                    className="h-8 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
+                    className="h-9 lg:h-8 min-w-0 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
                   >
                     {MINUTES.map((m) => (
                       <option key={m} value={m}>
@@ -521,7 +521,7 @@ export default function DateInput({
                   aria-label="Chọn tháng"
                   value={viewMonth}
                   onChange={(e) => setViewMonth(Number(e.target.value))}
-                  className="h-8 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface focus:outline-none focus:border-primary-container"
+                  className="h-9 lg:h-8 min-w-0 px-1.5 lg:px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface focus:outline-none focus:border-primary-container"
                 >
                   {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
                     <option key={m} value={m}>
@@ -533,7 +533,7 @@ export default function DateInput({
                   aria-label="Chọn năm"
                   value={viewYear}
                   onChange={(e) => setViewYear(Number(e.target.value))}
-                  className="h-8 px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
+                  className="h-9 lg:h-8 min-w-0 px-1.5 lg:px-2 rounded-lg bg-surface-container-low border border-outline-variant/30 font-label-md text-on-surface tabular-nums focus:outline-none focus:border-primary-container"
                 >
                   {yearOptions.map((y) => (
                     <option key={y} value={y}>

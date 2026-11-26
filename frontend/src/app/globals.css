@@ -9,12 +9,15 @@
   html {
     /* Fluid root scale: ~14.5px ở mobile nhỏ (320px) → 16px từ desktop (1024px+), vẫn giữ tỉ lệ theo cài đặt font trình duyệt */
     font-size: clamp(90.625%, calc(86.36% + 0.213vw), 100%);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   html, body {
     width: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    touch-action: pan-x pan-y;
   }
   body {
     overscroll-behavior: none;
@@ -48,6 +51,27 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+}
+
+/* Chống tự động zoom khi chạm vào ô nhập liệu (iOS Safari tự scale giao diện nếu font-size < 16px) */
+@media screen and (max-width: 1023px), screen and (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='button']):not([type='submit']):not([type='reset']):not([type='hidden']),
+  textarea,
+  select {
+    font-size: 16px !important;
+    font-size: max(16px, 1rem) !important;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  @media screen {
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='button']):not([type='submit']):not([type='reset']):not([type='hidden']),
+    textarea,
+    select {
+      font-size: 16px !important;
+      font-size: max(16px, 1rem) !important;
+    }
   }
 }
 

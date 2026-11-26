@@ -1,11 +1,21 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ToastProvider } from '@/components/ToastProvider'
 import { AuthProvider } from '@/components/AuthProvider'
+import { ZoomGuard } from '@/components/ZoomGuard'
 
 export const metadata: Metadata = {
   title: 'MiuMiu - Quản Lý Tiệm Thuê Áo Dài',
   description: 'Hệ thống quản lý cho thuê áo dài và phụ kiện MiuMiu',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -28,6 +38,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-surface font-body-md text-on-surface antialiased min-h-screen">
+        <ZoomGuard />
         <ToastProvider>
           <AuthProvider>{children}</AuthProvider>
         </ToastProvider>
