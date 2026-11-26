@@ -7,9 +7,12 @@ import (
 	"os"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"miumiu-rent-stuff/internal/model"
 
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 	mysqlDriver "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/mysql"
@@ -65,8 +68,106 @@ func Connect() (*gorm.DB, error) {
 	return db, nil
 }
 
+// DefaultAccount mô tả thông tin một tài khoản nhân viên/chủ tiệm cần seed.
+type DefaultAccount struct {
+	Ten     string
+	Email   string
+	MatKhau string
+}
+
+// DefaultDevAccounts trả về danh sách tài khoản đăng nhập mặc định cho môi trường phát triển.
+func DefaultDevAccounts() []DefaultAccount {
+	return []DefaultAccount{
+		{
+			Ten:     "Chủ tiệm MiuMiu",
+			Email:   "admin@miumiu.vn",
+			MatKhau: "admin123",
+		},
+		{
+			Ten:     "Nhân viên MiuMiu",
+			Email:   "nhanvien@miumiu.vn",
+			MatKhau: "nhanvien123",
+		},
+		{
+			Ten:     "Nhân viên quầy 2",
+			Email:   "nhanvien2@miumiu.vn",
+			MatKhau: "nhanvien123",
+		},
+	}
+}
+
+// SeedUser tạo một tài khoản trong bảng nguoi_dung nếu email chưa tồn tại (idempotent, không ghi đè tài khoản cũ).
+// Trả về created=true nếu vừa tạo mới, created=false nếu email đã tồn tại.
+func SeedUser(db *gorm.DB, account DefaultAccount) (bool, *model.NguoiDung, error) {
+	ten := strings.TrimSpace(account.Ten)
+	email := strings.TrimSpace(strings.ToLower(account.Email))
+	matKhau := account.MatKhau
+
+	if ten == "" {
+		return false, nil, fmt.Errorf("tên người dùng không được để trống")
+	}
+	if utf8.RuneCountInString(ten) > 100 {
+		return false, nil, fmt.Errorf("tên người dùng tối đa 100 ký tự")
+	}
+	if err := validation.Validate(email, validation.Required, validation.Length(1, 100), is.Email); err != nil {
+		return false, nil, fmt.Errorf("email %q không hợp lệ", email)
+	}
+	if len(matKhau) < 6 {
+		return false, nil, fmt.Errorf("mật khẩu tối thiểu 6 ký tự")
+	}
+	if len(matKhau) > 72 {
+		return false, nil, fmt.Errorf("mật khẩu tối đa 72 byte")
+	}
+
+	var existing model.NguoiDung
+	err := db.Where("LOWER(email) = ?", email).First(&existing).Error
+	if err == nil {
+		return false, &existing, nil
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil, fmt.Errorf("lỗi kiểm tra tài khoản %s: %w", email, err)
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(matKhau), bcrypt.DefaultCost)
+	if err != nil {
+		return false, nil, fmt.Errorf("không thể mã hóa mật khẩu cho %s: %w", email, err)
+	}
+
+	user := model.NguoiDung{
+		Ten:     ten,
+		Email:   email,
+		MatKhau: string(hash),
+	}
+	if err := db.Create(&user).Error; err != nil {
+		if IsDuplicateKeyError(err) {
+			if reloadErr := db.Where("LOWER(email) = ?", email).First(&existing).Error; reloadErr == nil {
+				return false, &existing, nil
+			}
+		}
+		return false, nil, fmt.Errorf("không thể khởi tạo tài khoản %s: %w", email, err)
+	}
+
+	return true, &user, nil
+}
+
+// SeedUsers seed danh sách tài khoản một cách idempotent (bỏ qua các email đã tồn tại).
+func SeedUsers(db *gorm.DB, accounts []DefaultAccount) (int, error) {
+	createdCount := 0
+	for _, acc := range accounts {
+		created, _, err := SeedUser(db, acc)
+		if err != nil {
+			return createdCount, err
+		}
+		if created {
+			createdCount++
+			log.Printf("Đã khởi tạo tài khoản: %s (%s)", acc.Email, acc.Ten)
+		}
+	}
+	return createdCount, nil
+}
+
 // EnsureDefaultData đảm bảo các bản ghi cài đặt mặc định tồn tại (không sửa schema)
-// và tạo tài khoản admin mặc định trong môi trường dev nếu bảng nguoi_dung đang trống.
+// và tạo bộ tài khoản mặc định trong môi trường dev nếu bảng nguoi_dung đang trống.
 func EnsureDefaultData(db *gorm.DB, seedDevAdmin bool) error {
 	defaultSettings := []struct {
 		Khoa       string
@@ -100,7 +201,7 @@ func EnsureDefaultData(db *gorm.DB, seedDevAdmin bool) error {
 				KieuDuLieu: s.KieuDuLieu,
 				MoTa:       &moTa,
 			}
-			if createErr := db.Create(&record).Error; createErr != nil {
+			if createErr := db.Create(&record).Error; createErr != nil && !IsDuplicateKeyError(createErr) {
 				return fmt.Errorf("không thể khởi tạo cài đặt %s: %w", s.Khoa, createErr)
 			}
 		} else if err != nil {
@@ -114,19 +215,9 @@ func EnsureDefaultData(db *gorm.DB, seedDevAdmin bool) error {
 			return fmt.Errorf("lỗi kiểm tra tài khoản người dùng: %w", err)
 		}
 		if userCount == 0 {
-			hash, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
-			if err != nil {
-				return fmt.Errorf("không thể mã hóa mật khẩu mặc định: %w", err)
+			if _, err := SeedUsers(db, DefaultDevAccounts()); err != nil {
+				return err
 			}
-			admin := model.NguoiDung{
-				Ten:     "Chủ tiệm MiuMiu",
-				Email:   "admin@miumiu.vn",
-				MatKhau: string(hash),
-			}
-			if err := db.Create(&admin).Error; err != nil {
-				return fmt.Errorf("không thể khởi tạo tài khoản mặc định: %w", err)
-			}
-			log.Println("Đã khởi tạo tài khoản dev mặc định: admin@miumiu.vn / admin123")
 		}
 	}
 

@@ -38,7 +38,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ show, success, error, info }}>
       {children}
       {toasts.length > 0 && (
-        <div className="fixed top-16 inset-x-4 z-[100] flex flex-col items-center gap-2 pointer-events-none">
+        <div className="fixed top-16 inset-x-4 lg:top-20 lg:left-auto lg:right-6 z-[100] flex flex-col items-center lg:items-end gap-2 pointer-events-none">
           {toasts.map((t) => {
             const bg =
               t.variant === 'error'

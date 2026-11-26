@@ -36,3 +36,9 @@
     scrollbar-width: none;
   }
 }
+
+@media print {
+  body {
+    background-color: #ffffff !important;
+  }
+}

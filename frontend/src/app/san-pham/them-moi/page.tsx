@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import TopBar from '@/components/TopBar'
-import BottomNav from '@/components/BottomNav'
+import Link from 'next/link'
+import AppShell from '@/components/AppShell'
 import NumberInput from '@/components/NumberInput'
 import { useToast } from '@/components/ToastProvider'
 import { ApiError, caiDatApi, sanPhamApi } from '@/lib/api'
@@ -90,133 +90,181 @@ export default function ThemMoiSanPhamPage() {
   const suggestedDeposit = Math.round((parseFormattedNumber(giaGoc) * depositPercent) / 100)
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
-      <TopBar title="Thêm Sản Phẩm" backHref="/san-pham" />
+    <AppShell
+      title="Thêm Sản Phẩm"
+      subtitle="Mã SKU sẽ được tự sinh với tiền tố MIU- và trạng thái Trống lịch"
+      backHref="/san-pham"
+      backLabel="Sản phẩm"
+      maxWidth="narrow"
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:gap-6">
+        {errorMsg && (
+          <div className="p-3.5 rounded-xl bg-error-container text-on-error-container font-body-sm flex items-start gap-2">
+            <span className="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
+            <span>{errorMsg}</span>
+          </div>
+        )}
 
-      <main className="flex-1 flex flex-col relative w-full max-w-2xl mx-auto px-margin pt-14 pb-32 bg-surface">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 pt-4">
-          {errorMsg && (
-            <div className="p-3.5 rounded-xl bg-error-container text-on-error-container font-body-sm flex items-start gap-2">
-              <span className="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
-              <span>{errorMsg}</span>
-            </div>
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start">
+          {/* Left Column: Thông tin cơ bản */}
+          <div className="lg:col-span-7 flex flex-col gap-4 lg:gap-5">
+            <section className="p-4 lg:p-6 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-primary-fixed flex items-center justify-center text-primary-container">
+                  <span className="material-symbols-outlined text-[18px]">checkroom</span>
+                </div>
+                <h2 className="font-title-sm text-title-sm text-on-surface">Thông tin cơ bản</h2>
+              </div>
 
-          <section className="p-4 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-3.5">
-            <h2 className="font-title-sm text-title-sm text-on-surface">Thông tin cơ bản</h2>
-
-            <div className="flex flex-col gap-1">
-              <label className="font-label-md text-on-surface">Tên sản phẩm *</label>
-              <input
-                type="text"
-                required
-                maxLength={255}
-                value={tenSanPham}
-                onChange={(e) => setTenSanPham(e.target.value)}
-                placeholder="Ví dụ: Áo dài gấm đỏ đô thêu phụng (Size M)"
-                className="h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="font-label-md text-on-surface">Giá gốc mua vào (VND) *</label>
-                <NumberInput
+              <div className="flex flex-col gap-1.5">
+                <label className="font-label-md text-on-surface">Tên sản phẩm *</label>
+                <input
+                  type="text"
                   required
-                  min={0}
-                  step={10000}
-                  value={giaGoc}
-                  onValueChange={setGiaGoc}
-                  placeholder="2.000.000"
-                  className="h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
+                  maxLength={255}
+                  value={tenSanPham}
+                  onChange={(e) => setTenSanPham(e.target.value)}
+                  placeholder="Ví dụ: Áo dài gấm đỏ đô thêu phụng (Size M)"
+                  className="h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
                 />
-                <span className="font-label-sm text-secondary">
-                  Cọc gợi ý ({depositPercent}%): <strong>{formatCurrency(suggestedDeposit)}</strong>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-label-md text-on-surface">Giá gốc mua vào (VND) *</label>
+                  <NumberInput
+                    required
+                    min={0}
+                    step={10000}
+                    value={giaGoc}
+                    onValueChange={setGiaGoc}
+                    placeholder="2.000.000"
+                    className="h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
+                  />
+                  <span className="font-label-sm text-secondary">
+                    Cọc gợi ý ({depositPercent}%): <strong>{formatCurrency(suggestedDeposit)}</strong>
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-label-md text-on-surface">Giá thuê 1 ngày (VND) *</label>
+                  <NumberInput
+                    required
+                    min={0}
+                    step={10000}
+                    value={giaThue}
+                    onValueChange={setGiaThue}
+                    placeholder="300.000"
+                    className="h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
+                  />
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-surface-container-low/80 border border-outline-variant/20 flex items-start gap-2.5 text-on-surface-variant font-body-sm">
+                <span className="material-symbols-outlined text-[18px] text-primary-container shrink-0 mt-0.5">
+                  info
+                </span>
+                <span>
+                  Mỗi sản phẩm trong kho là duy nhất (SL = 1). Nếu có 2 bộ giống nhau, hãy tạo thành 2 sản phẩm riêng để theo dõi lịch thuê chính xác.
                 </span>
               </div>
+            </section>
 
-              <div className="flex flex-col gap-1">
-                <label className="font-label-md text-on-surface">Giá thuê 1 ngày (VND) *</label>
-                <NumberInput
-                  required
-                  min={0}
-                  step={10000}
-                  value={giaThue}
-                  onValueChange={setGiaThue}
-                  placeholder="300.000"
-                  className="h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* Hình ảnh */}
-          <section className="p-4 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-3">
-            <div>
-              <h2 className="font-title-sm text-title-sm text-on-surface">
-                Hình ảnh sản phẩm (không bắt buộc)
-              </h2>
-              <p className="font-body-sm text-on-surface-variant mt-0.5">
-                Nhập đường dẫn ảnh (URL). Ảnh đầu tiên sẽ là ảnh đại diện.
-              </p>
-            </div>
-
-            <div className="flex gap-2">
-              <input
-                type="url"
-                value={newImageUrl}
-                onChange={(e) => setNewImageUrl(e.target.value)}
-                placeholder="https://example.com/ao-dai.jpg"
-                className="flex-1 h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm focus:outline-none focus:border-primary-container"
-              />
-              <button
-                type="button"
-                onClick={addImage}
-                className="h-11 px-4 rounded-xl bg-primary-fixed text-on-primary-fixed-variant font-label-md font-semibold shrink-0 hover:bg-primary-container hover:text-on-primary transition-colors"
+            {/* Desktop Action Bar */}
+            <div className="hidden lg:flex items-center justify-end gap-3">
+              <Link
+                href="/san-pham"
+                className="h-11 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md flex items-center transition-colors"
               >
-                Thêm ảnh
+                Hủy bỏ
+              </Link>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="h-11 px-6 rounded-xl bg-primary-container text-on-primary font-title-sm text-[14px] font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary disabled:opacity-60 active:scale-[0.98] transition-all"
+              >
+                <span className="material-symbols-outlined text-[19px]">save</span>
+                <span>{submitting ? 'Đang lưu sản phẩm...' : 'Lưu sản phẩm'}</span>
               </button>
             </div>
+          </div>
 
-            {imageUrls.length > 0 && (
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1">
-                {imageUrls.map((url, idx) => (
-                  <div
-                    key={`${url}-${idx}`}
-                    className="relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-container border border-outline-variant/30"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={url} alt={`Ảnh ${idx + 1}`} className="w-full h-full object-cover" />
-                    {idx === 0 && (
-                      <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-primary-container/90 text-on-primary text-[10px] font-semibold">
-                        Đại diện
-                      </span>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => removeImage(idx)}
-                      className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center"
-                    >
-                      <span className="material-symbols-outlined text-[15px]">close</span>
-                    </button>
-                  </div>
-                ))}
+          {/* Right Column: Hình ảnh & Live Preview */}
+          <div className="lg:col-span-5 lg:sticky lg:top-20 flex flex-col gap-4">
+            <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3.5">
+              <div>
+                <h2 className="font-title-sm text-title-sm text-on-surface">
+                  Hình ảnh sản phẩm (không bắt buộc)
+                </h2>
+                <p className="font-body-sm text-on-surface-variant mt-0.5">
+                  Nhập đường dẫn ảnh (URL). Ảnh đầu tiên sẽ là ảnh đại diện.
+                </p>
               </div>
-            )}
-          </section>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full h-12 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary disabled:opacity-60 active:scale-[0.98] transition-all"
-          >
-            <span className="material-symbols-outlined text-[20px]">save</span>
-            <span>{submitting ? 'Đang lưu sản phẩm...' : 'Lưu sản phẩm'}</span>
-          </button>
-        </form>
-      </main>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={newImageUrl}
+                  onChange={(e) => setNewImageUrl(e.target.value)}
+                  placeholder="https://example.com/ao-dai.jpg"
+                  className="flex-1 h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container min-w-0"
+                />
+                <button
+                  type="button"
+                  onClick={addImage}
+                  className="h-11 px-4 rounded-xl bg-primary-fixed text-on-primary-fixed-variant font-label-md font-semibold shrink-0 hover:bg-primary-container hover:text-on-primary transition-colors"
+                >
+                  Thêm ảnh
+                </button>
+              </div>
 
-      <BottomNav />
-    </div>
+              {/* Desktop Cover Preview */}
+              {imageUrls.length === 0 ? (
+                <div className="hidden lg:flex flex-col items-center justify-center aspect-[4/3] rounded-xl bg-surface-container-low border border-dashed border-outline-variant/40 text-outline gap-2">
+                  <span className="material-symbols-outlined text-[42px]">add_photo_alternate</span>
+                  <span className="font-body-sm text-on-surface-variant">Xem trước ảnh đại diện</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-2.5 pt-1">
+                  {imageUrls.map((url, idx) => (
+                    <div
+                      key={`${url}-${idx}`}
+                      className={`relative rounded-xl overflow-hidden bg-surface-container border border-outline-variant/30 ${
+                        idx === 0 ? 'col-span-3 aspect-[16/10] lg:aspect-[4/3]' : 'aspect-[4/5]'
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={url} alt={`Ảnh ${idx + 1}`} className="w-full h-full object-cover" />
+                      {idx === 0 && (
+                        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-primary-container/90 text-on-primary text-[11px] font-semibold">
+                          Ảnh đại diện
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeImage(idx)}
+                        className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">close</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Mobile Submit Button */}
+            <button
+              type="submit"
+              disabled={submitting}
+              className="lg:hidden w-full h-12 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary disabled:opacity-60 active:scale-[0.98] transition-all"
+            >
+              <span className="material-symbols-outlined text-[20px]">save</span>
+              <span>{submitting ? 'Đang lưu sản phẩm...' : 'Lưu sản phẩm'}</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </AppShell>
   )
 }

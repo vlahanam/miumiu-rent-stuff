@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import TopBar from '@/components/TopBar'
-import BottomNav from '@/components/BottomNav'
+import AppShell from '@/components/AppShell'
 import { ThueDoStatusBadge } from '@/components/StatusBadge'
 import { useToast } from '@/components/ToastProvider'
 import { ApiError, khachHangApi } from '@/lib/api'
@@ -17,23 +16,25 @@ function OrderRow({ order }: { order: ThueDo }) {
   return (
     <Link
       href={`/don-thue/${order.id}`}
-      className="p-3 rounded-xl bg-surface-container-low hover:bg-surface-container flex items-center justify-between gap-2 transition-colors"
+      className="p-3 lg:px-4 rounded-xl bg-surface-container-low hover:bg-surface-container flex items-center justify-between gap-3 transition-colors"
     >
-      <div className="min-w-0">
-        <div className="flex items-center gap-1.5">
-          <span className="font-title-sm text-body-md text-primary-container font-bold">
-            {order.ma_phieu_thue}
-          </span>
-          <span className="text-outline">•</span>
-          <span className="font-currency-lg text-body-md text-on-surface font-bold tabular-nums">
-            {formatCurrency(order.tong_tien_thue)}
-          </span>
+      <div className="min-w-0 flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="font-title-sm text-body-md text-primary-container font-bold">
+              {order.ma_phieu_thue}
+            </span>
+            <span className="text-outline">•</span>
+            <span className="font-currency-lg text-body-md text-on-surface font-bold tabular-nums">
+              {formatCurrency(order.tong_tien_thue)}
+            </span>
+          </div>
+          <div className="font-body-sm text-on-surface truncate mt-0.5">
+            {firstItem}
+            {extra > 0 ? ` (+${extra} món)` : ''}
+          </div>
         </div>
-        <div className="font-body-sm text-on-surface truncate">
-          {firstItem}
-          {extra > 0 ? ` (+${extra} món)` : ''}
-        </div>
-        <div className="font-label-sm text-on-surface-variant mt-0.5">
+        <div className="font-label-sm text-on-surface-variant shrink-0 tabular-nums">
           {formatDateShort(order.ngay_bat_dau)} → {formatDateShort(order.ngay_hen_tra)}
         </div>
       </div>
@@ -126,93 +127,122 @@ export default function KhachHangDetailPage() {
   const kh = detail?.khach_hang
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
-      <TopBar title={kh?.ten || 'Chi tiết khách hàng'} backHref="/khach-hang" />
-
-      <main className="flex-1 flex flex-col relative w-full max-w-2xl mx-auto px-margin pt-14 pb-32 bg-surface">
-        <div className="flex flex-col gap-4 pt-4">
-          {loading && (
-            <div className="flex flex-col gap-3">
-              <div className="h-40 rounded-2xl bg-surface-container-low animate-pulse" />
-              <div className="h-32 rounded-2xl bg-surface-container-low animate-pulse" />
+    <AppShell
+      title={kh?.ten || 'Chi tiết khách hàng'}
+      subtitle={kh ? formatPhone(kh.so_dien_thoai) : undefined}
+      backHref="/khach-hang"
+      backLabel="Khách hàng"
+    >
+      <div className="flex flex-col gap-4 lg:gap-6">
+        {loading && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div className="lg:col-span-4 h-64 rounded-2xl bg-surface-container-low animate-pulse" />
+            <div className="lg:col-span-8 flex flex-col gap-4">
+              <div className="h-44 rounded-2xl bg-surface-container-low animate-pulse" />
+              <div className="h-56 rounded-2xl bg-surface-container-low animate-pulse" />
             </div>
-          )}
+          </div>
+        )}
 
-          {error && !loading && (
-            <div className="p-5 rounded-2xl bg-error-container text-on-error-container flex flex-col items-center text-center gap-2">
-              <span className="material-symbols-outlined text-[32px]">error</span>
-              <span>{error}</span>
-              <Link href="/khach-hang" className="px-4 py-2 rounded-xl bg-error text-on-error font-label-md">
-                Quay lại danh sách
-              </Link>
-            </div>
-          )}
+        {error && !loading && (
+          <div className="p-6 rounded-2xl bg-error-container text-on-error-container flex flex-col items-center text-center gap-2">
+            <span className="material-symbols-outlined text-[32px]">error</span>
+            <span>{error}</span>
+            <Link href="/khach-hang" className="px-4 py-2 rounded-xl bg-error text-on-error font-label-md">
+              Quay lại danh sách
+            </Link>
+          </div>
+        )}
 
-          {!loading && detail && kh && (
-            <>
-              {/* Profile Card */}
-              <section className="p-4 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col gap-3.5">
-                <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-headline-lg shrink-0">
+        {!loading && detail && kh && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start">
+            {/* Left Sticky Profile Card */}
+            <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-20">
+              <section className="p-4 lg:p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-4">
+                <div className="flex items-center lg:flex-col lg:text-center gap-3.5">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-headline-lg lg:text-[28px] shrink-0">
                     {getInitials(kh.ten)}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h1 className="font-headline-md text-on-surface truncate">{kh.ten}</h1>
+                  <div className="min-w-0 flex-1 lg:w-full">
+                    <h1 className="font-headline-md lg:text-[20px] text-on-surface truncate">{kh.ten}</h1>
                     <a
                       href={`tel:${kh.so_dien_thoai}`}
-                      className="font-body-md text-primary-container font-semibold flex items-center gap-1 mt-0.5 w-fit"
+                      className="font-body-md text-primary-container font-semibold flex items-center lg:justify-center gap-1 mt-0.5 w-fit lg:mx-auto hover:underline"
                     >
                       <span className="material-symbols-outlined text-[16px]">call</span>
                       {formatPhone(kh.so_dien_thoai)}
                     </a>
-                    <span className="font-label-sm text-outline">
-                      Khách từ {formatDate(kh.ngay_tao)} • {detail.so_lan_thue} lần thuê hoàn tất
+                    <span className="font-label-sm text-outline block mt-1">
+                      Khách từ {formatDate(kh.ngay_tao)}
                     </span>
                   </div>
                 </div>
 
+                {/* Mini Stats */}
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="p-3 rounded-xl bg-surface-container-low text-center">
+                    <div className="font-headline-md text-primary-container font-bold tabular-nums">
+                      {detail.so_lan_thue}
+                    </div>
+                    <div className="font-label-sm text-on-surface-variant">Lần thuê xong</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-surface-container-low text-center">
+                    <div className="font-headline-md text-secondary font-bold tabular-nums">
+                      {detail.dang_thue.length}
+                    </div>
+                    <div className="font-label-sm text-on-surface-variant">Đơn đang mở</div>
+                  </div>
+                </div>
+
                 {kh.dia_chi && (
-                  <div className="p-2.5 rounded-xl bg-surface-container-low font-body-sm text-on-surface-variant flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px]">location_on</span>
+                  <div className="p-3 rounded-xl bg-surface-container-low font-body-sm text-on-surface-variant flex items-start gap-2">
+                    <span className="material-symbols-outlined text-[16px] shrink-0 mt-0.5 text-primary-container">
+                      location_on
+                    </span>
                     <span>{kh.dia_chi}</span>
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap lg:flex-col gap-2">
                   <Link
                     href={`/don-thue/tao-moi?khach_hang_id=${kh.id}`}
-                    className="flex-1 min-w-[130px] h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+                    className="flex-1 lg:w-full min-w-[130px] h-11 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
                   >
                     <span className="material-symbols-outlined text-[18px]">receipt_long</span>
                     Tạo đơn mới
                   </Link>
-                  <button
-                    type="button"
-                    onClick={openEdit}
-                    className="h-11 px-3.5 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center gap-1 hover:bg-surface-container-high"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">edit</span>
-                    Sửa
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowDelete(true)}
-                    className="h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md flex items-center gap-1 hover:bg-error-container"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">delete</span>
-                    Xóa
-                  </button>
+                  <div className="flex gap-2 lg:w-full">
+                    <button
+                      type="button"
+                      onClick={openEdit}
+                      className="flex-1 h-11 px-3.5 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">edit</span>
+                      Sửa
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowDelete(true)}
+                      className="flex-1 h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md flex items-center justify-center gap-1 hover:bg-error-container transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">delete</span>
+                      Xóa
+                    </button>
+                  </div>
                 </div>
               </section>
+            </div>
 
+            {/* Right Orders History Column */}
+            <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4 lg:gap-5">
               {/* Đang thuê / Quá hạn / Chờ xác nhận */}
-              <section className="p-4 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-2.5">
+              <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
                 <h2 className="font-title-sm text-on-surface flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[18px] text-secondary">pending_actions</span>
                   Phiếu đang hoạt động ({detail.dang_thue.length})
                 </h2>
                 {detail.dang_thue.length === 0 ? (
-                  <p className="font-body-sm text-on-surface-variant py-2">
+                  <p className="font-body-sm text-on-surface-variant py-4 text-center bg-surface-container-low/50 rounded-xl">
                     Khách hiện không có phiếu đang thuê hoặc đặt trước.
                   </p>
                 ) : (
@@ -225,13 +255,13 @@ export default function KhachHangDetailPage() {
               </section>
 
               {/* Lịch sử đã trả / đã hủy */}
-              <section className="p-4 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-2.5">
+              <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
                 <h2 className="font-title-sm text-on-surface flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[18px] text-primary-container">history</span>
                   Lịch sử thuê ({detail.lich_su.length})
                 </h2>
                 {detail.lich_su.length === 0 ? (
-                  <p className="font-body-sm text-on-surface-variant py-2">
+                  <p className="font-body-sm text-on-surface-variant py-4 text-center bg-surface-container-low/50 rounded-xl">
                     Chưa có lịch sử phiếu đã hoàn tất.
                   </p>
                 ) : (
@@ -242,10 +272,10 @@ export default function KhachHangDetailPage() {
                   </div>
                 )}
               </section>
-            </>
-          )}
-        </div>
-      </main>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Edit Modal */}
       {showEdit && kh && (
@@ -345,8 +375,6 @@ export default function KhachHangDetailPage() {
           </div>
         </div>
       )}
-
-      <BottomNav />
-    </div>
+    </AppShell>
   )
 }

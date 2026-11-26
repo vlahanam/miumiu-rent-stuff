@@ -17,8 +17,8 @@ export default function BottomNav() {
   const { activeOrderBadge } = useAuth()
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/95 backdrop-blur-xl shadow-[0_-4px_20px_rgba(35,31,32,0.05)] border-t border-outline-variant/20 print:hidden">
-      <div className="max-w-2xl mx-auto flex justify-around items-center h-16 px-space-xs">
+    <nav className="lg:hidden fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/95 backdrop-blur-xl shadow-[0_-4px_20px_rgba(35,31,32,0.05)] border-t border-outline-variant/20 print:hidden">
+      <div className="max-w-2xl md:max-w-3xl mx-auto flex justify-around items-center h-16 px-space-xs">
         {navItems.map((item) => {
           const isActive = item.exact
             ? pathname === item.path

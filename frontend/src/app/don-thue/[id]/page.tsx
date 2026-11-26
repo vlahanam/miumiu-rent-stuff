@@ -3,8 +3,7 @@
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import TopBar from '@/components/TopBar'
-import BottomNav from '@/components/BottomNav'
+import AppShell from '@/components/AppShell'
 import NumberInput from '@/components/NumberInput'
 import ProductImage from '@/components/ProductImage'
 import { ThueDoStatusBadge } from '@/components/StatusBadge'
@@ -18,6 +17,7 @@ import {
   formatNumber,
   formatPhone,
   fromDateTimeLocalValue,
+  getInitials,
   parseFormattedNumber,
   parseMoney,
   toDateTimeLocalValue,
@@ -269,101 +269,113 @@ function DonThueDetailContent() {
   const previewRefund = tienCoc - previewFine
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
-      <TopBar
-        title={order?.ma_phieu_thue || 'Chi tiết đơn thuê'}
-        subtitle={order ? `Lập lúc ${formatDateTime(order.ngay_tao)}` : undefined}
-        backHref="/don-thue"
-        rightSlot={
-          order && (
-            <button
-              type="button"
-              onClick={() => window.print()}
-              title="In phiếu thuê"
-              className="w-9 h-9 rounded-full bg-surface-container text-on-surface-variant hover:text-primary flex items-center justify-center print:hidden"
+    <AppShell
+      title={order?.ma_phieu_thue || 'Chi tiết đơn thuê'}
+      subtitle={order ? `Lập lúc ${formatDateTime(order.ngay_tao)}` : undefined}
+      backHref="/don-thue"
+      backLabel="Đơn thuê"
+      rightSlot={
+        order && (
+          <button
+            type="button"
+            onClick={() => window.print()}
+            title="In phiếu thuê"
+            className="w-9 h-9 lg:w-auto lg:px-3.5 rounded-full lg:rounded-xl bg-surface-container text-on-surface-variant hover:text-primary hover:bg-surface-container-high flex items-center justify-center gap-1.5 print:hidden transition-colors"
+          >
+            <span className="material-symbols-outlined text-[19px]">print</span>
+            <span className="hidden lg:inline font-label-md text-on-surface">In phiếu</span>
+          </button>
+        )
+      }
+    >
+      <div className="flex flex-col w-full gap-4 lg:gap-6">
+        {loading && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4">
+              <div className="h-36 rounded-2xl bg-surface-container-low animate-pulse" />
+              <div className="h-56 rounded-2xl bg-surface-container-low animate-pulse" />
+            </div>
+            <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-4">
+              <div className="h-44 rounded-2xl bg-surface-container-low animate-pulse" />
+              <div className="h-60 rounded-2xl bg-surface-container-low animate-pulse" />
+            </div>
+          </div>
+        )}
+
+        {error && !loading && (
+          <div className="p-6 rounded-2xl bg-error-container text-on-error-container flex flex-col items-center text-center gap-2">
+            <span className="material-symbols-outlined text-[32px]">error</span>
+            <span className="font-body-md text-body-md">{error}</span>
+            <Link
+              href="/don-thue"
+              className="mt-1 px-4 py-2 rounded-xl bg-error text-on-error font-label-md text-label-md"
             >
-              <span className="material-symbols-outlined text-[19px]">print</span>
-            </button>
-          )
-        }
-      />
+              Quay lại danh sách
+            </Link>
+          </div>
+        )}
 
-      <main className="flex-1 flex flex-col relative w-full max-w-2xl mx-auto px-margin pt-14 pb-32 bg-surface">
-        <div className="flex flex-col w-full gap-4 pt-4">
-          {loading && (
-            <div className="flex flex-col gap-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-32 rounded-xl bg-surface-container-low animate-pulse" />
-              ))}
-            </div>
-          )}
-
-          {error && !loading && (
-            <div className="p-5 rounded-2xl bg-error-container text-on-error-container flex flex-col items-center text-center gap-2">
-              <span className="material-symbols-outlined text-[32px]">error</span>
-              <span className="font-body-md text-body-md">{error}</span>
-              <Link
-                href="/don-thue"
-                className="mt-1 px-4 py-2 rounded-xl bg-error text-on-error font-label-md text-label-md"
-              >
-                Quay lại danh sách
-              </Link>
-            </div>
-          )}
-
-          {!loading && order && (
-            <>
-              {/* Kết quả xử lý cọc sau khi vừa trả đồ */}
-              {xuLyCocResult && (
-                <div className="p-4 rounded-xl bg-[#EAF5EE] border border-[#236B48]/25 text-[#236B48] flex flex-col gap-1">
-                  <div className="flex items-center gap-2 font-title-sm text-title-sm">
-                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
-                    <span>Xử lý tiền cọc khi trả đồ</span>
-                  </div>
-                  <p className="font-body-md text-body-md font-semibold">{xuLyCocResult.ghi_chu}</p>
-                  <span className="font-label-sm text-label-sm opacity-80">
-                    Cọc đã thu: {formatCurrency(xuLyCocResult.tien_coc)} • Tiền phạt:{' '}
-                    {formatCurrency(xuLyCocResult.tien_phat)}
-                  </span>
+        {!loading && order && (
+          <>
+            {/* Print-only Brand Header */}
+            <div className="hidden print:flex items-center justify-between border-b-2 border-primary pb-3 mb-2">
+              <div>
+                <div className="text-[20px] font-bold text-primary">MIU MIU ATELIER</div>
+                <div className="text-[12px] text-on-surface-variant">
+                  Phiếu thuê áo dài &amp; phụ kiện
+                </div>
+              </div>
+              {shopPhone && (
+                <div className="text-right text-[12px] text-on-surface-variant">
+                  Hotline: <strong className="text-on-surface">{formatPhone(shopPhone)}</strong>
                 </div>
               )}
+            </div>
 
-              {/* Header Card */}
-              <section className="p-4 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-3">
-                <div className="flex items-start justify-between gap-2">
+            {/* Kết quả xử lý cọc sau khi vừa trả đồ */}
+            {xuLyCocResult && (
+              <div className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-[#EAF5EE] border border-[#236B48]/25 text-[#236B48] flex flex-col gap-1">
+                <div className="flex items-center gap-2 font-title-sm text-title-sm">
+                  <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                  <span>Xử lý tiền cọc khi trả đồ</span>
+                </div>
+                <p className="font-body-md text-body-md font-semibold">{xuLyCocResult.ghi_chu}</p>
+                <span className="font-label-sm text-label-sm opacity-80">
+                  Cọc đã thu: {formatCurrency(xuLyCocResult.tien_coc)} • Tiền phạt:{' '}
+                  {formatCurrency(xuLyCocResult.tien_phat)}
+                </span>
+              </div>
+            )}
+
+            {/* Header & Primary Action Bar */}
+            <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3.5">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                <div className="flex items-start lg:items-center justify-between lg:justify-start gap-3">
                   <div>
-                    <div className="font-headline-lg text-headline-lg text-primary font-bold">
-                      {order.ma_phieu_thue}
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <span className="font-headline-lg text-headline-lg lg:text-[24px] text-primary font-bold">
+                        {order.ma_phieu_thue}
+                      </span>
+                      <ThueDoStatusBadge status={order.trang_thai} />
                     </div>
-                    <div className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
-                      Người lập: <span className="font-semibold text-on-surface">{order.nguoi_dung?.ten || `#${order.nguoi_dung_id}`}</span>
+                    <div className="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                      Người lập:{' '}
+                      <span className="font-semibold text-on-surface">
+                        {order.nguoi_dung?.ten || `#${order.nguoi_dung_id}`}
+                      </span>{' '}
+                      <span className="hidden sm:inline">• Lập lúc {formatDateTime(order.ngay_tao)}</span>
                     </div>
                   </div>
-                  <ThueDoStatusBadge status={order.trang_thai} />
                 </div>
 
-                {order.trang_thai === 4 && (
-                  <div className="p-2.5 rounded-lg bg-error-container text-on-error-container font-label-md text-label-md flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[18px]">warning</span>
-                    <span>Phiếu đã quá hạn trả {daysOverdue(order.ngay_hen_tra)} ngày!</span>
-                  </div>
-                )}
-
-                {(order.trang_thai === 3 || order.trang_thai === 5) && (
-                  <div className="p-2.5 rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px]">lock</span>
-                    <span>Phiếu đã hoàn tất — chỉ xem, không thể chỉnh sửa để bảo toàn số liệu.</span>
-                  </div>
-                )}
-
                 {/* Action buttons by status */}
-                <div className="flex flex-wrap gap-2 pt-1 print:hidden">
+                <div className="flex flex-wrap gap-2 print:hidden">
                   {order.trang_thai === 1 && (
                     <>
                       <button
                         type="button"
                         onClick={() => openGiaoDoModal(order)}
-                        className="flex-1 min-w-[130px] h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+                        className="flex-1 lg:flex-none min-w-[140px] h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
                       >
                         <span className="material-symbols-outlined text-[18px]">local_shipping</span>
                         Giao đồ cho khách
@@ -371,7 +383,7 @@ function DonThueDetailContent() {
                       <button
                         type="button"
                         onClick={() => openSuaModal(order)}
-                        className="h-11 px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-high"
+                        className="h-11 px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors"
                       >
                         <span className="material-symbols-outlined text-[18px]">edit</span>
                         Sửa
@@ -379,7 +391,7 @@ function DonThueDetailContent() {
                       <button
                         type="button"
                         onClick={openHuyModal}
-                        className="h-11 px-4 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center gap-1 hover:bg-error-container"
+                        className="h-11 px-4 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center gap-1 hover:bg-error-container transition-colors"
                       >
                         <span className="material-symbols-outlined text-[18px]">cancel</span>
                         Hủy
@@ -392,7 +404,7 @@ function DonThueDetailContent() {
                       <button
                         type="button"
                         onClick={() => openTraDoModal(order)}
-                        className="flex-1 min-w-[150px] h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+                        className="flex-1 lg:flex-none min-w-[150px] h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
                       >
                         <span className="material-symbols-outlined text-[18px]">assignment_turned_in</span>
                         Khách đã trả đồ
@@ -400,7 +412,7 @@ function DonThueDetailContent() {
                       <button
                         type="button"
                         onClick={() => openSuaModal(order)}
-                        className="h-11 px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-high"
+                        className="h-11 px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors"
                       >
                         <span className="material-symbols-outlined text-[18px]">update</span>
                         Gia hạn / Sửa
@@ -409,7 +421,7 @@ function DonThueDetailContent() {
                         <button
                           type="button"
                           onClick={openHuyModal}
-                          className="h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center gap-1"
+                          className="h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center gap-1 hover:bg-error-container transition-colors"
                         >
                           <span className="material-symbols-outlined text-[18px]">cancel</span>
                           Hủy
@@ -418,184 +430,231 @@ function DonThueDetailContent() {
                     </>
                   )}
                 </div>
-              </section>
+              </div>
 
-              {/* Khách hàng */}
-              <section className="p-4 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-2.5">
-                <div className="flex items-center justify-between">
-                  <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[18px] text-primary-container">person</span>
-                    Khách thuê
-                  </h2>
-                  {order.khach_hang && (
-                    <Link
-                      href={`/khach-hang/${order.khach_hang.id}`}
-                      className="font-label-sm text-label-sm text-primary-container hover:underline print:hidden"
-                    >
-                      Hồ sơ khách →
-                    </Link>
-                  )}
+              {order.trang_thai === 4 && (
+                <div className="p-3 rounded-xl bg-error-container text-on-error-container font-label-md text-label-md flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px]">warning</span>
+                  <span>Phiếu đã quá hạn trả {daysOverdue(order.ngay_hen_tra)} ngày!</span>
                 </div>
-                <div className="flex items-center justify-between gap-2 bg-surface-container-low p-3 rounded-xl">
-                  <div className="min-w-0">
-                    <div className="font-title-sm text-title-sm text-on-surface">
-                      {order.khach_hang?.ten || '—'}
+              )}
+
+              {(order.trang_thai === 3 || order.trang_thai === 5) && (
+                <div className="p-3 rounded-xl bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[16px]">lock</span>
+                  <span>Phiếu đã hoàn tất — chỉ xem, không thể chỉnh sửa để bảo toàn số liệu.</span>
+                </div>
+              )}
+            </section>
+
+            {/* 2-Column Content Grid on PC */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start print:block">
+              {/* Left Column: Sản phẩm thuê + Lịch trình & Ghi chú */}
+              <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4 lg:gap-5">
+                {/* Sản phẩm trong phiếu */}
+                <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
+                  <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[18px] text-primary-container">checkroom</span>
+                    Sản phẩm thuê ({order.chi_tiet?.length || 0})
+                  </h2>
+                  <div className="flex flex-col gap-2.5">
+                    {(order.chi_tiet || []).map((ct) => (
+                      <Link
+                        key={ct.id}
+                        href={`/san-pham/${ct.san_pham_id}`}
+                        className="p-3 rounded-xl bg-surface-container-low flex items-center gap-3.5 hover:bg-surface-container transition-colors"
+                      >
+                        <div className="w-12 h-14 lg:w-14 lg:h-16 rounded-lg overflow-hidden shrink-0">
+                          <ProductImage
+                            hinhAnh={ct.san_pham?.hinh_anh}
+                            alt={ct.san_pham?.ten_san_pham}
+                            className="w-full h-full"
+                            iconSize={20}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3">
+                          <div className="min-w-0">
+                            <div className="font-body-md text-body-md font-semibold text-on-surface truncate">
+                              {ct.san_pham?.ten_san_pham || `Sản phẩm #${ct.san_pham_id}`}
+                            </div>
+                            <div className="font-label-sm text-label-sm text-primary-container font-semibold">
+                              {ct.san_pham?.ma_san_pham || `ID ${ct.san_pham_id}`}
+                            </div>
+                          </div>
+                          <div className="flex sm:flex-col sm:items-end gap-2 sm:gap-0.5 shrink-0 tabular-nums">
+                            <span className="font-currency-lg text-[14px] text-on-surface font-bold">
+                              {formatCurrency(ct.gia_thue_ngay)}
+                              <span className="text-[11px] font-normal text-on-surface-variant">/ngày</span>
+                            </span>
+                            <span className="font-label-sm text-[11px] text-on-surface-variant">
+                              Cọc gợi ý: {formatCurrency(ct.tien_coc)}
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+
+                {/* Lịch trình & Ghi chú */}
+                <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3.5">
+                  <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[18px] text-primary-container">calendar_month</span>
+                    Lịch trình thuê &amp; Ghi chú
+                  </h2>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-body-sm">
+                    <div className="p-3 rounded-xl bg-surface-container-low">
+                      <div className="font-label-sm text-on-surface-variant">Ngày bắt đầu nhận đồ</div>
+                      <div className="font-title-sm text-[14px] font-semibold text-on-surface mt-1 tabular-nums">
+                        {formatDateTime(order.ngay_bat_dau)}
+                      </div>
                     </div>
-                    <div className="font-body-sm text-body-sm text-on-surface-variant">
-                      {formatPhone(order.khach_hang?.so_dien_thoai)}
+                    <div className="p-3 rounded-xl bg-surface-container-low">
+                      <div className="font-label-sm text-on-surface-variant">
+                        Ngày hẹn trả ({formatNumber(order.so_ngay_thue || 1)} ngày)
+                      </div>
+                      <div className="font-title-sm text-[14px] font-semibold text-on-surface mt-1 tabular-nums">
+                        {formatDateTime(order.ngay_hen_tra)}
+                      </div>
                     </div>
-                    {order.khach_hang?.dia_chi && (
-                      <div className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
-                        {order.khach_hang.dia_chi}
+                    {order.ngay_tra_thuc_te && (
+                      <div className="sm:col-span-2 p-3 rounded-xl bg-[#EAF5EE] text-[#236B48]">
+                        <div className="font-label-sm opacity-80">Ngày trả thực tế</div>
+                        <div className="font-title-sm text-[14px] font-semibold mt-1 tabular-nums">
+                          {formatDateTime(order.ngay_tra_thuc_te)}
+                        </div>
                       </div>
                     )}
                   </div>
-                  {order.khach_hang?.so_dien_thoai && (
-                    <a
-                      href={`tel:${order.khach_hang.so_dien_thoai}`}
-                      className="h-9 px-3.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-md text-label-md flex items-center gap-1 shrink-0 print:hidden"
-                    >
-                      <span className="material-symbols-outlined text-[16px]">call</span>
-                      Gọi
-                    </a>
-                  )}
-                </div>
-              </section>
 
-              {/* Sản phẩm trong phiếu */}
-              <section className="p-4 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-2.5">
-                <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[18px] text-primary-container">checkroom</span>
-                  Sản phẩm thuê ({order.chi_tiet?.length || 0})
-                </h2>
-                <div className="flex flex-col gap-2">
-                  {(order.chi_tiet || []).map((ct) => (
-                    <Link
-                      key={ct.id}
-                      href={`/san-pham/${ct.san_pham_id}`}
-                      className="p-2.5 rounded-xl bg-surface-container-low flex items-center gap-3 hover:bg-surface-container transition-colors"
-                    >
-                      <div className="w-12 h-14 rounded-lg overflow-hidden shrink-0">
-                        <ProductImage
-                          hinhAnh={ct.san_pham?.hinh_anh}
-                          alt={ct.san_pham?.ten_san_pham}
-                          className="w-full h-full"
-                          iconSize={20}
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-body-md text-body-md font-semibold text-on-surface truncate">
-                          {ct.san_pham?.ten_san_pham || `Sản phẩm #${ct.san_pham_id}`}
-                        </div>
-                        <div className="font-label-sm text-label-sm text-primary-container">
-                          {ct.san_pham?.ma_san_pham || `ID ${ct.san_pham_id}`}
-                        </div>
-                        <div className="font-label-sm text-[11px] text-on-surface-variant mt-0.5 tabular-nums">
-                          Giá thuê: {formatCurrency(ct.gia_thue_ngay)}/ngày • Cọc gợi ý:{' '}
-                          {formatCurrency(ct.tien_coc)}
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-
-              {/* Lịch trình & Tài chính */}
-              <section className="p-4 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-3">
-                <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[18px] text-primary-container">receipt_long</span>
-                  Lịch trình &amp; Thanh toán
-                </h2>
-
-                <div className="grid grid-cols-2 gap-2 text-body-sm">
-                  <div className="p-2.5 rounded-lg bg-surface-container-low">
-                    <div className="font-label-sm text-on-surface-variant">Ngày bắt đầu</div>
-                    <div className="font-semibold text-on-surface mt-0.5">
-                      {formatDateTime(order.ngay_bat_dau)}
+                  {order.ghi_chu ? (
+                    <div className="p-3.5 rounded-xl bg-surface-container-low font-body-sm text-on-surface-variant border border-outline-variant/15">
+                      <span className="font-semibold text-on-surface">Ghi chú: </span>
+                      {order.ghi_chu}
                     </div>
-                  </div>
-                  <div className="p-2.5 rounded-lg bg-surface-container-low">
-                    <div className="font-label-sm text-on-surface-variant">
-                      Ngày hẹn trả ({formatNumber(order.so_ngay_thue || 1)} ngày)
-                    </div>
-                    <div className="font-semibold text-on-surface mt-0.5">
-                      {formatDateTime(order.ngay_hen_tra)}
-                    </div>
-                  </div>
-                  {order.ngay_tra_thuc_te && (
-                    <div className="col-span-2 p-2.5 rounded-lg bg-[#EAF5EE] text-[#236B48]">
-                      <div className="font-label-sm opacity-80">Ngày trả thực tế</div>
-                      <div className="font-semibold mt-0.5">
-                        {formatDateTime(order.ngay_tra_thuc_te)}
-                      </div>
+                  ) : (
+                    <div className="p-3 rounded-xl bg-surface-container-low/50 font-body-sm text-outline italic">
+                      Không có ghi chú đính kèm.
                     </div>
                   )}
-                </div>
+                </section>
+              </div>
 
-                <div className="border-t border-outline-variant/30 pt-3 flex flex-col gap-2 font-body-sm">
-                  <div className="flex justify-between">
-                    <span className="text-on-surface-variant">Tổng tiền thuê:</span>
-                    <span className="font-semibold text-on-surface tabular-nums">
-                      {formatCurrency(tongThue)}
-                    </span>
+              {/* Right Sticky Column: Khách thuê + Chi tiết thanh toán */}
+              <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-20 flex flex-col gap-4 lg:gap-5 print:mt-4">
+                {/* Khách hàng */}
+                <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[18px] text-primary-container">person</span>
+                      Khách thuê
+                    </h2>
+                    {order.khach_hang && (
+                      <Link
+                        href={`/khach-hang/${order.khach_hang.id}`}
+                        className="font-label-sm text-label-sm text-primary-container font-semibold hover:underline print:hidden"
+                      >
+                        Hồ sơ khách →
+                      </Link>
+                    )}
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-on-surface-variant">
-                      Đặt cọc ({LOAI_COC_LABELS[order.loai_coc]}):
-                    </span>
-                    <span className="font-semibold text-on-surface tabular-nums">
-                      {order.loai_coc === 3 ? '0đ (Giữ CCCD)' : formatCurrency(tienCoc)}
-                    </span>
+                  <div className="flex items-center justify-between gap-3 bg-surface-container-low p-3.5 rounded-xl">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="hidden sm:flex w-10 h-10 rounded-full bg-primary-fixed text-primary items-center justify-center font-title-sm font-bold shrink-0">
+                        {getInitials(order.khach_hang?.ten)}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-title-sm text-title-sm text-on-surface truncate">
+                          {order.khach_hang?.ten || '—'}
+                        </div>
+                        <div className="font-body-sm text-body-sm text-on-surface-variant">
+                          {formatPhone(order.khach_hang?.so_dien_thoai)}
+                        </div>
+                        {order.khach_hang?.dia_chi && (
+                          <div className="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-2">
+                            {order.khach_hang.dia_chi}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {order.khach_hang?.so_dien_thoai && (
+                      <a
+                        href={`tel:${order.khach_hang.so_dien_thoai}`}
+                        className="h-9 px-3.5 rounded-full bg-primary-fixed hover:bg-primary-container hover:text-on-primary text-on-primary-fixed-variant font-label-md text-label-md flex items-center gap-1 shrink-0 transition-colors print:hidden"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">call</span>
+                        Gọi
+                      </a>
+                    )}
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-on-surface-variant">Tiền phạt:</span>
-                    <span
-                      className={`font-semibold tabular-nums ${
-                        tienPhat > 0 ? 'text-error' : 'text-on-surface'
-                      }`}
-                    >
-                      {formatCurrency(tienPhat)}
-                    </span>
-                  </div>
-                  {order.trang_thai === 3 && order.loai_coc !== 3 && (
+                </section>
+
+                {/* Tài chính */}
+                <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
+                  <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[18px] text-primary-container">receipt_long</span>
+                    Chi tiết thanh toán
+                  </h2>
+
+                  <div className="flex flex-col gap-2.5 font-body-sm">
+                    <div className="flex justify-between">
+                      <span className="text-on-surface-variant">Tổng tiền thuê:</span>
+                      <span className="font-semibold text-on-surface tabular-nums">
+                        {formatCurrency(tongThue)}
+                      </span>
+                    </div>
                     <div className="flex justify-between">
                       <span className="text-on-surface-variant">
-                        {tienCoc - tienPhat >= 0 ? 'Tiền cọc hoàn khách:' : 'Khách trả thêm:'}
+                        Đặt cọc ({LOAI_COC_LABELS[order.loai_coc]}):
                       </span>
-                      <span
-                        className={`font-bold tabular-nums ${
-                          tienCoc - tienPhat >= 0 ? 'text-[#236B48]' : 'text-error'
-                        }`}
-                      >
-                        {formatCurrency(Math.abs(tienCoc - tienPhat))}
+                      <span className="font-semibold text-on-surface tabular-nums">
+                        {order.loai_coc === 3 ? '0đ (Giữ CCCD)' : formatCurrency(tienCoc)}
                       </span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-on-surface-variant">Tiền phạt:</span>
+                      <span
+                        className={`font-semibold tabular-nums ${
+                          tienPhat > 0 ? 'text-error' : 'text-on-surface'
+                        }`}
+                      >
+                        {formatCurrency(tienPhat)}
+                      </span>
+                    </div>
+                    {order.trang_thai === 3 && order.loai_coc !== 3 && (
+                      <div className="flex justify-between">
+                        <span className="text-on-surface-variant">
+                          {tienCoc - tienPhat >= 0 ? 'Tiền cọc hoàn khách:' : 'Khách trả thêm:'}
+                        </span>
+                        <span
+                          className={`font-bold tabular-nums ${
+                            tienCoc - tienPhat >= 0 ? 'text-[#236B48]' : 'text-error'
+                          }`}
+                        >
+                          {formatCurrency(Math.abs(tienCoc - tienPhat))}
+                        </span>
+                      </div>
+                    )}
+                    <div className="border-t border-outline-variant/30 pt-3 mt-1 flex justify-between items-center">
+                      <span className="font-title-sm text-on-surface">Tổng doanh thu phiếu</span>
+                      <span className="font-headline-md lg:text-[20px] text-primary-container font-bold tabular-nums">
+                        {formatCurrency(tongThue + tienPhat)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {shopPhone && (
+                    <div className="text-center font-label-sm text-outline pt-2 border-t border-outline-variant/15">
+                      Hotline tiệm MiuMiu: {formatPhone(shopPhone)}
+                    </div>
                   )}
-                  <div className="border-t border-outline-variant/30 pt-2 flex justify-between items-center">
-                    <span className="font-title-sm text-on-surface">Tổng doanh thu phiếu</span>
-                    <span className="font-headline-md text-primary-container font-bold tabular-nums">
-                      {formatCurrency(tongThue + tienPhat)}
-                    </span>
-                  </div>
-                </div>
-
-                {order.ghi_chu && (
-                  <div className="p-3 rounded-lg bg-surface-container-low font-body-sm text-on-surface-variant">
-                    <span className="font-semibold text-on-surface">Ghi chú: </span>
-                    {order.ghi_chu}
-                  </div>
-                )}
-
-                {shopPhone && (
-                  <div className="text-center font-label-sm text-outline pt-1">
-                    Hotline tiệm MiuMiu: {formatPhone(shopPhone)}
-                  </div>
-                )}
-              </section>
-            </>
-          )}
-        </div>
-      </main>
+                </section>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
 
       {/* Modal Giao đồ */}
       {activeModal === 'giao-do' && order && (
@@ -700,7 +759,7 @@ function DonThueDetailContent() {
         <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
           <form
             onSubmit={handleTraDo}
-            className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-4"
+            className="w-full max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-4"
           >
             <div className="flex items-center justify-between">
               <h3 className="font-headline-md text-headline-md text-on-surface">
@@ -906,7 +965,7 @@ function DonThueDetailContent() {
         <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
           <form
             onSubmit={handleSua}
-            className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5"
+            className="w-full max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5"
           >
             <div className="flex items-center justify-between">
               <h3 className="font-headline-md text-headline-md text-on-surface">
@@ -940,7 +999,7 @@ function DonThueDetailContent() {
 
             {order.trang_thai === 1 ? (
               <>
-                <div className="grid grid-cols-1 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="flex flex-col gap-1">
                     <label className="font-label-sm text-on-surface-variant">Ngày bắt đầu</label>
                     <input
@@ -1004,7 +1063,7 @@ function DonThueDetailContent() {
                     <label className="font-label-sm text-on-surface-variant">
                       Sản phẩm trong phiếu ({editProductIds.length})
                     </label>
-                    <div className="max-h-40 overflow-y-auto flex flex-col gap-1.5 p-2 rounded-xl bg-surface-container-low">
+                    <div className="max-h-44 overflow-y-auto flex flex-col gap-1.5 p-2 rounded-xl bg-surface-container-low">
                       {allProducts.map((sp) => {
                         const checked = editProductIds.includes(sp.id)
                         return (
@@ -1082,9 +1141,7 @@ function DonThueDetailContent() {
           </form>
         </div>
       )}
-
-      <BottomNav />
-    </div>
+    </AppShell>
   )
 }
 
