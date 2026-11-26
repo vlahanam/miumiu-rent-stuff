@@ -403,17 +403,6 @@ function SanPhamContent() {
             )}
           </>
         )}
-
-        {/* Mobile Add Product Dashed Button */}
-        <div className="pt-1 lg:hidden">
-          <Link
-            href="/san-pham/them-moi"
-            className="w-full h-11 rounded-xl border-2 border-dashed border-outline-variant text-primary-container font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container transition-colors active:scale-95"
-          >
-            <span className="material-symbols-outlined text-[20px]">add</span>
-            Thêm sản phẩm mới
-          </Link>
-        </div>
       </div>
     </AppShell>
   )
