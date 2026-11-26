@@ -174,10 +174,11 @@ export default function DateInput({
     const trigger = wrapperRef.current
     if (!trigger) return
     const rect = trigger.getBoundingClientRect()
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
     const vw = window.innerWidth
     const vh = window.innerHeight
-    const width = Math.min(312, vw - 24)
-    const estHeight = mode === 'datetime' ? 390 : 330
+    const width = Math.min(19.5 * rem, vw - 1.5 * rem)
+    const estHeight = (mode === 'datetime' ? 24.375 : 20.625) * rem
 
     const left = Math.min(Math.max(12, rect.left), vw - width - 12)
     const spaceBelow = vh - rect.bottom
@@ -426,7 +427,7 @@ export default function DateInput({
             aria-label="Xóa ngày"
             className="w-7 h-7 rounded-lg flex items-center justify-center text-outline hover:text-error hover:bg-surface-container transition-colors"
           >
-            <span className="material-symbols-outlined text-[16px]">close</span>
+            <span className="material-symbols-outlined text-[1rem]">close</span>
           </button>
         )}
         <button
@@ -439,7 +440,7 @@ export default function DateInput({
           aria-label="Mở lịch chọn ngày"
           className="w-7 h-7 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container transition-colors disabled:opacity-50"
         >
-          <span className="material-symbols-outlined text-[18px]">calendar_month</span>
+          <span className="material-symbols-outlined text-[1.125rem]">calendar_month</span>
         </button>
       </div>
 
@@ -459,7 +460,7 @@ export default function DateInput({
                 aria-label="Tháng trước"
                 className="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors shrink-0"
               >
-                <span className="material-symbols-outlined text-[19px]">chevron_left</span>
+                <span className="material-symbols-outlined text-[1.1875rem]">chevron_left</span>
               </button>
 
               <div className="flex items-center gap-1.5 min-w-0">
@@ -495,7 +496,7 @@ export default function DateInput({
                 aria-label="Tháng sau"
                 className="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors shrink-0"
               >
-                <span className="material-symbols-outlined text-[19px]">chevron_right</span>
+                <span className="material-symbols-outlined text-[1.1875rem]">chevron_right</span>
               </button>
             </div>
 
@@ -504,7 +505,7 @@ export default function DateInput({
               {WEEKDAYS.map((wd) => (
                 <div
                   key={wd}
-                  className="h-7 flex items-center justify-center font-label-sm text-[11px] text-on-surface-variant"
+                  className="h-7 flex items-center justify-center font-label-sm text-[0.6875rem] text-on-surface-variant"
                 >
                   {wd}
                 </div>
@@ -526,7 +527,7 @@ export default function DateInput({
                     key={`${cell.year}-${cell.month}-${cell.day}`}
                     type="button"
                     onClick={() => handleSelectDay(cell.year, cell.month, cell.day)}
-                    className={`h-8 rounded-lg font-body-sm text-[13px] tabular-nums flex items-center justify-center transition-colors ${
+                    className={`h-8 rounded-lg font-body-sm text-[0.8125rem] tabular-nums flex items-center justify-center transition-colors ${
                       isSelected
                         ? 'bg-primary-container text-on-primary font-bold shadow-sm'
                         : isToday
@@ -546,7 +547,7 @@ export default function DateInput({
             {mode === 'datetime' && (
               <div className="mt-3 pt-3 border-t border-outline-variant/20 flex items-center justify-between gap-2">
                 <span className="font-label-sm text-on-surface-variant flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[16px] text-primary-container">
+                  <span className="material-symbols-outlined text-[1rem] text-primary-container">
                     schedule
                   </span>
                   Giờ (24h)

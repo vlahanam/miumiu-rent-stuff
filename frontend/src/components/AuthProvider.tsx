@@ -205,7 +205,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen bg-surface flex flex-col items-center justify-center gap-3 px-6">
         <div className="w-12 h-12 rounded-2xl bg-primary-container text-on-primary flex items-center justify-center shadow-md animate-pulse">
-          <span className="material-symbols-outlined text-[26px]">storefront</span>
+          <span className="material-symbols-outlined text-[1.625rem]">storefront</span>
         </div>
         <span className="font-body-sm text-body-sm text-on-surface-variant">Đang tải MiuMiu Atelier...</span>
       </div>

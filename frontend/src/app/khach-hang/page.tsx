@@ -121,7 +121,7 @@ export default function KhachHangPage() {
             title="Xuất danh sách khách hàng"
             className="h-8 lg:h-9 px-2.5 lg:px-3.5 rounded-full lg:rounded-xl bg-surface-container text-primary-container hover:bg-primary-fixed font-label-sm lg:font-label-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[16px] lg:text-[18px]">file_download</span>
+            <span className="material-symbols-outlined text-[1rem] lg:text-[1.125rem]">file_download</span>
             <span className="hidden sm:inline">Xuất Excel</span>
           </button>
           <button
@@ -129,7 +129,7 @@ export default function KhachHangPage() {
             onClick={() => setShowAddModal(true)}
             className="hidden lg:inline-flex h-9 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold items-center gap-1.5 shadow-sm transition-colors"
           >
-            <span className="material-symbols-outlined text-[18px]">person_add</span>
+            <span className="material-symbols-outlined text-[1.125rem]">person_add</span>
             <span>Thêm khách hàng</span>
           </button>
         </div>
@@ -137,12 +137,12 @@ export default function KhachHangPage() {
     >
       <div className="flex flex-col w-full gap-space-md lg:gap-5">
         {/* Mobile Summary + Quick Add */}
-        <div className="flex lg:hidden items-center justify-between bg-surface-container-low px-space-md py-space-sm rounded-xl shadow-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
-              <span className="material-symbols-outlined text-[18px]">loyalty</span>
+        <div className="flex lg:hidden items-center justify-between gap-2 bg-surface-container-low px-space-md py-space-sm rounded-xl shadow-sm">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+              <span className="material-symbols-outlined text-[1.125rem]">loyalty</span>
             </div>
-            <div>
+            <div className="truncate">
               <span className="font-headline-md text-headline-md text-on-surface tabular-nums">
                 {total}
               </span>
@@ -154,9 +154,9 @@ export default function KhachHangPage() {
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm active:scale-95 transition-transform shadow-sm"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm shrink-0 active:scale-95 transition-transform shadow-sm"
           >
-            <span className="material-symbols-outlined text-[15px]">person_add</span>
+            <span className="material-symbols-outlined text-[0.9375rem]">person_add</span>
             <span>Thêm mới</span>
           </button>
         </div>
@@ -164,7 +164,7 @@ export default function KhachHangPage() {
         {/* Search & Filter Toolbar */}
         <section className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-space-sm lg:gap-3 lg:p-3.5 lg:rounded-2xl lg:bg-surface-container-lowest lg:border lg:border-outline-variant/20 lg:shadow-sm">
           <div className="relative flex items-center w-full xl:w-80 2xl:w-96 shrink-0">
-            <span className="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">
+            <span className="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[1.25rem] pointer-events-none">
               search
             </span>
             <input
@@ -180,7 +180,7 @@ export default function KhachHangPage() {
                 onClick={() => setSearchInput('')}
                 className="absolute right-3 text-outline hover:text-on-surface"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             )}
           </div>
@@ -223,7 +223,7 @@ export default function KhachHangPage() {
         {/* Empty */}
         {!loading && customers.length === 0 && (
           <div className="py-12 lg:py-16 px-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col items-center text-center gap-2.5">
-            <span className="material-symbols-outlined text-[42px] text-outline">group</span>
+            <span className="material-symbols-outlined text-[2.625rem] text-outline">group</span>
             <h3 className="font-title-sm text-title-sm text-on-surface">Chưa có khách hàng nào</h3>
             <p className="font-body-sm text-on-surface-variant">
               {debouncedSearch || filter
@@ -268,7 +268,7 @@ export default function KhachHangPage() {
                             {customer.ten}
                           </span>
                           {customer.so_phieu_dang_thue > 0 && (
-                            <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-[10px] font-semibold shrink-0">
+                            <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-[0.625rem] font-semibold whitespace-nowrap shrink-0">
                               {customer.so_phieu_dang_thue} đơn đang mở
                             </span>
                           )}
@@ -279,7 +279,7 @@ export default function KhachHangPage() {
                       </div>
                     </Link>
                     <span
-                      className={`px-2.5 py-0.5 rounded-full font-label-sm text-label-sm shrink-0 ${
+                      className={`px-2.5 py-0.5 rounded-full font-label-sm text-label-sm whitespace-nowrap shrink-0 ${
                         customer.so_lan_thue >= 3
                           ? 'bg-primary-fixed text-on-primary-fixed font-semibold'
                           : 'bg-surface-container-high text-primary-container'
@@ -292,36 +292,36 @@ export default function KhachHangPage() {
                   {customer.dia_chi && (
                     <div className="bg-surface-container-low px-3 py-2 rounded-lg">
                       <span className="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[15px]">location_on</span>
+                        <span className="material-symbols-outlined text-[0.9375rem] shrink-0">location_on</span>
                         {customer.dia_chi}
                       </span>
                     </div>
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between pt-1 gap-2">
+                  <div className="flex flex-wrap items-center justify-between pt-1 gap-2">
                     <div className="flex items-center gap-2">
                       <a
                         href={`tel:${customer.so_dien_thoai}`}
-                        className="h-8 px-3 rounded-full bg-surface-container text-on-surface-variant font-label-sm flex items-center gap-1 hover:bg-surface-container-high active:scale-95"
+                        className="h-8 px-3 rounded-full bg-surface-container text-on-surface-variant font-label-sm whitespace-nowrap shrink-0 flex items-center gap-1 hover:bg-surface-container-high active:scale-95"
                       >
-                        <span className="material-symbols-outlined text-[15px]">call</span>
-                        Gọi
+                        <span className="material-symbols-outlined text-[0.9375rem]">call</span>
+                        <span>Gọi</span>
                       </a>
                       <Link
                         href={`/khach-hang/${customer.id}`}
-                        className="h-8 px-3 rounded-full bg-surface-container text-on-surface-variant font-label-sm flex items-center gap-1 hover:bg-surface-container-high active:scale-95"
+                        className="h-8 px-3 rounded-full bg-surface-container text-on-surface-variant font-label-sm whitespace-nowrap shrink-0 flex items-center gap-1 hover:bg-surface-container-high active:scale-95"
                       >
-                        <span className="material-symbols-outlined text-[15px]">history</span>
-                        Lịch sử
+                        <span className="material-symbols-outlined text-[0.9375rem]">history</span>
+                        <span>Lịch sử</span>
                       </Link>
                     </div>
                     <Link
                       href={`/don-thue/tao-moi?khach_hang_id=${customer.id}`}
-                      className="h-8 px-3.5 rounded-full bg-primary-container text-on-primary font-label-sm flex items-center gap-1 active:scale-95 shadow-sm"
+                      className="h-8 px-3.5 rounded-full bg-primary-container text-on-primary font-label-sm whitespace-nowrap shrink-0 flex items-center gap-1 active:scale-95 shadow-sm"
                     >
-                      <span className="material-symbols-outlined text-[15px]">receipt_long</span>
-                      Tạo đơn
+                      <span className="material-symbols-outlined text-[0.9375rem]">receipt_long</span>
+                      <span>Tạo đơn</span>
                     </Link>
                   </div>
                 </div>
@@ -333,7 +333,7 @@ export default function KhachHangPage() {
                 type="button"
                 disabled={loadingMore}
                 onClick={() => loadCustomers(page + 1, true)}
-                className="h-11 rounded-xl bg-surface-container text-primary-container font-label-md"
+                className="h-11 px-4 rounded-xl bg-surface-container text-primary-container font-label-md"
               >
                 {loadingMore ? 'Đang tải thêm...' : `Tải thêm (${customers.length}/${total})`}
               </button>
@@ -347,7 +347,7 @@ export default function KhachHangPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
+                  <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[0.6875rem] uppercase tracking-wider text-on-surface-variant">
                     <th className="py-3.5 pl-5 pr-3">Khách hàng</th>
                     <th className="py-3.5 px-3">Số điện thoại</th>
                     <th className="py-3.5 px-3">Địa chỉ</th>
@@ -371,11 +371,11 @@ export default function KhachHangPage() {
                               {getInitials(customer.ten)}
                             </div>
                             <div className="flex items-center gap-2 min-w-0 flex-wrap">
-                              <span className="font-title-sm text-[14px] text-on-surface group-hover:text-primary-container transition-colors truncate">
+                              <span className="font-title-sm text-[0.875rem] text-on-surface group-hover:text-primary-container transition-colors truncate">
                                 {customer.ten}
                               </span>
                               {customer.so_phieu_dang_thue > 0 && (
-                                <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-[10px] font-semibold shrink-0">
+                                <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-[0.625rem] font-semibold whitespace-nowrap shrink-0">
                                   {customer.so_phieu_dang_thue} đơn đang mở
                                 </span>
                               )}
@@ -387,13 +387,13 @@ export default function KhachHangPage() {
                             href={`tel:${customer.so_dien_thoai}`}
                             className="font-body-sm font-medium text-on-surface hover:text-primary-container inline-flex items-center gap-1.5 tabular-nums"
                           >
-                            <span className="material-symbols-outlined text-[15px] text-on-surface-variant">
+                            <span className="material-symbols-outlined text-[0.9375rem] text-on-surface-variant">
                               call
                             </span>
                             {formatPhone(customer.so_dien_thoai)}
                           </a>
                         </td>
-                        <td className="py-3.5 px-3 max-w-[280px]">
+                        <td className="py-3.5 px-3 max-w-[17.5rem]">
                           <span className="font-body-sm text-on-surface-variant line-clamp-1">
                             {customer.dia_chi || '—'}
                           </span>
@@ -413,17 +413,17 @@ export default function KhachHangPage() {
                           <div className="inline-flex items-center gap-1.5">
                             <Link
                               href={`/khach-hang/${customer.id}`}
-                              className="h-8 px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm flex items-center gap-1 transition-colors"
+                              className="h-8 px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm whitespace-nowrap flex items-center gap-1 transition-colors"
                             >
-                              <span className="material-symbols-outlined text-[15px]">history</span>
-                              Hồ sơ
+                              <span className="material-symbols-outlined text-[0.9375rem]">history</span>
+                              <span>Hồ sơ</span>
                             </Link>
                             <Link
                               href={`/don-thue/tao-moi?khach_hang_id=${customer.id}`}
-                              className="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-sm flex items-center gap-1 shadow-sm transition-colors"
+                              className="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-sm whitespace-nowrap flex items-center gap-1 shadow-sm transition-colors"
                             >
-                              <span className="material-symbols-outlined text-[15px]">receipt_long</span>
-                              Tạo đơn
+                              <span className="material-symbols-outlined text-[0.9375rem]">receipt_long</span>
+                              <span>Tạo đơn</span>
                             </Link>
                           </div>
                         </td>
@@ -469,7 +469,7 @@ export default function KhachHangPage() {
 
           <form
             onSubmit={handleCreateCustomer}
-            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[28px] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
             <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
               <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
@@ -487,7 +487,7 @@ export default function KhachHangPage() {
                 onClick={() => setShowAddModal(false)}
                 className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
               </button>
             </div>
 
@@ -531,18 +531,18 @@ export default function KhachHangPage() {
               </div>
             </div>
 
-            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-3 shrink-0">
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 md:flex-none md:min-w-[120px] h-11 md:h-12 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 md:flex-none md:min-w-[200px] h-11 md:h-12 px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {saving ? 'Đang lưu...' : 'Lưu khách hàng'}
               </button>

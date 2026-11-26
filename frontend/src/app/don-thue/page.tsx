@@ -129,7 +129,7 @@ export default function DonThuePage() {
             title="Xuất danh sách CSV"
             className="hidden lg:inline-flex h-9 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/25 font-label-md items-center gap-1.5 transition-colors disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[17px]">description</span>
+            <span className="material-symbols-outlined text-[1.0625rem]">description</span>
             <span>CSV</span>
           </button>
           <button
@@ -139,14 +139,14 @@ export default function DonThuePage() {
             title="Xuất danh sách Excel"
             className="h-8 lg:h-9 px-2.5 lg:px-3.5 rounded-full lg:rounded-xl bg-surface-container text-primary-container hover:bg-primary-fixed font-label-sm lg:font-label-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[16px] lg:text-[18px]">file_download</span>
+            <span className="material-symbols-outlined text-[1rem] lg:text-[1.125rem]">file_download</span>
             <span className="hidden sm:inline">Xuất Excel</span>
           </button>
           <Link
             href="/don-thue/tao-moi"
-            className="hidden lg:inline-flex h-9 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold items-center gap-1.5 shadow-sm transition-colors"
+            className="hidden lg:inline-flex h-9 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold whitespace-nowrap items-center gap-1.5 shadow-sm transition-colors"
           >
-            <span className="material-symbols-outlined text-[18px]">add</span>
+            <span className="material-symbols-outlined text-[1.125rem]">add</span>
             <span>Tạo đơn thuê</span>
           </Link>
         </div>
@@ -166,12 +166,12 @@ export default function DonThuePage() {
           >
             <div>
               <div className="font-label-sm text-on-surface-variant">Quá hạn trả áo</div>
-              <div className="font-headline-xl text-[26px] font-bold text-error tabular-nums mt-0.5">
+              <div className="font-headline-xl text-[1.625rem] font-bold text-error tabular-nums mt-0.5">
                 {stats.quaHan}
               </div>
             </div>
             <div className="w-11 h-11 rounded-xl bg-[#FDE8EB] text-[#C5283D] flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[22px]">warning</span>
+              <span className="material-symbols-outlined text-[1.375rem]">warning</span>
             </div>
           </button>
 
@@ -186,12 +186,12 @@ export default function DonThuePage() {
           >
             <div>
               <div className="font-label-sm text-on-surface-variant">Đang cho thuê</div>
-              <div className="font-headline-xl text-[26px] font-bold text-primary-container tabular-nums mt-0.5">
+              <div className="font-headline-xl text-[1.625rem] font-bold text-primary-container tabular-nums mt-0.5">
                 {stats.dangThue}
               </div>
             </div>
             <div className="w-11 h-11 rounded-xl bg-[#FEF4E6] text-[#B57300] flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[22px]">shopping_bag</span>
+              <span className="material-symbols-outlined text-[1.375rem]">shopping_bag</span>
             </div>
           </button>
 
@@ -206,12 +206,12 @@ export default function DonThuePage() {
           >
             <div>
               <div className="font-label-sm text-on-surface-variant">Chờ xác nhận / Đặt trước</div>
-              <div className="font-headline-xl text-[26px] font-bold text-secondary tabular-nums mt-0.5">
+              <div className="font-headline-xl text-[1.625rem] font-bold text-secondary tabular-nums mt-0.5">
                 {stats.choXacNhan}
               </div>
             </div>
             <div className="w-11 h-11 rounded-xl bg-[#FFF8E7] text-[#946E18] flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[22px]">event_upcoming</span>
+              <span className="material-symbols-outlined text-[1.375rem]">event_upcoming</span>
             </div>
           </button>
         </section>
@@ -221,7 +221,7 @@ export default function DonThuePage() {
           {/* Search Bar */}
           <div className="flex items-center gap-space-xs bg-surface-container-lowest lg:bg-surface-container-low rounded-xl px-2 shadow-sm lg:shadow-none border border-outline-variant/25 xl:w-80 2xl:w-96 shrink-0">
             <div className="w-9 h-10 flex items-center justify-center text-on-surface-variant shrink-0">
-              <span className="material-symbols-outlined text-[21px]">search</span>
+              <span className="material-symbols-outlined text-[1.3125rem]">search</span>
             </div>
             <input
               className="flex-1 bg-transparent border-0 outline-none font-body-sm text-body-sm text-on-surface placeholder:text-outline py-2.5 min-w-0"
@@ -236,7 +236,7 @@ export default function DonThuePage() {
                 onClick={() => setSearchInput('')}
                 className="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface shrink-0"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             )}
           </div>
@@ -259,7 +259,7 @@ export default function DonThuePage() {
                   {chip.dot && <span className={`w-2 h-2 rounded-full ${chip.dot} inline-block`} />}
                   <span>{chip.label}</span>
                   {active && (
-                    <span className="px-1.5 py-0.5 rounded-full bg-white/20 font-label-sm text-[10px] leading-tight font-bold">
+                    <span className="px-1.5 py-0.5 rounded-full bg-white/20 font-label-sm text-[0.625rem] leading-tight font-bold">
                       {total}
                     </span>
                   )}
@@ -274,42 +274,42 @@ export default function DonThuePage() {
           <button
             type="button"
             onClick={() => setStatusFilter((prev) => (prev === '4' ? '' : '4'))}
-            className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors text-center ${
+            className={`min-w-0 flex flex-col items-center justify-center p-2 rounded-lg transition-colors text-center ${
               statusFilter === '4' ? 'bg-surface-container-lowest shadow-sm' : 'hover:bg-surface-container-lowest'
             }`}
           >
             <span className="font-headline-md text-headline-md font-bold text-error tabular-nums">
               {stats.quaHan}
             </span>
-            <span className="font-label-sm text-label-sm text-on-surface-variant mt-0.5">
+            <span className="font-label-sm text-label-sm text-on-surface-variant mt-0.5 truncate max-w-full">
               Quá hạn
             </span>
           </button>
           <button
             type="button"
             onClick={() => setStatusFilter((prev) => (prev === '2' ? '' : '2'))}
-            className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors text-center ${
+            className={`min-w-0 flex flex-col items-center justify-center p-2 rounded-lg transition-colors text-center ${
               statusFilter === '2' ? 'bg-surface-container-lowest shadow-sm' : 'hover:bg-surface-container-lowest'
             }`}
           >
             <span className="font-headline-md text-headline-md font-bold text-primary-container tabular-nums">
               {stats.dangThue}
             </span>
-            <span className="font-label-sm text-label-sm text-on-surface font-semibold mt-0.5">
+            <span className="font-label-sm text-label-sm text-on-surface font-semibold mt-0.5 truncate max-w-full">
               Đang thuê
             </span>
           </button>
           <button
             type="button"
             onClick={() => setStatusFilter((prev) => (prev === '1' ? '' : '1'))}
-            className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors text-center ${
+            className={`min-w-0 flex flex-col items-center justify-center p-2 rounded-lg transition-colors text-center ${
               statusFilter === '1' ? 'bg-surface-container-lowest shadow-sm' : 'hover:bg-surface-container-lowest'
             }`}
           >
             <span className="font-headline-md text-headline-md font-bold text-secondary tabular-nums">
               {stats.choXacNhan}
             </span>
-            <span className="font-label-sm text-label-sm text-on-surface-variant mt-0.5">
+            <span className="font-label-sm text-label-sm text-on-surface-variant mt-0.5 truncate max-w-full">
               Chờ xác nhận
             </span>
           </button>
@@ -327,7 +327,7 @@ export default function DonThuePage() {
         {/* Empty State */}
         {!loading && orders.length === 0 && (
           <div className="py-12 lg:py-16 px-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col items-center text-center gap-2.5">
-            <span className="material-symbols-outlined text-[42px] text-outline">receipt_long</span>
+            <span className="material-symbols-outlined text-[2.625rem] text-outline">receipt_long</span>
             <h3 className="font-title-sm text-title-sm text-on-surface">Chưa có đơn thuê nào</h3>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
               {debouncedSearch || statusFilter
@@ -337,7 +337,7 @@ export default function DonThuePage() {
             {!debouncedSearch && !statusFilter && (
               <Link
                 href="/don-thue/tao-moi"
-                className="mt-1 px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md hover:bg-primary transition-colors"
+                className="mt-1 px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md whitespace-nowrap hover:bg-primary transition-colors"
               >
                 + Tạo đơn thuê mới
               </Link>
@@ -373,7 +373,7 @@ export default function DonThuePage() {
                         <span className="font-title-sm text-title-sm text-primary-container font-bold tracking-tight">
                           {order.ma_phieu_thue}
                         </span>
-                        <span className="text-outline text-[12px]">•</span>
+                        <span className="text-outline text-[0.75rem]">•</span>
                         <span className="font-title-sm text-title-sm text-on-surface font-bold truncate">
                           {order.khach_hang?.ten || 'Khách hàng'}
                         </span>
@@ -383,7 +383,7 @@ export default function DonThuePage() {
                           href={`tel:${order.khach_hang.so_dien_thoai}`}
                           className="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5 hover:text-primary w-fit"
                         >
-                          <span className="material-symbols-outlined text-[14px]">call</span>
+                          <span className="material-symbols-outlined text-[0.875rem]">call</span>
                           <span>{formatPhone(order.khach_hang.so_dien_thoai)}</span>
                         </a>
                       )}
@@ -414,7 +414,7 @@ export default function DonThuePage() {
                         </span>
                       )}
                       <div className="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant mt-0.5">
-                        <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+                        <span className="material-symbols-outlined text-[0.875rem] shrink-0">calendar_today</span>
                         <span>
                           {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)} (
                           {order.so_ngay_thue || 1} ngày)
@@ -422,7 +422,7 @@ export default function DonThuePage() {
                       </div>
                       {order.trang_thai === 4 && (
                         <span className="font-label-sm text-label-sm font-semibold text-error flex items-center gap-0.5 mt-0.5">
-                          <span className="material-symbols-outlined text-[13px]">warning</span>
+                          <span className="material-symbols-outlined text-[0.8125rem]">warning</span>
                           Trễ {lateDays} ngày
                         </span>
                       )}
@@ -451,7 +451,7 @@ export default function DonThuePage() {
                   </Link>
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between pt-1 pl-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 pl-1">
                     <div className="flex flex-col">
                       <span className="font-label-sm text-label-sm text-outline">
                         {order.trang_thai === 3 ? 'Tổng doanh thu' : 'Tiền thuê'}
@@ -461,20 +461,20 @@ export default function DonThuePage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       {order.trang_thai === 1 && (
                         <>
                           <Link
                             href={`/don-thue/${order.id}?action=huy`}
-                            className="h-9 px-3 rounded-lg bg-surface-container text-on-surface-variant font-label-md text-label-md flex items-center hover:bg-surface-container-high"
+                            className="h-9 px-3 rounded-lg bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap flex items-center hover:bg-surface-container-high"
                           >
                             Hủy
                           </Link>
                           <Link
                             href={`/don-thue/${order.id}?action=giao-do`}
-                            className="h-9 px-3.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-1 shadow-sm active:scale-95"
+                            className="h-9 px-3.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md whitespace-nowrap flex items-center gap-1 shadow-sm active:scale-95"
                           >
-                            <span className="material-symbols-outlined text-[16px]">local_shipping</span>
+                            <span className="material-symbols-outlined text-[1rem]">local_shipping</span>
                             <span>Giao đồ</span>
                           </Link>
                         </>
@@ -484,15 +484,15 @@ export default function DonThuePage() {
                         <>
                           <Link
                             href={`/don-thue/${order.id}`}
-                            className="h-9 px-3 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md flex items-center hover:bg-surface-container-high"
+                            className="h-9 px-3 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md whitespace-nowrap flex items-center hover:bg-surface-container-high"
                           >
                             Chi tiết
                           </Link>
                           <Link
                             href={`/don-thue/${order.id}?action=tra-do`}
-                            className="h-9 px-3.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-1 shadow-sm active:scale-95"
+                            className="h-9 px-3.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md whitespace-nowrap flex items-center gap-1 shadow-sm active:scale-95"
                           >
-                            <span className="material-symbols-outlined text-[16px]">assignment_turned_in</span>
+                            <span className="material-symbols-outlined text-[1rem]">assignment_turned_in</span>
                             <span>Trả đồ</span>
                           </Link>
                         </>
@@ -501,9 +501,9 @@ export default function DonThuePage() {
                       {(order.trang_thai === 3 || order.trang_thai === 5) && (
                         <Link
                           href={`/don-thue/${order.id}`}
-                          className="h-9 px-3.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container"
+                          className="h-9 px-3.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md whitespace-nowrap flex items-center gap-1 hover:bg-surface-container"
                         >
-                          <span className="material-symbols-outlined text-[16px]">receipt</span>
+                          <span className="material-symbols-outlined text-[1rem]">receipt</span>
                           <span>Xem phiếu</span>
                         </Link>
                       )}
@@ -518,7 +518,7 @@ export default function DonThuePage() {
                 type="button"
                 disabled={loadingMore}
                 onClick={() => loadOrders(page + 1, true)}
-                className="h-11 rounded-xl bg-surface-container text-primary-container font-label-md text-label-md hover:bg-surface-container-high transition-colors"
+                className="h-11 px-4 rounded-xl bg-surface-container text-primary-container font-label-md text-label-md hover:bg-surface-container-high transition-colors"
               >
                 {loadingMore ? 'Đang tải thêm...' : `Tải thêm (${orders.length}/${total})`}
               </button>
@@ -532,7 +532,7 @@ export default function DonThuePage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
+                  <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[0.6875rem] uppercase tracking-wider text-on-surface-variant">
                     <th className="py-3.5 pl-5 pr-3">Mã phiếu &amp; Trạng thái</th>
                     <th className="py-3.5 px-3">Khách hàng</th>
                     <th className="py-3.5 px-3">Trang phục thuê</th>
@@ -561,14 +561,14 @@ export default function DonThuePage() {
                           <div className="flex flex-col gap-1.5">
                             <Link
                               href={`/don-thue/${order.id}`}
-                              className="font-title-sm text-[14px] text-primary-container hover:text-primary font-bold transition-colors w-fit"
+                              className="font-title-sm text-[0.875rem] text-primary-container hover:text-primary font-bold transition-colors w-fit"
                             >
                               {order.ma_phieu_thue}
                             </Link>
                             <div className="flex items-center gap-2 flex-wrap">
                               <ThueDoStatusBadge status={order.trang_thai} />
                               {order.trang_thai === 4 && (
-                                <span className="font-label-sm text-[11px] font-bold text-error">
+                                <span className="font-label-sm text-[0.6875rem] font-bold text-error whitespace-nowrap">
                                   Trễ {lateDays} ngày
                                 </span>
                               )}
@@ -578,11 +578,11 @@ export default function DonThuePage() {
 
                         {/* Khách hàng */}
                         <td className="py-3.5 px-3 align-middle">
-                          <div className="flex flex-col min-w-[140px]">
+                          <div className="flex flex-col min-w-[8.75rem]">
                             {order.khach_hang ? (
                               <Link
                                 href={`/khach-hang/${order.khach_hang.id}`}
-                                className="font-body-md font-semibold text-on-surface hover:text-primary-container transition-colors truncate max-w-[190px]"
+                                className="font-body-md font-semibold text-on-surface hover:text-primary-container transition-colors truncate max-w-[11.875rem]"
                               >
                                 {order.khach_hang.ten}
                               </Link>
@@ -594,7 +594,7 @@ export default function DonThuePage() {
                                 href={`tel:${order.khach_hang.so_dien_thoai}`}
                                 className="font-label-sm text-on-surface-variant hover:text-primary flex items-center gap-1 mt-0.5 w-fit"
                               >
-                                <span className="material-symbols-outlined text-[13px]">call</span>
+                                <span className="material-symbols-outlined text-[0.8125rem]">call</span>
                                 <span>{formatPhone(order.khach_hang.so_dien_thoai)}</span>
                               </a>
                             )}
@@ -605,7 +605,7 @@ export default function DonThuePage() {
                         <td className="py-3.5 px-3 align-middle">
                           <Link
                             href={`/don-thue/${order.id}`}
-                            className="flex items-center gap-2.5 max-w-[260px]"
+                            className="flex items-center gap-2.5 max-w-[16.25rem]"
                           >
                             <div className="w-10 h-12 rounded-lg overflow-hidden bg-surface-container shrink-0">
                               <ProductImage
@@ -652,7 +652,7 @@ export default function DonThuePage() {
                         {/* Tài chính & Cọc */}
                         <td className="py-3.5 px-3 align-middle text-right whitespace-nowrap">
                           <div className="flex flex-col items-end">
-                            <span className="font-currency-lg text-[15px] text-on-surface font-bold tabular-nums">
+                            <span className="font-currency-lg text-[0.9375rem] text-on-surface font-bold tabular-nums">
                               {formatCurrency(order.trang_thai === 3 ? totalRevenue : order.tong_tien_thue)}
                             </span>
                             <span className="font-label-sm text-on-surface-variant mt-0.5 tabular-nums">
@@ -674,15 +674,15 @@ export default function DonThuePage() {
                               <>
                                 <Link
                                   href={`/don-thue/${order.id}?action=huy`}
-                                  className="h-8 px-2.5 rounded-lg bg-surface-container hover:bg-error-container hover:text-on-error-container text-on-surface-variant font-label-sm flex items-center transition-colors"
+                                  className="h-8 px-2.5 rounded-lg bg-surface-container hover:bg-error-container hover:text-on-error-container text-on-surface-variant font-label-sm whitespace-nowrap flex items-center transition-colors"
                                 >
                                   Hủy
                                 </Link>
                                 <Link
                                   href={`/don-thue/${order.id}?action=giao-do`}
-                                  className="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-sm flex items-center gap-1 shadow-sm transition-colors"
+                                  className="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-sm whitespace-nowrap flex items-center gap-1 shadow-sm transition-colors"
                                 >
-                                  <span className="material-symbols-outlined text-[15px]">local_shipping</span>
+                                  <span className="material-symbols-outlined text-[0.9375rem]">local_shipping</span>
                                   <span>Giao đồ</span>
                                 </Link>
                               </>
@@ -692,15 +692,15 @@ export default function DonThuePage() {
                               <>
                                 <Link
                                   href={`/don-thue/${order.id}`}
-                                  className="h-8 px-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm flex items-center transition-colors"
+                                  className="h-8 px-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm whitespace-nowrap flex items-center transition-colors"
                                 >
                                   Chi tiết
                                 </Link>
                                 <Link
                                   href={`/don-thue/${order.id}?action=tra-do`}
-                                  className="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-sm flex items-center gap-1 shadow-sm transition-colors"
+                                  className="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-sm whitespace-nowrap flex items-center gap-1 shadow-sm transition-colors"
                                 >
-                                  <span className="material-symbols-outlined text-[15px]">assignment_turned_in</span>
+                                  <span className="material-symbols-outlined text-[0.9375rem]">assignment_turned_in</span>
                                   <span>Trả đồ</span>
                                 </Link>
                               </>
@@ -709,9 +709,9 @@ export default function DonThuePage() {
                             {(order.trang_thai === 3 || order.trang_thai === 5) && (
                               <Link
                                 href={`/don-thue/${order.id}`}
-                                className="h-8 px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm flex items-center gap-1 transition-colors"
+                                className="h-8 px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm whitespace-nowrap flex items-center gap-1 transition-colors"
                               >
-                                <span className="material-symbols-outlined text-[15px]">receipt</span>
+                                <span className="material-symbols-outlined text-[0.9375rem]">receipt</span>
                                 <span>Xem phiếu</span>
                               </Link>
                             )}

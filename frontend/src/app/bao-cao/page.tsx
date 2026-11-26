@@ -102,19 +102,19 @@ export default function BaoCaoPage() {
             type="button"
             disabled={exporting}
             onClick={() => handleExport('csv')}
-            className="h-9 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/25 text-on-surface font-label-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
+            className="h-9 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/25 text-on-surface font-label-md text-label-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[17px]">description</span>
-            Xuất CSV
+            <span className="material-symbols-outlined text-[1.0625rem]">description</span>
+            <span>Xuất CSV</span>
           </button>
           <button
             type="button"
             disabled={exporting}
             onClick={() => handleExport('excel')}
-            className="h-9 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold flex items-center gap-1.5 shadow-sm transition-colors disabled:opacity-50"
+            className="h-9 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center gap-1.5 shadow-sm transition-colors disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[17px]">table_view</span>
-            Xuất Excel
+            <span className="material-symbols-outlined text-[1.0625rem]">table_view</span>
+            <span>Xuất Excel</span>
           </button>
         </div>
       }
@@ -139,7 +139,7 @@ export default function BaoCaoPage() {
                     : 'bg-surface-container-lowest text-on-surface-variant border border-outline-variant/30 hover:bg-surface-container'
                 }`}
               >
-                <span className="material-symbols-outlined text-[17px]">{item.icon}</span>
+                <span className="material-symbols-outlined text-[1.0625rem]">{item.icon}</span>
                 <span>{item.label}</span>
               </button>
             ))}
@@ -151,19 +151,19 @@ export default function BaoCaoPage() {
               type="button"
               disabled={exporting}
               onClick={() => handleExport('csv')}
-              className="w-full h-9 px-3.5 rounded-xl bg-surface-container text-on-surface font-label-sm font-semibold flex items-center justify-center gap-1.5 hover:bg-surface-container-high disabled:opacity-50"
+              className="w-full h-9 px-3 rounded-xl bg-surface-container text-on-surface font-label-sm text-label-sm font-semibold flex items-center justify-center gap-1.5 hover:bg-surface-container-high disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[16px]">description</span>
-              Xuất CSV
+              <span className="material-symbols-outlined text-[1rem]">description</span>
+              <span>Xuất CSV</span>
             </button>
             <button
               type="button"
               disabled={exporting}
               onClick={() => handleExport('excel')}
-              className="w-full h-9 px-3.5 rounded-xl bg-primary-container text-on-primary font-label-sm font-semibold flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+              className="w-full h-9 px-3 rounded-xl bg-primary-container text-on-primary font-label-sm text-label-sm font-semibold flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[16px]">table_view</span>
-              Xuất Excel
+              <span className="material-symbols-outlined text-[1rem]">table_view</span>
+              <span>Xuất Excel</span>
             </button>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function BaoCaoPage() {
                     <span className="font-label-sm text-on-surface-variant uppercase tracking-wider">
                       Doanh thu Tháng {doanhThu?.thang}/{doanhThu?.nam}
                     </span>
-                    <div className="font-headline-xl lg:text-[36px] lg:leading-tight text-primary font-bold mt-1.5 tabular-nums">
+                    <div className="font-headline-xl text-[clamp(1.625rem,1.3rem+1vw,2.25rem)] leading-tight text-primary font-bold mt-1.5 tabular-nums">
                       {formatCurrency(doanhThu?.tong_tien)}
                     </div>
                   </div>
@@ -223,22 +223,22 @@ export default function BaoCaoPage() {
                 <div className="lg:col-span-6 grid grid-cols-2 gap-3 lg:gap-4">
                   <div className="p-4 lg:p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col justify-between">
                     <div className="w-10 h-10 rounded-xl bg-primary-fixed text-primary-container flex items-center justify-center mb-3">
-                      <span className="material-symbols-outlined text-[21px]">assignment_turned_in</span>
+                      <span className="material-symbols-outlined text-[1.3125rem]">assignment_turned_in</span>
                     </div>
                     <div>
                       <span className="font-label-sm text-on-surface-variant">Số phiếu đã trả</span>
-                      <div className="font-headline-lg lg:text-[32px] text-on-surface font-bold mt-1 tabular-nums">
+                      <div className="font-headline-lg text-[clamp(1.375rem,1.1rem+0.9vw,2rem)] text-on-surface font-bold mt-1 tabular-nums">
                         {doanhThu?.so_phieu ?? 0}
                       </div>
                     </div>
                   </div>
                   <div className="p-4 lg:p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col justify-between">
                     <div className="w-10 h-10 rounded-xl bg-secondary-fixed text-secondary flex items-center justify-center mb-3">
-                      <span className="material-symbols-outlined text-[21px]">checkroom</span>
+                      <span className="material-symbols-outlined text-[1.3125rem]">checkroom</span>
                     </div>
                     <div>
                       <span className="font-label-sm text-on-surface-variant">Lượt sản phẩm thuê</span>
-                      <div className="font-headline-lg lg:text-[32px] text-on-surface font-bold mt-1 tabular-nums">
+                      <div className="font-headline-lg text-[clamp(1.375rem,1.1rem+0.9vw,2rem)] text-on-surface font-bold mt-1 tabular-nums">
                         {doanhThu?.so_san_pham ?? 0}
                       </div>
                     </div>
@@ -256,19 +256,19 @@ export default function BaoCaoPage() {
               <div className="hidden lg:grid lg:grid-cols-3 gap-4">
                 <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm">
                   <span className="font-label-sm text-on-surface-variant">Tổng sản phẩm theo dõi</span>
-                  <div className="font-headline-lg text-[24px] font-bold text-on-surface mt-1 tabular-nums">
+                  <div className="font-headline-lg text-headline-lg font-bold text-on-surface mt-1 tabular-nums">
                     {sanPhamList.length} sản phẩm
                   </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-[#EAF5EE] border border-[#236B48]/15 shadow-sm">
                   <span className="font-label-sm text-on-tertiary-fixed-variant">Đã thu hồi vốn</span>
-                  <div className="font-headline-lg text-[24px] font-bold text-[#236B48] mt-1 tabular-nums">
+                  <div className="font-headline-lg text-headline-lg font-bold text-[#236B48] mt-1 tabular-nums">
                     {spRecoveredCount} / {sanPhamList.length}
                   </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm">
                   <span className="font-label-sm text-on-surface-variant">Tổng doanh thu ghi nhận</span>
-                  <div className="font-headline-lg text-[24px] font-bold text-primary-container mt-1 tabular-nums">
+                  <div className="font-headline-lg text-headline-lg font-bold text-primary-container mt-1 tabular-nums">
                     {formatCurrency(spTotalRevenue)}
                   </div>
                 </div>
@@ -340,7 +340,7 @@ export default function BaoCaoPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
+                        <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[0.6875rem] uppercase tracking-wider text-on-surface-variant">
                           <th className="py-3.5 pl-5 pr-3">Mã SP</th>
                           <th className="py-3.5 px-3">Tên sản phẩm</th>
                           <th className="py-3.5 px-3 text-center">Số lần thuê</th>
@@ -379,10 +379,10 @@ export default function BaoCaoPage() {
                               <td className="py-3.5 px-3 text-right font-body-sm text-on-surface-variant tabular-nums whitespace-nowrap">
                                 {formatCurrency(gg)}
                               </td>
-                              <td className="py-3.5 px-3 text-right font-currency-lg text-[14px] text-primary-container font-bold tabular-nums whitespace-nowrap">
+                              <td className="py-3.5 px-3 text-right font-currency-lg text-[0.875rem] text-primary-container font-bold tabular-nums whitespace-nowrap">
                                 {formatCurrency(dt)}
                               </td>
-                              <td className="py-3.5 pl-3 pr-5 min-w-[200px]">
+                              <td className="py-3.5 pl-3 pr-5 min-w-[12.5rem]">
                                 <div className="flex items-center gap-3">
                                   <div className="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
                                     <div
@@ -503,7 +503,7 @@ export default function BaoCaoPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
+                        <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[0.6875rem] uppercase tracking-wider text-on-surface-variant">
                           <th className="py-3.5 pl-5 pr-3">Mã phiếu</th>
                           <th className="py-3.5 px-3">Khách hàng</th>
                           <th className="py-3.5 px-3">Thời gian thuê</th>
@@ -518,7 +518,7 @@ export default function BaoCaoPage() {
                             <td className="py-3.5 pl-5 pr-3 whitespace-nowrap">
                               <Link
                                 href={`/don-thue/${td.id}`}
-                                className="font-title-sm text-[14px] text-primary-container hover:text-primary font-bold transition-colors"
+                                className="font-title-sm text-[0.875rem] text-primary-container hover:text-primary font-bold transition-colors"
                               >
                                 {td.ma_phieu_thue}
                               </Link>
@@ -531,7 +531,7 @@ export default function BaoCaoPage() {
                             <td className="py-3.5 px-3 font-body-sm text-on-surface-variant whitespace-nowrap tabular-nums">
                               {formatDate(td.ngay_bat_dau)} → {formatDate(td.ngay_hen_tra)}
                             </td>
-                            <td className="py-3.5 px-3 text-right font-currency-lg text-[14px] text-on-surface font-bold tabular-nums whitespace-nowrap">
+                            <td className="py-3.5 px-3 text-right font-currency-lg text-[0.875rem] text-on-surface font-bold tabular-nums whitespace-nowrap">
                               {formatCurrency(td.tong_tien_thue)}
                             </td>
                             <td className="py-3.5 px-3 text-right font-body-sm tabular-nums whitespace-nowrap">
@@ -581,7 +581,7 @@ export default function BaoCaoPage() {
                           {kh.dia_chi ? ` • ${kh.dia_chi}` : ''}
                         </div>
                       </div>
-                      <span className="px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm font-semibold shrink-0">
+                      <span className="px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm font-semibold whitespace-nowrap shrink-0">
                         {kh.so_lan_thue} lần thuê
                       </span>
                     </Link>
@@ -593,7 +593,7 @@ export default function BaoCaoPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
+                        <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[0.6875rem] uppercase tracking-wider text-on-surface-variant">
                           <th className="py-3.5 pl-5 pr-3">Tên khách hàng</th>
                           <th className="py-3.5 px-3">Số điện thoại</th>
                           <th className="py-3.5 px-3">Địa chỉ</th>
@@ -606,7 +606,7 @@ export default function BaoCaoPage() {
                             <td className="py-3.5 pl-5 pr-3">
                               <Link
                                 href={`/khach-hang/${kh.id}`}
-                                className="font-title-sm text-[14px] text-on-surface hover:text-primary-container transition-colors"
+                                className="font-title-sm text-[0.875rem] text-on-surface hover:text-primary-container transition-colors"
                               >
                                 {kh.ten}
                               </Link>

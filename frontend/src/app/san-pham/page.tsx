@@ -119,14 +119,14 @@ function SanPhamContent() {
             title="Xuất báo cáo sản phẩm"
             className="h-8 lg:h-9 px-2.5 lg:px-3.5 rounded-full lg:rounded-xl bg-surface-container text-primary-container hover:bg-primary-fixed font-label-sm lg:font-label-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[16px] lg:text-[18px]">file_download</span>
+            <span className="material-symbols-outlined text-[1rem] lg:text-[1.125rem]">file_download</span>
             <span className="hidden sm:inline">Xuất Excel</span>
           </button>
           <Link
             href="/san-pham/them-moi"
-            className="hidden lg:inline-flex h-9 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold items-center gap-1.5 shadow-sm transition-colors"
+            className="hidden lg:inline-flex h-9 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold whitespace-nowrap items-center gap-1.5 shadow-sm transition-colors"
           >
-            <span className="material-symbols-outlined text-[18px]">add</span>
+            <span className="material-symbols-outlined text-[1.125rem]">add</span>
             <span>Thêm sản phẩm</span>
           </Link>
         </div>
@@ -138,7 +138,7 @@ function SanPhamContent() {
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-space-sm lg:gap-3">
             {/* Search Input */}
             <div className="relative flex items-center xl:w-80 2xl:w-96 shrink-0">
-              <span className="material-symbols-outlined absolute left-3 text-outline text-[20px] pointer-events-none">
+              <span className="material-symbols-outlined absolute left-3 text-outline text-[1.25rem] pointer-events-none">
                 search
               </span>
               <input
@@ -154,7 +154,7 @@ function SanPhamContent() {
                   onClick={() => setSearchInput('')}
                   className="absolute right-2.5 text-outline hover:text-on-surface"
                 >
-                  <span className="material-symbols-outlined text-[18px]">close</span>
+                  <span className="material-symbols-outlined text-[1.125rem]">close</span>
                 </button>
               )}
             </div>
@@ -190,7 +190,7 @@ function SanPhamContent() {
           {/* Summary + Sort + View Toggle Bar */}
           <div className="flex items-center justify-between px-3 py-2 lg:px-0 lg:py-0 lg:pt-3 lg:border-t lg:border-outline-variant/15 rounded-xl lg:rounded-none bg-surface-container-low lg:bg-transparent gap-2">
             <div className="flex items-center gap-1.5 text-on-surface min-w-0">
-              <span className="material-symbols-outlined text-[18px] text-primary-container">styler</span>
+              <span className="material-symbols-outlined text-[1.125rem] text-primary-container">styler</span>
               <span className="font-label-md text-label-md truncate">
                 Hiển thị {products.length}/{total} sản phẩm
               </span>
@@ -220,7 +220,7 @@ function SanPhamContent() {
                       : 'text-on-surface-variant hover:text-on-surface'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[18px]">grid_view</span>
+                  <span className="material-symbols-outlined text-[1.125rem]">grid_view</span>
                 </button>
                 <button
                   type="button"
@@ -233,7 +233,7 @@ function SanPhamContent() {
                       : 'text-on-surface-variant hover:text-on-surface'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[18px]">view_list</span>
+                  <span className="material-symbols-outlined text-[1.125rem]">view_list</span>
                 </button>
               </div>
             </div>
@@ -252,7 +252,7 @@ function SanPhamContent() {
         {/* Empty State */}
         {!loading && products.length === 0 && (
           <div className="py-12 lg:py-16 px-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col items-center text-center gap-2.5">
-            <span className="material-symbols-outlined text-[42px] text-outline">checkroom</span>
+            <span className="material-symbols-outlined text-[2.625rem] text-outline">checkroom</span>
             <h3 className="font-title-sm text-title-sm text-on-surface">Chưa có sản phẩm nào</h3>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
               {debouncedSearch || statusFilter
@@ -261,7 +261,7 @@ function SanPhamContent() {
             </p>
             <Link
               href="/san-pham/them-moi"
-              className="mt-1 px-4 py-2 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors"
+              className="mt-1 px-4 py-2 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md whitespace-nowrap transition-colors"
             >
               + Thêm sản phẩm mới
             </Link>
@@ -296,19 +296,19 @@ function SanPhamContent() {
 
                   <div className="flex flex-col flex-1 min-w-0 justify-between">
                     <div className="flex flex-col min-w-0">
-                      <span className="font-label-sm text-[11px] text-primary-container font-semibold tracking-wider truncate">
+                      <span className="font-label-sm text-[0.6875rem] text-primary-container font-semibold tracking-wider truncate">
                         {product.ma_san_pham}
                       </span>
-                      <h2 className="font-title-sm text-[13px] lg:text-[14px] leading-snug text-on-surface line-clamp-2 mt-0.5 group-hover:text-primary transition-colors">
+                      <h2 className="font-title-sm text-[0.8125rem] lg:text-[0.875rem] leading-snug text-on-surface line-clamp-2 mt-0.5 group-hover:text-primary transition-colors">
                         {product.ten_san_pham}
                       </h2>
                     </div>
 
                     <div className="pt-2.5 mt-1.5 border-t border-outline-variant/15 flex items-baseline justify-between min-w-0">
-                      <span className="font-currency-lg text-[14px] lg:text-[15px] leading-none text-on-surface font-bold tabular-nums">
+                      <span className="font-currency-lg text-[0.875rem] lg:text-[0.9375rem] leading-none text-on-surface font-bold tabular-nums">
                         {formatCurrency(product.gia_thue_ngay)}
                       </span>
-                      <span className="font-label-sm text-[10px] lg:text-[11px] text-on-surface-variant">/ngày</span>
+                      <span className="font-label-sm text-[0.625rem] lg:text-[0.6875rem] text-on-surface-variant">/ngày</span>
                     </div>
                   </div>
                 </Link>
@@ -321,7 +321,7 @@ function SanPhamContent() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
+                      <tr className="bg-surface-container-low/80 border-b border-outline-variant/20 font-label-sm text-[0.6875rem] uppercase tracking-wider text-on-surface-variant">
                         <th className="py-3.5 pl-5 pr-3">Sản phẩm</th>
                         <th className="py-3.5 px-3">Mã SKU</th>
                         <th className="py-3.5 px-3">Trạng thái</th>
@@ -343,7 +343,7 @@ function SanPhamContent() {
                                   iconSize={18}
                                 />
                               </div>
-                              <span className="font-title-sm text-[14px] text-on-surface group-hover:text-primary-container transition-colors line-clamp-2">
+                              <span className="font-title-sm text-[0.875rem] text-on-surface group-hover:text-primary-container transition-colors line-clamp-2">
                                 {product.ten_san_pham}
                               </span>
                             </Link>
@@ -356,7 +356,7 @@ function SanPhamContent() {
                           <td className="py-3 px-3 whitespace-nowrap">
                             <SanPhamStatusBadge status={product.trang_thai} />
                           </td>
-                          <td className="py-3 px-3 text-right whitespace-nowrap font-currency-lg text-[14px] text-on-surface font-bold tabular-nums">
+                          <td className="py-3 px-3 text-right whitespace-nowrap font-currency-lg text-[0.875rem] text-on-surface font-bold tabular-nums">
                             {formatCurrency(product.gia_thue_ngay)}
                           </td>
                           <td className="py-3 px-3 text-right whitespace-nowrap font-body-sm text-on-surface-variant tabular-nums">
@@ -366,17 +366,17 @@ function SanPhamContent() {
                             <div className="inline-flex items-center gap-1.5">
                               <Link
                                 href={`/san-pham/${product.id}`}
-                                className="h-8 px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm flex items-center transition-colors"
+                                className="h-8 px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm whitespace-nowrap flex items-center transition-colors"
                               >
                                 Chi tiết
                               </Link>
                               {product.trang_thai !== 3 && (
                                 <Link
                                   href={`/don-thue/tao-moi?san_pham_id=${product.id}`}
-                                  className="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-sm flex items-center gap-1 transition-colors"
+                                  className="h-8 px-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-sm whitespace-nowrap flex items-center gap-1 transition-colors"
                                 >
-                                  <span className="material-symbols-outlined text-[15px]">add_shopping_cart</span>
-                                  Thuê
+                                  <span className="material-symbols-outlined text-[0.9375rem]">add_shopping_cart</span>
+                                  <span>Thuê</span>
                                 </Link>
                               )}
                             </div>
@@ -395,7 +395,7 @@ function SanPhamContent() {
                   type="button"
                   disabled={loadingMore}
                   onClick={() => loadProducts(page + 1, true)}
-                  className="w-full lg:w-auto lg:min-w-[240px] h-11 px-6 rounded-xl bg-surface-container text-primary-container font-label-md text-label-md hover:bg-surface-container-high transition-colors disabled:opacity-50"
+                  className="w-full lg:w-auto lg:min-w-[15rem] h-11 px-6 rounded-xl bg-surface-container text-primary-container font-label-md text-label-md hover:bg-surface-container-high transition-colors disabled:opacity-50"
                 >
                   {loadingMore ? 'Đang tải thêm...' : `Tải thêm (${products.length}/${total})`}
                 </button>

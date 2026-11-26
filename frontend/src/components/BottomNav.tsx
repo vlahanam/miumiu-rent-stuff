@@ -30,24 +30,24 @@ export default function BottomNav() {
             <Link
               key={item.path}
               href={item.path}
-              className={`flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 transition-colors relative ${
+              className={`flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 h-12 transition-colors relative ${
                 isActive ? 'text-primary-container font-bold' : 'text-on-surface-variant'
               }`}
             >
               <div className="relative flex items-center justify-center">
                 <span
-                  className="material-symbols-outlined text-[22px]"
+                  className="material-symbols-outlined text-[1.375rem]"
                   style={isActive ? { fontVariationSettings: '"FILL" 1' } : {}}
                 >
                   {item.icon}
                 </span>
                 {item.hasBadge && activeOrderBadge > 0 && (
-                  <span className="absolute -top-1 -right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-error text-on-error font-label-sm text-[10px] leading-none flex items-center justify-center font-bold">
+                  <span className="absolute -top-1 -right-2.5 min-w-4 h-4 px-1 rounded-full bg-error text-on-error font-label-sm text-[0.625rem] leading-none flex items-center justify-center font-bold">
                     {activeOrderBadge > 99 ? '99+' : activeOrderBadge}
                   </span>
                 )}
               </div>
-              <span className="font-label-sm text-label-sm">{item.label}</span>
+              <span className="font-label-sm text-label-sm whitespace-nowrap">{item.label}</span>
             </Link>
           )
         })}

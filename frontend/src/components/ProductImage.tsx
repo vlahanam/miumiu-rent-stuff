@@ -24,7 +24,7 @@ export default function ProductImage({
       <div className={`bg-primary-fixed/25 flex items-center justify-center ${className}`}>
         <span
           className="material-symbols-outlined text-primary-container"
-          style={{ fontSize: `${iconSize}px` }}
+          style={{ fontSize: `${iconSize / 16}rem` }}
         >
           checkroom
         </span>

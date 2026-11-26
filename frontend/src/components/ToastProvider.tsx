@@ -53,7 +53,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 key={t.id}
                 className={`max-w-md w-fit px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 pointer-events-auto ${bg}`}
               >
-                <span className="material-symbols-outlined text-[18px] shrink-0">{icon}</span>
+                <span className="material-symbols-outlined text-[1.125rem] shrink-0">{icon}</span>
                 <span className="font-label-md text-label-md leading-snug">{t.message}</span>
               </div>
             )

@@ -175,7 +175,7 @@ export default function SanPhamDetailPage() {
       <div className="flex flex-col gap-4 lg:gap-6">
         {loading && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <div className="lg:col-span-5 h-80 lg:h-[460px] rounded-2xl bg-surface-container-low animate-pulse" />
+            <div className="lg:col-span-5 h-80 lg:h-[28.75rem] rounded-2xl bg-surface-container-low animate-pulse" />
             <div className="lg:col-span-7 flex flex-col gap-4">
               <div className="h-56 rounded-2xl bg-surface-container-low animate-pulse" />
               <div className="h-44 rounded-2xl bg-surface-container-low animate-pulse" />
@@ -185,9 +185,9 @@ export default function SanPhamDetailPage() {
 
         {error && !loading && (
           <div className="p-6 rounded-2xl bg-error-container text-on-error-container flex flex-col items-center text-center gap-2">
-            <span className="material-symbols-outlined text-[32px]">error</span>
+            <span className="material-symbols-outlined text-[2rem]">error</span>
             <span>{error}</span>
-            <Link href="/san-pham" className="px-4 py-2 rounded-xl bg-error text-on-error font-label-md">
+            <Link href="/san-pham" className="px-4 py-2 rounded-xl bg-error text-on-error font-label-md whitespace-nowrap">
               Quay lại kho sản phẩm
             </Link>
           </div>
@@ -207,7 +207,7 @@ export default function SanPhamDetailPage() {
                       className="w-full h-full object-contain bg-surface-container"
                     />
                   ) : (
-                    <span className="material-symbols-outlined text-[72px] text-primary-container/60">
+                    <span className="material-symbols-outlined text-[4.5rem] text-primary-container/60">
                       checkroom
                     </span>
                   )}
@@ -251,7 +251,7 @@ export default function SanPhamDetailPage() {
                       <SanPhamStatusBadge status={product.trang_thai} />
                     </div>
                   </div>
-                  <h1 className="font-headline-lg text-headline-lg lg:text-[24px] text-on-surface mt-0.5 leading-snug">
+                  <h1 className="font-headline-lg text-headline-lg text-on-surface mt-0.5 leading-snug">
                     {product.ten_san_pham}
                   </h1>
                 </div>
@@ -261,7 +261,7 @@ export default function SanPhamDetailPage() {
                     <span className="font-body-sm text-body-sm text-on-surface-variant">
                       Giá thuê/ngày
                     </span>
-                    <span className="font-currency-lg text-[15px] xl:text-[18px] text-primary-container font-bold tabular-nums">
+                    <span className="font-currency-lg text-[clamp(0.9375rem,0.88rem+0.22vw,1.125rem)] text-primary-container font-bold tabular-nums">
                       {formatCurrency(product.gia_thue_ngay)}
                     </span>
                   </div>
@@ -269,7 +269,7 @@ export default function SanPhamDetailPage() {
                     <span className="font-body-sm text-body-sm text-on-surface-variant">
                       Giá gốc
                     </span>
-                    <span className="font-currency-lg text-[15px] xl:text-[18px] text-on-surface font-bold tabular-nums">
+                    <span className="font-currency-lg text-[clamp(0.9375rem,0.88rem+0.22vw,1.125rem)] text-on-surface font-bold tabular-nums">
                       {formatCurrency(product.gia_goc_san_pham)}
                     </span>
                   </div>
@@ -277,7 +277,7 @@ export default function SanPhamDetailPage() {
                     <span className="font-body-sm text-body-sm text-on-surface-variant">
                       Cọc ({depositPercent}%)
                     </span>
-                    <span className="font-currency-lg text-[15px] xl:text-[18px] text-secondary font-bold tabular-nums">
+                    <span className="font-currency-lg text-[clamp(0.9375rem,0.88rem+0.22vw,1.125rem)] text-secondary font-bold tabular-nums">
                       {formatCurrency(suggestedDeposit)}
                     </span>
                   </div>
@@ -290,10 +290,10 @@ export default function SanPhamDetailPage() {
                       href={`/don-thue/tao-moi?san_pham_id=${product.id}`}
                       className={`${
                         product.trang_thai === 2 ? 'col-span-2 ' : ''
-                      }h-11 px-3 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all`}
+                      }h-11 px-2.5 sm:px-3 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold whitespace-nowrap flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all`}
                     >
-                      <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
-                      Tạo đơn thuê
+                      <span className="material-symbols-outlined text-[1.125rem]">add_shopping_cart</span>
+                      <span>Tạo đơn thuê</span>
                     </Link>
                   )}
 
@@ -302,10 +302,10 @@ export default function SanPhamDetailPage() {
                       type="button"
                       disabled={busy}
                       onClick={handleToggleMaintenance}
-                      className="h-11 px-3 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center justify-center gap-1.5 hover:bg-surface-container-high transition-colors disabled:opacity-60"
+                      className="h-11 px-2.5 sm:px-3 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-surface-container-high transition-colors disabled:opacity-60"
                     >
-                      <span className="material-symbols-outlined text-[18px]">dry_cleaning</span>
-                      Bảo dưỡng
+                      <span className="material-symbols-outlined text-[1.125rem]">dry_cleaning</span>
+                      <span>Bảo dưỡng</span>
                     </button>
                   )}
 
@@ -314,35 +314,35 @@ export default function SanPhamDetailPage() {
                       type="button"
                       disabled={busy}
                       onClick={handleToggleMaintenance}
-                      className="col-span-2 h-11 px-3 rounded-xl bg-[#236B48] hover:opacity-90 text-white font-label-md font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all disabled:opacity-60"
+                      className="col-span-2 h-11 px-3 rounded-xl bg-[#236B48] hover:opacity-90 text-white font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all disabled:opacity-60"
                     >
-                      <span className="material-symbols-outlined text-[18px]">check_circle</span>
-                      Hoàn tất bảo dưỡng
+                      <span className="material-symbols-outlined text-[1.125rem]">check_circle</span>
+                      <span>Hoàn tất bảo dưỡng</span>
                     </button>
                   )}
 
                   <button
                     type="button"
                     onClick={openEditModal}
-                    className="h-11 px-3 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center justify-center gap-1.5 hover:bg-surface-container-high transition-colors"
+                    className="h-11 px-2.5 sm:px-3 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-surface-container-high transition-colors"
                   >
-                    <span className="material-symbols-outlined text-[18px]">edit</span>
-                    Sửa
+                    <span className="material-symbols-outlined text-[1.125rem]">edit</span>
+                    <span>Sửa</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setShowDeleteModal(true)}
-                    className="h-11 px-3 rounded-xl bg-error-container/70 text-on-error-container font-label-md flex items-center justify-center gap-1.5 hover:bg-error-container transition-colors"
+                    className="h-11 px-2.5 sm:px-3 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-error-container transition-colors"
                   >
-                    <span className="material-symbols-outlined text-[18px]">delete</span>
-                    Xóa
+                    <span className="material-symbols-outlined text-[1.125rem]">delete</span>
+                    <span>Xóa</span>
                   </button>
                 </div>
 
                 {product.trang_thai === 2 && (
                   <p className="font-label-sm text-secondary flex items-center gap-1.5 bg-[#FEF4E6]/70 p-2.5 rounded-xl">
-                    <span className="material-symbols-outlined text-[16px] shrink-0">info</span>
+                    <span className="material-symbols-outlined text-[1rem] shrink-0">info</span>
                     Sản phẩm đang được cho thuê — không thể chuyển bảo dưỡng cho đến khi khách trả đồ.
                   </p>
                 )}
@@ -352,13 +352,13 @@ export default function SanPhamDetailPage() {
               <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
                 <div className="flex items-center justify-between gap-2">
                   <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[18px] text-primary-container">
+                    <span className="material-symbols-outlined text-[1.125rem] text-primary-container">
                       monitoring
                     </span>
                     Hiệu quả &amp; Thu hồi vốn
                   </h2>
                   <span
-                    className={`px-2.5 py-0.5 rounded-full font-label-sm font-semibold ${
+                    className={`px-2.5 py-0.5 rounded-full font-label-sm font-semibold whitespace-nowrap ${
                       product.da_thu_hoi_von
                         ? 'bg-[#EAF5EE] text-[#236B48]'
                         : 'bg-[#FFF8E7] text-[#946E18]'
@@ -380,13 +380,13 @@ export default function SanPhamDetailPage() {
                 <div className="grid grid-cols-2 gap-3 pt-1">
                   <div className="p-3.5 rounded-xl bg-surface-container-low">
                     <div className="font-label-sm text-on-surface-variant">Số lần đã thuê</div>
-                    <div className="font-headline-md lg:text-[22px] text-on-surface font-bold mt-0.5 tabular-nums">
+                    <div className="font-headline-md text-headline-md lg:text-[1.375rem] text-on-surface font-bold mt-0.5 tabular-nums">
                       {product.so_lan_thue} lần
                     </div>
                   </div>
                   <div className="p-3.5 rounded-xl bg-surface-container-low">
                     <div className="font-label-sm text-on-surface-variant">Tổng doanh thu</div>
-                    <div className="font-headline-md lg:text-[22px] text-primary-container font-bold mt-0.5 tabular-nums">
+                    <div className="font-headline-md text-headline-md lg:text-[1.375rem] text-primary-container font-bold mt-0.5 tabular-nums">
                       {formatCurrency(tongDoanhThu)}
                     </div>
                   </div>
@@ -396,7 +396,7 @@ export default function SanPhamDetailPage() {
               {/* Lịch sử thuê */}
               <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
                 <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[18px] text-primary-container">
+                  <span className="material-symbols-outlined text-[1.125rem] text-primary-container">
                     history
                   </span>
                   Lịch sử thuê ({product.lich_su_thue?.length || 0})
@@ -454,7 +454,7 @@ export default function SanPhamDetailPage() {
 
           <form
             onSubmit={handleSaveEdit}
-            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[28px] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
             <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
               <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
@@ -472,7 +472,7 @@ export default function SanPhamDetailPage() {
                 onClick={() => setShowEditModal(false)}
                 className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined text-[1.25rem]">close</span>
               </button>
             </div>
 
@@ -570,7 +570,7 @@ export default function SanPhamDetailPage() {
                           onClick={() => setEditImages((prev) => prev.filter((_, i) => i !== idx))}
                           className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition-colors"
                         >
-                          <span className="material-symbols-outlined text-[13px]">close</span>
+                          <span className="material-symbols-outlined text-[0.8125rem]">close</span>
                         </button>
                       </div>
                     ))}
@@ -579,18 +579,18 @@ export default function SanPhamDetailPage() {
               </div>
             </div>
 
-            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-3 shrink-0">
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setShowEditModal(false)}
-                className="flex-1 md:flex-none md:min-w-[120px] h-11 md:h-12 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
+                className="shrink-0 min-w-[5.5rem] md:min-w-[7.5rem] h-11 md:h-12 px-4 md:px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 md:flex-none md:min-w-[200px] h-11 md:h-12 px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[12.5rem] h-11 md:h-12 px-5 md:px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {busy ? 'Đang lưu...' : 'Lưu thay đổi'}
               </button>
@@ -612,7 +612,7 @@ export default function SanPhamDetailPage() {
               <button
                 type="button"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md"
+                className="shrink-0 min-w-[6rem] h-11 px-4 rounded-xl bg-surface-container font-label-md"
               >
                 Quay lại
               </button>
@@ -620,7 +620,7 @@ export default function SanPhamDetailPage() {
                 type="button"
                 disabled={busy}
                 onClick={handleDelete}
-                className="flex-1 h-11 rounded-xl bg-error text-on-error font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-11 px-4 rounded-xl bg-error text-on-error font-label-md font-bold disabled:opacity-60"
               >
                 {busy ? 'Đang xóa...' : 'Xóa vĩnh viễn'}
               </button>

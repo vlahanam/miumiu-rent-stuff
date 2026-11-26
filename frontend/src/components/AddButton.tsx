@@ -13,9 +13,9 @@ export default function AddButton({ label = 'Thêm đơn thuê', href = '/don-th
       <div className="max-w-2xl md:max-w-3xl mx-auto px-margin flex justify-end">
         <Link
           href={href}
-          className="pointer-events-auto h-12 px-5 rounded-full bg-primary-container text-on-primary shadow-[0_8px_20px_-2px_rgba(107,33,63,0.35)] flex items-center gap-1.5 hover:bg-primary transition-all active:scale-95"
+          className="pointer-events-auto h-12 px-5 rounded-full bg-primary-container text-on-primary shadow-[0_8px_20px_-2px_rgba(107,33,63,0.35)] flex items-center gap-1.5 whitespace-nowrap hover:bg-primary transition-all active:scale-95"
         >
-          <span className="material-symbols-outlined text-[20px]">add</span>
+          <span className="material-symbols-outlined text-[1.25rem]">add</span>
           <span className="font-title-sm text-title-sm tracking-tight">{label}</span>
         </Link>
       </div>

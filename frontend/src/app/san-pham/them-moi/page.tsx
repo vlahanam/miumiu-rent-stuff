@@ -100,7 +100,7 @@ export default function ThemMoiSanPhamPage() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:gap-6">
         {errorMsg && (
           <div className="p-3.5 rounded-xl bg-error-container text-on-error-container font-body-sm flex items-start gap-2">
-            <span className="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
+            <span className="material-symbols-outlined text-[1.125rem] shrink-0 mt-0.5">error</span>
             <span>{errorMsg}</span>
           </div>
         )}
@@ -111,7 +111,7 @@ export default function ThemMoiSanPhamPage() {
             <section className="p-4 lg:p-6 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-primary-fixed flex items-center justify-center text-primary-container">
-                  <span className="material-symbols-outlined text-[18px]">checkroom</span>
+                  <span className="material-symbols-outlined text-[1.125rem]">checkroom</span>
                 </div>
                 <h2 className="font-title-sm text-title-sm text-on-surface">Thông tin cơ bản</h2>
               </div>
@@ -161,7 +161,7 @@ export default function ThemMoiSanPhamPage() {
               </div>
 
               <div className="p-3.5 rounded-xl bg-surface-container-low/80 border border-outline-variant/20 flex items-start gap-2.5 text-on-surface-variant font-body-sm">
-                <span className="material-symbols-outlined text-[18px] text-primary-container shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-[1.125rem] text-primary-container shrink-0 mt-0.5">
                   info
                 </span>
                 <span>
@@ -174,16 +174,16 @@ export default function ThemMoiSanPhamPage() {
             <div className="hidden lg:flex items-center justify-end gap-3">
               <Link
                 href="/san-pham"
-                className="h-11 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md flex items-center transition-colors"
+                className="h-11 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md whitespace-nowrap flex items-center transition-colors"
               >
                 Hủy bỏ
               </Link>
               <button
                 type="submit"
                 disabled={submitting}
-                className="h-11 px-6 rounded-xl bg-primary-container text-on-primary font-title-sm text-[14px] font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary disabled:opacity-60 active:scale-[0.98] transition-all"
+                className="h-11 px-6 rounded-xl bg-primary-container text-on-primary font-title-sm text-[0.875rem] font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary disabled:opacity-60 active:scale-[0.98] transition-all"
               >
-                <span className="material-symbols-outlined text-[19px]">save</span>
+                <span className="material-symbols-outlined text-[1.1875rem]">save</span>
                 <span>{submitting ? 'Đang lưu sản phẩm...' : 'Lưu sản phẩm'}</span>
               </button>
             </div>
@@ -221,7 +221,7 @@ export default function ThemMoiSanPhamPage() {
               {/* Desktop Cover Preview */}
               {imageUrls.length === 0 ? (
                 <div className="hidden lg:flex flex-col items-center justify-center aspect-[4/3] rounded-xl bg-surface-container-low border border-dashed border-outline-variant/40 text-outline gap-2">
-                  <span className="material-symbols-outlined text-[42px]">add_photo_alternate</span>
+                  <span className="material-symbols-outlined text-[2.625rem]">add_photo_alternate</span>
                   <span className="font-body-sm text-on-surface-variant">Xem trước ảnh đại diện</span>
                 </div>
               ) : (
@@ -236,7 +236,7 @@ export default function ThemMoiSanPhamPage() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={`Ảnh ${idx + 1}`} className="w-full h-full object-cover" />
                       {idx === 0 && (
-                        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-primary-container/90 text-on-primary text-[11px] font-semibold">
+                        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-primary-container/90 text-on-primary text-[0.6875rem] font-semibold">
                           Ảnh đại diện
                         </span>
                       )}
@@ -245,7 +245,7 @@ export default function ThemMoiSanPhamPage() {
                         onClick={() => removeImage(idx)}
                         className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition-colors"
                       >
-                        <span className="material-symbols-outlined text-[16px]">close</span>
+                        <span className="material-symbols-outlined text-[1rem]">close</span>
                       </button>
                     </div>
                   ))}
@@ -257,9 +257,9 @@ export default function ThemMoiSanPhamPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="lg:hidden w-full h-12 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary disabled:opacity-60 active:scale-[0.98] transition-all"
+              className="lg:hidden w-full h-12 px-4 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary disabled:opacity-60 active:scale-[0.98] transition-all"
             >
-              <span className="material-symbols-outlined text-[20px]">save</span>
+              <span className="material-symbols-outlined text-[1.25rem]">save</span>
               <span>{submitting ? 'Đang lưu sản phẩm...' : 'Lưu sản phẩm'}</span>
             </button>
           </div>

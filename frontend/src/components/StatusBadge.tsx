@@ -49,7 +49,7 @@ export function ThueDoStatusBadge({ status, className = '' }: { status: ThueDoTr
   const style = thueDoStyles[status] || thueDoStyles[1]
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-semibold shrink-0 ${style.badge} ${className}`}
+      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-semibold whitespace-nowrap shrink-0 ${style.badge} ${className}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
       <span>{THUE_DO_TRANG_THAI_LABELS[status] || 'Không rõ'}</span>
@@ -61,10 +61,10 @@ export function SanPhamStatusBadge({ status, className = '' }: { status: SanPham
   const style = sanPhamStyles[status] || sanPhamStyles[1]
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full backdrop-blur-sm font-label-sm text-[10px] leading-tight font-semibold shadow-sm shrink-0 ${style.badge} ${className}`}
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full backdrop-blur-sm font-label-sm text-[0.625rem] leading-tight font-semibold whitespace-nowrap shadow-sm shrink-0 ${style.badge} ${className}`}
     >
       {status === 3 ? (
-        <span className="material-symbols-outlined text-[11px]">dry_cleaning</span>
+        <span className="material-symbols-outlined text-[0.6875rem]">dry_cleaning</span>
       ) : (
         <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
       )}

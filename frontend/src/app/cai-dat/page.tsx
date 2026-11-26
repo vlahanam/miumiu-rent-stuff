@@ -165,16 +165,16 @@ export default function CaiDatPage() {
         <div className="bg-surface-container-lowest rounded-xl lg:rounded-2xl p-4 lg:p-5 border border-outline-variant/20 shadow-sm flex items-center justify-between gap-3">
           <div className="flex items-center gap-3.5 min-w-0">
             <div className="relative shrink-0 w-14 h-14 rounded-2xl bg-primary-fixed/50 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary-container text-[30px]">
+              <span className="material-symbols-outlined text-primary-container text-[1.875rem]">
                 storefront
               </span>
               <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#236B48] ring-2 ring-surface-container-lowest rounded-full" />
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-1.5">
-                <h2 className="font-headline-md lg:text-[20px] text-on-surface truncate">Thuê Đồ MiuMiu</h2>
+                <h2 className="font-headline-md text-headline-md text-on-surface truncate">Thuê Đồ MiuMiu</h2>
                 <span
-                  className="material-symbols-outlined text-secondary text-[18px]"
+                  className="material-symbols-outlined text-secondary text-[1.125rem] shrink-0"
                   style={{ fontVariationSettings: '"FILL" 1' }}
                 >
                   verified
@@ -191,7 +191,7 @@ export default function CaiDatPage() {
             onClick={() => setShowLogoutConfirm(true)}
             className="hidden lg:inline-flex h-10 px-4 rounded-xl bg-error-container/70 hover:bg-error-container text-error font-label-md font-semibold items-center gap-1.5 shrink-0 transition-colors"
           >
-            <span className="material-symbols-outlined text-[18px]">logout</span>
+            <span className="material-symbols-outlined text-[1.125rem]">logout</span>
             <span>Đăng xuất</span>
           </button>
         </div>
@@ -203,7 +203,7 @@ export default function CaiDatPage() {
             {/* Store Config Section */}
             <div className="space-y-2.5">
               <div className="flex items-center gap-1.5 px-1 text-primary-container">
-                <span className="material-symbols-outlined text-[19px]">tune</span>
+                <span className="material-symbols-outlined text-[1.1875rem]">tune</span>
                 <h3 className="font-title-sm text-on-surface">Cài đặt cửa hàng</h3>
               </div>
 
@@ -223,7 +223,7 @@ export default function CaiDatPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="relative flex-1 flex items-center">
-                        <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px]">
+                        <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-[1.25rem]">
                           percent
                         </span>
                         <NumberInput
@@ -244,14 +244,14 @@ export default function CaiDatPage() {
                             onClick={() => setDepositRateInput(String(Math.max(0, depositRate - 5)))}
                             className="w-7 h-7 rounded-lg bg-surface-container hover:bg-surface-container-high flex items-center justify-center transition-colors"
                           >
-                            <span className="material-symbols-outlined text-[16px]">remove</span>
+                            <span className="material-symbols-outlined text-[1rem]">remove</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => setDepositRateInput(String(Math.min(100, depositRate + 5)))}
                             className="w-7 h-7 rounded-lg bg-surface-container hover:bg-surface-container-high flex items-center justify-center transition-colors"
                           >
-                            <span className="material-symbols-outlined text-[16px]">add</span>
+                            <span className="material-symbols-outlined text-[1rem]">add</span>
                           </button>
                         </div>
                       </div>
@@ -275,7 +275,7 @@ export default function CaiDatPage() {
                     </label>
                     <div className="flex items-center gap-2">
                       <div className="relative flex-1 flex items-center">
-                        <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px]">
+                        <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-[1.25rem]">
                           call
                         </span>
                         <input
@@ -352,14 +352,14 @@ export default function CaiDatPage() {
 
             {/* Reports & Export Section */}
             <div className="space-y-2.5">
-              <div className="flex items-center justify-between px-1">
+              <div className="flex items-center justify-between gap-2 px-1">
                 <div className="flex items-center gap-1.5 text-primary-container">
-                  <span className="material-symbols-outlined text-[19px]">query_stats</span>
+                  <span className="material-symbols-outlined text-[1.1875rem]">query_stats</span>
                   <h3 className="font-title-sm text-on-surface">Báo cáo &amp; Xuất dữ liệu</h3>
                 </div>
                 <Link
                   href="/bao-cao"
-                  className="font-label-sm text-primary-container hover:text-primary font-semibold transition-colors"
+                  className="font-label-sm text-primary-container hover:text-primary font-semibold whitespace-nowrap shrink-0 transition-colors"
                 >
                   Mở trang báo cáo →
                 </Link>
@@ -406,7 +406,7 @@ export default function CaiDatPage() {
                       <div
                         className={`w-10 h-10 rounded-xl ${item.iconBg} flex items-center justify-center text-primary-container shrink-0`}
                       >
-                        <span className="material-symbols-outlined text-[21px]">{item.icon}</span>
+                        <span className="material-symbols-outlined text-[1.3125rem]">{item.icon}</span>
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="font-title-sm text-body-md text-on-surface truncate">
@@ -422,7 +422,7 @@ export default function CaiDatPage() {
                         onClick={() => handleExport(item.loai, 'excel')}
                         className="h-8 px-2.5 rounded-full bg-surface-container hover:bg-primary-container hover:text-on-primary text-primary font-label-sm flex items-center gap-1 transition-all disabled:opacity-50"
                       >
-                        <span className="material-symbols-outlined text-[15px]">file_download</span>
+                        <span className="material-symbols-outlined text-[0.9375rem]">file_download</span>
                         <span>Excel</span>
                       </button>
                       <button
@@ -444,14 +444,14 @@ export default function CaiDatPage() {
           <div className="lg:col-span-5 lg:sticky lg:top-20 flex flex-col gap-5">
             <div className="space-y-2.5">
               <div className="flex items-center gap-1.5 px-1 text-primary-container">
-                <span className="material-symbols-outlined text-[19px]">security</span>
+                <span className="material-symbols-outlined text-[1.1875rem]">security</span>
                 <h3 className="font-title-sm text-on-surface">Tài khoản &amp; Bảo mật</h3>
               </div>
               <div className="bg-surface-container-lowest rounded-xl lg:rounded-2xl p-2 border border-outline-variant/20 shadow-sm space-y-1">
                 <div className="p-3 rounded-xl flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary-container shrink-0">
-                      <span className="material-symbols-outlined text-[20px]">manage_accounts</span>
+                      <span className="material-symbols-outlined text-[1.25rem]">manage_accounts</span>
                     </div>
                     <div className="flex flex-col min-w-0">
                       <span className="font-title-sm text-body-md text-on-surface truncate">
@@ -477,7 +477,7 @@ export default function CaiDatPage() {
                 <div className="p-3 rounded-xl flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary-container shrink-0">
-                      <span className="material-symbols-outlined text-[20px]">lock_reset</span>
+                      <span className="material-symbols-outlined text-[1.25rem]">lock_reset</span>
                     </div>
                     <div className="flex flex-col min-w-0">
                       <span className="font-title-sm text-body-md text-on-surface">Đổi mật khẩu</span>
@@ -502,9 +502,9 @@ export default function CaiDatPage() {
               <button
                 type="button"
                 onClick={() => setShowLogoutConfirm(true)}
-                className="w-full h-12 rounded-xl bg-error-container/70 hover:bg-error-container text-on-error-container flex items-center justify-center gap-2 font-title-sm active:scale-[0.98] transition-all"
+                className="w-full h-12 px-4 rounded-xl bg-error-container/70 hover:bg-error-container text-on-error-container flex items-center justify-center gap-2 font-title-sm active:scale-[0.98] transition-all"
               >
-                <span className="material-symbols-outlined text-[20px] text-error">logout</span>
+                <span className="material-symbols-outlined text-[1.25rem] text-error">logout</span>
                 <span className="font-semibold text-error">Đăng xuất tài khoản</span>
               </button>
             </div>
@@ -526,7 +526,7 @@ export default function CaiDatPage() {
                 onClick={() => setShowProfileModal(false)}
                 className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             </div>
             <input
@@ -542,14 +542,14 @@ export default function CaiDatPage() {
               <button
                 type="button"
                 onClick={() => setShowProfileModal(false)}
-                className="flex-1 h-10 rounded-xl bg-surface-container font-label-md"
+                className="shrink-0 min-w-[5.5rem] h-10 px-4 rounded-xl bg-surface-container font-label-md"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={accountBusy}
-                className="flex-1 h-10 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-10 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
               >
                 {accountBusy ? 'Đang lưu...' : 'Lưu tên'}
               </button>
@@ -567,7 +567,7 @@ export default function CaiDatPage() {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-primary-container">
-                <span className="material-symbols-outlined text-[22px]">password</span>
+                <span className="material-symbols-outlined text-[1.375rem]">password</span>
                 <h4 className="font-headline-md text-on-surface">Đổi mật khẩu</h4>
               </div>
               <button
@@ -575,7 +575,7 @@ export default function CaiDatPage() {
                 onClick={() => setShowPasswordModal(false)}
                 className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             </div>
             <div className="space-y-3">
@@ -619,14 +619,14 @@ export default function CaiDatPage() {
               <button
                 type="button"
                 onClick={() => setShowPasswordModal(false)}
-                className="flex-1 h-10 rounded-xl bg-surface-container font-label-md"
+                className="shrink-0 min-w-[5.5rem] h-10 px-4 rounded-xl bg-surface-container font-label-md"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={accountBusy}
-                className="flex-1 h-10 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-10 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
               >
                 {accountBusy ? 'Đang lưu...' : 'Lưu thay đổi'}
               </button>
@@ -647,7 +647,7 @@ export default function CaiDatPage() {
               <button
                 type="button"
                 onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 h-10 rounded-xl bg-surface-container font-label-md"
+                className="shrink-0 min-w-[5.5rem] h-10 px-4 rounded-xl bg-surface-container font-label-md"
               >
                 Ở lại
               </button>
@@ -657,7 +657,7 @@ export default function CaiDatPage() {
                   setShowLogoutConfirm(false)
                   logout()
                 }}
-                className="flex-1 h-10 rounded-xl bg-error text-on-error font-label-md font-bold"
+                className="flex-1 h-10 px-4 rounded-xl bg-error text-on-error font-label-md font-bold"
               >
                 Đăng xuất
               </button>

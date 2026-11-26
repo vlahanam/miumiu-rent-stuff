@@ -283,8 +283,8 @@ function DonThueDetailContent() {
             title="In phiếu thuê"
             className="w-9 h-9 lg:w-auto lg:px-3.5 rounded-full lg:rounded-xl bg-surface-container text-on-surface-variant hover:text-primary hover:bg-surface-container-high flex items-center justify-center gap-1.5 print:hidden transition-colors"
           >
-            <span className="material-symbols-outlined text-[19px]">print</span>
-            <span className="hidden lg:inline font-label-md text-on-surface">In phiếu</span>
+            <span className="material-symbols-outlined text-[1.1875rem]">print</span>
+            <span className="hidden lg:inline font-label-md text-label-md text-on-surface">In phiếu</span>
           </button>
         )
       }
@@ -305,11 +305,11 @@ function DonThueDetailContent() {
 
         {error && !loading && (
           <div className="p-6 rounded-2xl bg-error-container text-on-error-container flex flex-col items-center text-center gap-2">
-            <span className="material-symbols-outlined text-[32px]">error</span>
+            <span className="material-symbols-outlined text-[2rem]">error</span>
             <span className="font-body-md text-body-md">{error}</span>
             <Link
               href="/don-thue"
-              className="mt-1 px-4 py-2 rounded-xl bg-error text-on-error font-label-md text-label-md"
+              className="mt-1 px-4 py-2 rounded-xl bg-error text-on-error font-label-md text-label-md whitespace-nowrap"
             >
               Quay lại danh sách
             </Link>
@@ -321,13 +321,13 @@ function DonThueDetailContent() {
             {/* Print-only Brand Header */}
             <div className="hidden print:flex items-center justify-between border-b-2 border-primary pb-3 mb-2">
               <div>
-                <div className="text-[20px] font-bold text-primary">MIU MIU ATELIER</div>
-                <div className="text-[12px] text-on-surface-variant">
+                <div className="text-[1.25rem] font-bold text-primary">MIU MIU ATELIER</div>
+                <div className="text-[0.75rem] text-on-surface-variant">
                   Phiếu thuê áo dài &amp; phụ kiện
                 </div>
               </div>
               {shopPhone && (
-                <div className="text-right text-[12px] text-on-surface-variant">
+                <div className="text-right text-[0.75rem] text-on-surface-variant">
                   Hotline: <strong className="text-on-surface">{formatPhone(shopPhone)}</strong>
                 </div>
               )}
@@ -337,7 +337,7 @@ function DonThueDetailContent() {
             {xuLyCocResult && (
               <div className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-[#EAF5EE] border border-[#236B48]/25 text-[#236B48] flex flex-col gap-1">
                 <div className="flex items-center gap-2 font-title-sm text-title-sm">
-                  <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                  <span className="material-symbols-outlined text-[1.25rem]">check_circle</span>
                   <span>Xử lý tiền cọc khi trả đồ</span>
                 </div>
                 <p className="font-body-md text-body-md font-semibold">{xuLyCocResult.ghi_chu}</p>
@@ -354,7 +354,7 @@ function DonThueDetailContent() {
                 <div className="flex items-start lg:items-center justify-between lg:justify-start gap-3">
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap">
-                      <span className="font-headline-lg text-headline-lg lg:text-[24px] text-primary font-bold">
+                      <span className="font-headline-lg text-headline-lg text-primary font-bold">
                         {order.ma_phieu_thue}
                       </span>
                       <ThueDoStatusBadge status={order.trang_thai} />
@@ -376,26 +376,26 @@ function DonThueDetailContent() {
                       <button
                         type="button"
                         onClick={() => openGiaoDoModal(order)}
-                        className="flex-1 lg:flex-none min-w-[140px] h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
+                        className="flex-1 sm:flex-none min-w-fit h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
                       >
-                        <span className="material-symbols-outlined text-[18px]">local_shipping</span>
-                        Giao đồ cho khách
+                        <span className="material-symbols-outlined text-[1.125rem]">local_shipping</span>
+                        <span>Giao đồ cho khách</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => openSuaModal(order)}
-                        className="h-11 px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors"
+                        className="shrink-0 h-11 px-3.5 sm:px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
                       >
-                        <span className="material-symbols-outlined text-[18px]">edit</span>
-                        Sửa
+                        <span className="material-symbols-outlined text-[1.125rem]">edit</span>
+                        <span>Sửa</span>
                       </button>
                       <button
                         type="button"
                         onClick={openHuyModal}
-                        className="h-11 px-4 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center gap-1 hover:bg-error-container transition-colors"
+                        className="shrink-0 h-11 px-3.5 sm:px-4 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-error-container transition-colors"
                       >
-                        <span className="material-symbols-outlined text-[18px]">cancel</span>
-                        Hủy
+                        <span className="material-symbols-outlined text-[1.125rem]">cancel</span>
+                        <span>Hủy</span>
                       </button>
                     </>
                   )}
@@ -405,27 +405,27 @@ function DonThueDetailContent() {
                       <button
                         type="button"
                         onClick={() => openTraDoModal(order)}
-                        className="flex-1 lg:flex-none min-w-[150px] h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
+                        className="flex-1 sm:flex-none min-w-fit h-11 px-4 lg:px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
                       >
-                        <span className="material-symbols-outlined text-[18px]">assignment_turned_in</span>
-                        Khách đã trả đồ
+                        <span className="material-symbols-outlined text-[1.125rem]">assignment_turned_in</span>
+                        <span>Khách đã trả đồ</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => openSuaModal(order)}
-                        className="h-11 px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors"
+                        className="shrink-0 h-11 px-3.5 sm:px-4 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
                       >
-                        <span className="material-symbols-outlined text-[18px]">update</span>
-                        Gia hạn / Sửa
+                        <span className="material-symbols-outlined text-[1.125rem]">update</span>
+                        <span>Gia hạn / Sửa</span>
                       </button>
                       {order.trang_thai === 2 && (
                         <button
                           type="button"
                           onClick={openHuyModal}
-                          className="h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center gap-1 hover:bg-error-container transition-colors"
+                          className="shrink-0 h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-error-container transition-colors"
                         >
-                          <span className="material-symbols-outlined text-[18px]">cancel</span>
-                          Hủy
+                          <span className="material-symbols-outlined text-[1.125rem]">cancel</span>
+                          <span>Hủy</span>
                         </button>
                       )}
                     </>
@@ -435,14 +435,14 @@ function DonThueDetailContent() {
 
               {order.trang_thai === 4 && (
                 <div className="p-3 rounded-xl bg-error-container text-on-error-container font-label-md text-label-md flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px]">warning</span>
+                  <span className="material-symbols-outlined text-[1.125rem] shrink-0">warning</span>
                   <span>Phiếu đã quá hạn trả {daysOverdue(order.ngay_hen_tra)} ngày!</span>
                 </div>
               )}
 
               {(order.trang_thai === 3 || order.trang_thai === 5) && (
                 <div className="p-3 rounded-xl bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[16px]">lock</span>
+                  <span className="material-symbols-outlined text-[1rem] shrink-0">lock</span>
                   <span>Phiếu đã hoàn tất — chỉ xem, không thể chỉnh sửa để bảo toàn số liệu.</span>
                 </div>
               )}
@@ -455,7 +455,7 @@ function DonThueDetailContent() {
                 {/* Sản phẩm trong phiếu */}
                 <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
                   <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[18px] text-primary-container">checkroom</span>
+                    <span className="material-symbols-outlined text-[1.125rem] text-primary-container">checkroom</span>
                     Sản phẩm thuê ({order.chi_tiet?.length || 0})
                   </h2>
                   <div className="flex flex-col gap-2.5">
@@ -483,11 +483,11 @@ function DonThueDetailContent() {
                             </div>
                           </div>
                           <div className="flex sm:flex-col sm:items-end gap-2 sm:gap-0.5 shrink-0 tabular-nums">
-                            <span className="font-currency-lg text-[14px] text-on-surface font-bold">
+                            <span className="font-currency-lg text-[0.875rem] text-on-surface font-bold">
                               {formatCurrency(ct.gia_thue_ngay)}
-                              <span className="text-[11px] font-normal text-on-surface-variant">/ngày</span>
+                              <span className="text-[0.6875rem] font-normal text-on-surface-variant">/ngày</span>
                             </span>
-                            <span className="font-label-sm text-[11px] text-on-surface-variant">
+                            <span className="font-label-sm text-[0.6875rem] text-on-surface-variant">
                               Cọc gợi ý: {formatCurrency(ct.tien_coc)}
                             </span>
                           </div>
@@ -500,14 +500,14 @@ function DonThueDetailContent() {
                 {/* Lịch trình & Ghi chú */}
                 <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3.5">
                   <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[18px] text-primary-container">calendar_month</span>
+                    <span className="material-symbols-outlined text-[1.125rem] text-primary-container">calendar_month</span>
                     Lịch trình thuê &amp; Ghi chú
                   </h2>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-body-sm">
                     <div className="p-3 rounded-xl bg-surface-container-low">
                       <div className="font-label-sm text-on-surface-variant">Ngày bắt đầu nhận đồ</div>
-                      <div className="font-title-sm text-[14px] font-semibold text-on-surface mt-1 tabular-nums">
+                      <div className="font-title-sm text-[0.875rem] font-semibold text-on-surface mt-1 tabular-nums">
                         {formatDateTime(order.ngay_bat_dau)}
                       </div>
                     </div>
@@ -515,14 +515,14 @@ function DonThueDetailContent() {
                       <div className="font-label-sm text-on-surface-variant">
                         Ngày hẹn trả ({formatNumber(order.so_ngay_thue || 1)} ngày)
                       </div>
-                      <div className="font-title-sm text-[14px] font-semibold text-on-surface mt-1 tabular-nums">
+                      <div className="font-title-sm text-[0.875rem] font-semibold text-on-surface mt-1 tabular-nums">
                         {formatDateTime(order.ngay_hen_tra)}
                       </div>
                     </div>
                     {order.ngay_tra_thuc_te && (
                       <div className="sm:col-span-2 p-3 rounded-xl bg-[#EAF5EE] text-[#236B48]">
                         <div className="font-label-sm opacity-80">Ngày trả thực tế</div>
-                        <div className="font-title-sm text-[14px] font-semibold mt-1 tabular-nums">
+                        <div className="font-title-sm text-[0.875rem] font-semibold mt-1 tabular-nums">
                           {formatDateTime(order.ngay_tra_thuc_te)}
                         </div>
                       </div>
@@ -546,15 +546,15 @@ function DonThueDetailContent() {
               <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-20 flex flex-col gap-4 lg:gap-5 print:mt-4">
                 {/* Khách hàng */}
                 <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-[18px] text-primary-container">person</span>
+                      <span className="material-symbols-outlined text-[1.125rem] text-primary-container">person</span>
                       Khách thuê
                     </h2>
                     {order.khach_hang && (
                       <Link
                         href={`/khach-hang/${order.khach_hang.id}`}
-                        className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold transition-colors print:hidden"
+                        className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold whitespace-nowrap shrink-0 transition-colors print:hidden"
                       >
                         Hồ sơ khách →
                       </Link>
@@ -582,10 +582,10 @@ function DonThueDetailContent() {
                     {order.khach_hang?.so_dien_thoai && (
                       <a
                         href={`tel:${order.khach_hang.so_dien_thoai}`}
-                        className="h-9 px-3.5 rounded-full bg-primary-fixed hover:bg-primary-container hover:text-on-primary text-on-primary-fixed-variant font-label-md text-label-md flex items-center gap-1 shrink-0 transition-colors print:hidden"
+                        className="h-9 px-3.5 rounded-full bg-primary-fixed hover:bg-primary-container hover:text-on-primary text-on-primary-fixed-variant font-label-md text-label-md whitespace-nowrap flex items-center gap-1 shrink-0 transition-colors print:hidden"
                       >
-                        <span className="material-symbols-outlined text-[16px]">call</span>
-                        Gọi
+                        <span className="material-symbols-outlined text-[1rem]">call</span>
+                        <span>Gọi</span>
                       </a>
                     )}
                   </div>
@@ -594,7 +594,7 @@ function DonThueDetailContent() {
                 {/* Tài chính */}
                 <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
                   <h2 className="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[18px] text-primary-container">receipt_long</span>
+                    <span className="material-symbols-outlined text-[1.125rem] text-primary-container">receipt_long</span>
                     Chi tiết thanh toán
                   </h2>
 
@@ -639,7 +639,7 @@ function DonThueDetailContent() {
                     )}
                     <div className="border-t border-outline-variant/30 pt-3 mt-1 flex justify-between items-center">
                       <span className="font-title-sm text-on-surface">Tổng doanh thu phiếu</span>
-                      <span className="font-headline-md lg:text-[20px] text-primary-container font-bold tabular-nums">
+                      <span className="font-headline-md text-headline-md text-primary-container font-bold tabular-nums">
                         {formatCurrency(tongThue + tienPhat)}
                       </span>
                     </div>
@@ -671,9 +671,9 @@ function DonThueDetailContent() {
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             </div>
 
@@ -682,7 +682,7 @@ function DonThueDetailContent() {
               <strong>Đã cho thuê</strong>. Xác nhận hình thức cọc đã nhận:
             </p>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {[
                 { value: 1 as LoaiCoc, label: 'Tiền mặt' },
                 { value: 2 as LoaiCoc, label: 'Chuyển khoản' },
@@ -692,7 +692,7 @@ function DonThueDetailContent() {
                   key={opt.value}
                   type="button"
                   onClick={() => setGiaoLoaiCoc(opt.value)}
-                  className={`h-10 rounded-xl font-label-sm font-semibold ${
+                  className={`flex-1 min-w-fit h-10 px-3 rounded-xl font-label-sm text-label-sm font-semibold ${
                     giaoLoaiCoc === opt.value
                       ? 'bg-primary-container text-on-primary'
                       : 'bg-surface-container-low text-on-surface-variant'
@@ -739,14 +739,14 @@ function DonThueDetailContent() {
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md text-on-surface"
+                className="shrink-0 min-w-[5.5rem] h-11 px-4 rounded-xl bg-surface-container font-label-md text-on-surface"
               >
                 Đóng
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
               >
                 {busy ? 'Đang xử lý...' : 'Xác nhận giao đồ'}
               </button>
@@ -769,9 +769,9 @@ function DonThueDetailContent() {
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             </div>
 
@@ -783,9 +783,9 @@ function DonThueDetailContent() {
                 return (
                   <div
                     key={ct.id}
-                    className="p-2.5 rounded-xl bg-surface-container-low flex items-center justify-between gap-2"
+                    className="p-2.5 rounded-xl bg-surface-container-low flex flex-wrap sm:flex-nowrap items-center justify-between gap-2"
                   >
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="font-body-sm font-semibold text-on-surface truncate">
                         {ct.san_pham?.ten_san_pham || `SP #${ct.san_pham_id}`}
                       </div>
@@ -799,7 +799,7 @@ function DonThueDetailContent() {
                         onClick={() =>
                           setTraItemStatus((prev) => ({ ...prev, [ct.san_pham_id]: 1 }))
                         }
-                        className={`px-2.5 py-1.5 rounded-lg font-label-sm text-[11px] font-semibold ${
+                        className={`px-2.5 py-1.5 rounded-lg font-label-sm text-[0.6875rem] font-semibold ${
                           chosen === 1
                             ? 'bg-[#236B48] text-white'
                             : 'bg-surface-container-lowest text-on-surface-variant'
@@ -812,7 +812,7 @@ function DonThueDetailContent() {
                         onClick={() =>
                           setTraItemStatus((prev) => ({ ...prev, [ct.san_pham_id]: 3 }))
                         }
-                        className={`px-2.5 py-1.5 rounded-lg font-label-sm text-[11px] font-semibold ${
+                        className={`px-2.5 py-1.5 rounded-lg font-label-sm text-[0.6875rem] font-semibold ${
                           chosen === 3
                             ? 'bg-on-surface text-surface'
                             : 'bg-surface-container-lowest text-on-surface-variant'
@@ -890,14 +890,14 @@ function DonThueDetailContent() {
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md text-on-surface"
+                className="shrink-0 min-w-[5.5rem] h-11 px-4 rounded-xl bg-surface-container font-label-md text-on-surface"
               >
                 Đóng
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
               >
                 {busy ? 'Đang xử lý...' : 'Xác nhận đã trả'}
               </button>
@@ -920,9 +920,9 @@ function DonThueDetailContent() {
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
@@ -945,14 +945,14 @@ function DonThueDetailContent() {
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md text-on-surface"
+                className="shrink-0 min-w-[6rem] h-11 px-4 rounded-xl bg-surface-container font-label-md text-on-surface"
               >
                 Quay lại
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 rounded-xl bg-error text-on-error font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-11 px-4 rounded-xl bg-error text-on-error font-label-md font-bold disabled:opacity-60"
               >
                 {busy ? 'Đang hủy...' : 'Xác nhận hủy phiếu'}
               </button>
@@ -975,9 +975,9 @@ function DonThueDetailContent() {
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             </div>
 
@@ -1025,7 +1025,7 @@ function DonThueDetailContent() {
 
                 <div className="flex flex-col gap-1">
                   <label className="font-label-sm text-on-surface-variant">Loại cọc</label>
-                  <div className="grid grid-cols-3 gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {[
                       { v: 1 as LoaiCoc, l: 'Tiền mặt' },
                       { v: 2 as LoaiCoc, l: 'Chuyển khoản' },
@@ -1035,7 +1035,7 @@ function DonThueDetailContent() {
                         key={o.v}
                         type="button"
                         onClick={() => setEditLoaiCoc(o.v)}
-                        className={`h-9 rounded-lg font-label-sm font-semibold ${
+                        className={`flex-1 min-w-fit h-9 px-3 rounded-lg font-label-sm text-label-sm font-semibold ${
                           editLoaiCoc === o.v
                             ? 'bg-primary-container text-on-primary'
                             : 'bg-surface-container-low text-on-surface-variant'
@@ -1129,14 +1129,14 @@ function DonThueDetailContent() {
               <button
                 type="button"
                 onClick={() => setActiveModal('none')}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md text-on-surface"
+                className="shrink-0 min-w-[5.5rem] h-11 px-4 rounded-xl bg-surface-container font-label-md text-on-surface"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
               >
                 {busy ? 'Đang lưu...' : 'Lưu thay đổi'}
               </button>

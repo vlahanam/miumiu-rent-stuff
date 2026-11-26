@@ -78,9 +78,9 @@ export default function TongQuanPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/bao-cao"
-            className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/25 font-label-md transition-colors"
+            className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/25 font-label-md text-label-md whitespace-nowrap transition-colors"
           >
-            <span className="material-symbols-outlined text-[18px] text-primary-container">query_stats</span>
+            <span className="material-symbols-outlined text-[1.125rem] text-primary-container">query_stats</span>
             <span>Báo cáo</span>
           </Link>
           <button
@@ -91,34 +91,34 @@ export default function TongQuanPage() {
             title="Làm mới dữ liệu"
             className="w-9 h-9 lg:w-auto lg:px-3.5 rounded-full lg:rounded-xl flex items-center justify-center gap-1.5 text-on-surface-variant lg:bg-surface-container-low lg:border lg:border-outline-variant/25 hover:bg-surface-container transition-colors"
           >
-            <span className={`material-symbols-outlined text-[20px] lg:text-[18px] ${refreshing ? 'animate-spin' : ''}`}>
+            <span className={`material-symbols-outlined text-[1.25rem] lg:text-[1.125rem] ${refreshing ? 'animate-spin' : ''}`}>
               refresh
             </span>
-            <span className="hidden lg:inline font-label-md text-on-surface">Làm mới</span>
+            <span className="hidden lg:inline font-label-md text-label-md text-on-surface">Làm mới</span>
           </button>
         </div>
       }
     >
       <div className="flex flex-col w-full gap-space-lg lg:gap-6">
         {/* Mobile Date Header */}
-        <section className="flex lg:hidden items-center justify-between">
-          <div className="flex items-center gap-1.5">
+        <section className="flex lg:hidden items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
             <span
-              className="material-symbols-outlined text-[18px] text-primary-container"
+              className="material-symbols-outlined text-[1.125rem] text-primary-container shrink-0"
               style={{ fontVariationSettings: '"FILL" 1' }}
             >
               calendar_today
             </span>
-            <span className="font-title-sm text-title-sm text-on-surface">
+            <span className="font-title-sm text-title-sm text-on-surface truncate">
               {formatVietnameseToday()}
             </span>
           </div>
           <Link
             href="/bao-cao"
-            className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold flex items-center gap-0.5 transition-colors"
+            className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold whitespace-nowrap shrink-0 flex items-center gap-0.5 transition-colors"
           >
             <span>Báo cáo</span>
-            <span className="material-symbols-outlined text-[15px]">chevron_right</span>
+            <span className="material-symbols-outlined text-[0.9375rem]">chevron_right</span>
           </Link>
         </section>
 
@@ -145,14 +145,14 @@ export default function TongQuanPage() {
             >
               <div className="flex items-center justify-center lg:justify-start w-full mb-1 lg:mb-3">
                 <div className="flex items-center justify-center w-7 h-7 lg:w-10 lg:h-10 rounded-full lg:rounded-xl bg-tertiary-fixed text-tertiary">
-                  <span className="material-symbols-outlined text-[16px] lg:text-[21px]">checkroom</span>
+                  <span className="material-symbols-outlined text-[1rem] lg:text-[1.3125rem]">checkroom</span>
                 </div>
               </div>
               <div className="flex flex-col items-center lg:items-start w-full">
-                <span className="font-headline-lg text-headline-lg lg:text-[30px] lg:leading-none text-[#236B48] tracking-tight leading-none mb-1 tabular-nums font-bold">
+                <span className="font-headline-lg text-[clamp(1.375rem,1.1rem+0.9vw,1.875rem)] leading-none text-[#236B48] tracking-tight mb-1 tabular-nums font-bold">
                   {loading ? '—' : data?.so_san_pham.trong_lich ?? 0}
                 </span>
-                <span className="font-label-sm text-label-sm lg:text-[13px] text-on-tertiary-fixed-variant truncate w-full">
+                <span className="font-label-sm text-label-sm lg:text-[0.8125rem] text-on-tertiary-fixed-variant truncate w-full">
                   Trống lịch
                 </span>
               </div>
@@ -164,14 +164,14 @@ export default function TongQuanPage() {
             >
               <div className="flex items-center justify-center lg:justify-start w-full mb-1 lg:mb-3">
                 <div className="flex items-center justify-center w-7 h-7 lg:w-10 lg:h-10 rounded-full lg:rounded-xl bg-secondary-fixed text-secondary">
-                  <span className="material-symbols-outlined text-[16px] lg:text-[21px]">shopping_bag</span>
+                  <span className="material-symbols-outlined text-[1rem] lg:text-[1.3125rem]">shopping_bag</span>
                 </div>
               </div>
               <div className="flex flex-col items-center lg:items-start w-full">
-                <span className="font-headline-lg text-headline-lg lg:text-[30px] lg:leading-none text-[#B57300] tracking-tight leading-none mb-1 tabular-nums font-bold">
+                <span className="font-headline-lg text-[clamp(1.375rem,1.1rem+0.9vw,1.875rem)] leading-none text-[#B57300] tracking-tight mb-1 tabular-nums font-bold">
                   {loading ? '—' : data?.so_san_pham.da_cho_thue ?? 0}
                 </span>
-                <span className="font-label-sm text-label-sm lg:text-[13px] text-on-secondary-fixed-variant truncate w-full">
+                <span className="font-label-sm text-label-sm lg:text-[0.8125rem] text-on-secondary-fixed-variant truncate w-full">
                   Đã cho thuê
                 </span>
               </div>
@@ -183,14 +183,14 @@ export default function TongQuanPage() {
             >
               <div className="flex items-center justify-center lg:justify-start w-full mb-1 lg:mb-3">
                 <div className="flex items-center justify-center w-7 h-7 lg:w-10 lg:h-10 rounded-full lg:rounded-xl bg-surface-variant text-on-surface-variant">
-                  <span className="material-symbols-outlined text-[16px] lg:text-[21px]">dry_cleaning</span>
+                  <span className="material-symbols-outlined text-[1rem] lg:text-[1.3125rem]">dry_cleaning</span>
                 </div>
               </div>
               <div className="flex flex-col items-center lg:items-start w-full">
-                <span className="font-headline-lg text-headline-lg lg:text-[30px] lg:leading-none text-on-surface tracking-tight leading-none mb-1 tabular-nums font-bold">
+                <span className="font-headline-lg text-[clamp(1.375rem,1.1rem+0.9vw,1.875rem)] leading-none text-on-surface tracking-tight mb-1 tabular-nums font-bold">
                   {loading ? '—' : data?.so_san_pham.dang_bao_duong ?? 0}
                 </span>
-                <span className="font-label-sm text-label-sm lg:text-[13px] text-on-surface-variant truncate w-full">
+                <span className="font-label-sm text-label-sm lg:text-[0.8125rem] text-on-surface-variant truncate w-full">
                   Bảo dưỡng
                 </span>
               </div>
@@ -207,19 +207,19 @@ export default function TongQuanPage() {
                 <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
                   Doanh thu tháng này
                 </span>
-                <span className="font-headline-xl text-headline-xl lg:text-[28px] xl:text-[32px] lg:leading-tight text-primary font-bold mt-0.5 tabular-nums truncate">
+                <span className="font-headline-xl text-headline-xl text-primary font-bold mt-0.5 tabular-nums truncate">
                   {loading ? '...' : formatCurrency(revenueNow)}
                 </span>
               </div>
               {!loading && revPercent !== null && (
                 <span
-                  className={`inline-flex items-center gap-0.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm shrink-0 ${
+                  className={`inline-flex items-center gap-0.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm whitespace-nowrap shrink-0 ${
                     revPercent >= 0
                       ? 'bg-[#EAF5EE] text-[#236B48]'
                       : 'bg-error-container text-on-error-container'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[14px]">
+                  <span className="material-symbols-outlined text-[0.875rem]">
                     {revPercent >= 0 ? 'trending_up' : 'trending_down'}
                   </span>
                   {revPercent >= 0 ? `+${revPercent}%` : `${revPercent}%`}
@@ -232,7 +232,7 @@ export default function TongQuanPage() {
                 <span>{data?.so_phieu_thang_nay ?? 0} phiếu đã hoàn tất</span>
               </div>
               {!loading && revenuePrev > 0 && (
-                <span className="tabular-nums text-[12px]">
+                <span className="tabular-nums text-[0.75rem]">
                   Tháng trước: {formatCurrency(revenuePrev)} ({revDiff >= 0 ? '+' : ''}
                   {formatCurrency(revDiff)})
                 </span>
@@ -256,9 +256,9 @@ export default function TongQuanPage() {
             {totalUrgent === 0 && (
               <div className="p-6 lg:p-10 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col items-center text-center gap-2.5">
                 <div className="w-14 h-14 rounded-full bg-[#EAF5EE] text-[#236B48] flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[28px]">task_alt</span>
+                  <span className="material-symbols-outlined text-[1.75rem]">task_alt</span>
                 </div>
-                <h3 className="font-title-sm text-title-sm lg:text-[18px] text-on-surface">
+                <h3 className="font-title-sm text-title-sm lg:text-[1.125rem] text-on-surface">
                   Chưa có đơn cần xử lý gấp hôm nay
                 </h3>
                 <p className="font-body-sm text-body-sm text-on-surface-variant max-w-md">
@@ -267,15 +267,15 @@ export default function TongQuanPage() {
                 <div className="flex flex-wrap items-center justify-center gap-2.5 mt-2">
                   <Link
                     href="/don-thue"
-                    className="px-4 py-2 rounded-full bg-surface-container text-primary-container font-label-md text-label-md hover:bg-primary-fixed transition-colors"
+                    className="px-4 py-2 rounded-full bg-surface-container text-primary-container font-label-md text-label-md whitespace-nowrap hover:bg-primary-fixed transition-colors"
                   >
                     Xem tất cả đơn thuê
                   </Link>
                   <Link
                     href="/don-thue/tao-moi"
-                    className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md hover:bg-primary transition-colors"
+                    className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md whitespace-nowrap hover:bg-primary transition-colors"
                   >
-                    <span className="material-symbols-outlined text-[17px]">add</span>
+                    <span className="material-symbols-outlined text-[1.0625rem]">add</span>
                     Tạo đơn thuê mới
                   </Link>
                 </div>
@@ -285,12 +285,12 @@ export default function TongQuanPage() {
             {/* 1. Quá hạn trả áo — Always full-width priority band, 2-col grid on PC */}
             {overdueList.length > 0 && (
               <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-error" />
-                    <h2 className="font-title-sm text-title-sm lg:text-[17px] text-error">Quá hạn trả áo</h2>
+                    <h2 className="font-title-sm text-title-sm lg:text-[1.0625rem] text-error">Quá hạn trả áo</h2>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm font-bold">
+                  <span className="px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold whitespace-nowrap">
                     {overdueList.length} đơn cần xử lý gấp
                   </span>
                 </div>
@@ -337,7 +337,7 @@ export default function TongQuanPage() {
                                 </span>
                               )}
                               <div className="flex items-center gap-1 font-body-sm text-body-sm text-error font-medium mt-0.5">
-                                <span className="material-symbols-outlined text-[15px]">schedule</span>
+                                <span className="material-symbols-outlined text-[0.9375rem] shrink-0">schedule</span>
                                 <span>
                                   {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)} (Trễ{' '}
                                   {lateDays} ngày)
@@ -347,29 +347,29 @@ export default function TongQuanPage() {
                           </Link>
                         </div>
 
-                        <div className="flex items-center justify-between pt-2 pl-1 border-t border-outline-variant/15">
+                        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 pl-1 border-t border-outline-variant/15">
                           <div className="flex flex-col">
                             <span className="font-label-sm text-label-sm text-on-surface-variant">Tiền thuê</span>
                             <span className="font-currency-lg text-currency-lg text-on-surface tabular-nums">
                               {formatCurrency(order.tong_tien_thue)}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 shrink-0">
                             {phone && (
                               <a
                                 href={`tel:${phone}`}
-                                className="px-3 h-9 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm flex items-center gap-1 shadow-sm hover:opacity-90 active:scale-95 transition-all"
+                                className="px-3 h-9 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm whitespace-nowrap flex items-center gap-1 shadow-sm hover:opacity-90 active:scale-95 transition-all"
                               >
-                                <span className="material-symbols-outlined text-[16px]">call</span>
-                                Gọi khách
+                                <span className="material-symbols-outlined text-[1rem]">call</span>
+                                <span>Gọi khách</span>
                               </a>
                             )}
                             <Link
                               href={`/don-thue/${order.id}?action=tra-do`}
-                              className="px-3.5 h-9 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-sm text-label-sm flex items-center gap-1 shadow-sm active:scale-95 transition-all"
+                              className="px-3.5 h-9 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap flex items-center gap-1 shadow-sm active:scale-95 transition-all"
                             >
-                              <span className="material-symbols-outlined text-[16px]">assignment_turned_in</span>
-                              Trả đồ
+                              <span className="material-symbols-outlined text-[1rem]">assignment_turned_in</span>
+                              <span>Trả đồ</span>
                             </Link>
                           </div>
                         </div>
@@ -392,14 +392,14 @@ export default function TongQuanPage() {
                 {/* 2. Cần trả hôm nay */}
                 {dueTodayList.length > 0 && (
                   <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-secondary" />
-                        <h2 className="font-title-sm text-title-sm lg:text-[17px] text-on-surface">
+                        <h2 className="font-title-sm text-title-sm lg:text-[1.0625rem] text-on-surface">
                           Cần trả hôm nay
                         </h2>
                       </div>
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#FEF4E6] text-[#B57300] font-label-sm font-semibold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#FEF4E6] text-[#B57300] font-label-sm text-label-sm font-semibold whitespace-nowrap">
                         {dueTodayList.length} đơn
                       </span>
                     </div>
@@ -450,7 +450,7 @@ export default function TongQuanPage() {
                                     </span>
                                   )}
                                   <div className="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm mt-0.5">
-                                    <span className="material-symbols-outlined text-[15px] text-secondary">
+                                    <span className="material-symbols-outlined text-[0.9375rem] text-secondary shrink-0">
                                       event_available
                                     </span>
                                     <span>
@@ -462,7 +462,7 @@ export default function TongQuanPage() {
                               </Link>
                             </div>
 
-                            <div className="flex items-center justify-between pt-2 pl-1 border-t border-outline-variant/15">
+                            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 pl-1 border-t border-outline-variant/15">
                               <div className="flex flex-col">
                                 <span className="font-label-sm text-label-sm text-on-surface-variant">
                                   Tiền thuê / Cọc
@@ -473,10 +473,10 @@ export default function TongQuanPage() {
                               </div>
                               <Link
                                 href={`/don-thue/${order.id}?action=tra-do`}
-                                className="px-3.5 h-9 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-sm text-label-sm flex items-center gap-1 shadow-sm active:scale-95 transition-all"
+                                className="px-3.5 h-9 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap shrink-0 flex items-center gap-1 shadow-sm active:scale-95 transition-all"
                               >
-                                <span className="material-symbols-outlined text-[16px]">assignment_turned_in</span>
-                                Nhận trả đồ
+                                <span className="material-symbols-outlined text-[1rem]">assignment_turned_in</span>
+                                <span>Nhận trả đồ</span>
                               </Link>
                             </div>
                           </div>
@@ -489,14 +489,14 @@ export default function TongQuanPage() {
                 {/* 3. Đặt trước sắp đến nhận */}
                 {upcomingList.length > 0 && (
                   <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-tertiary" />
-                        <h2 className="font-title-sm text-title-sm lg:text-[17px] text-on-surface">
+                        <h2 className="font-title-sm text-title-sm lg:text-[1.0625rem] text-on-surface">
                           Đặt trước sắp đến nhận
                         </h2>
                       </div>
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#EAF5EE] text-[#236B48] font-label-sm font-semibold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#EAF5EE] text-[#236B48] font-label-sm text-label-sm font-semibold whitespace-nowrap">
                         {upcomingList.length} lịch hẹn
                       </span>
                     </div>
@@ -548,7 +548,7 @@ export default function TongQuanPage() {
                                     </span>
                                   )}
                                   <div className="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm mt-0.5">
-                                    <span className="material-symbols-outlined text-[15px] text-tertiary">today</span>
+                                    <span className="material-symbols-outlined text-[0.9375rem] text-tertiary shrink-0">today</span>
                                     <span>
                                       {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)} (
                                       {isToday ? `Hôm nay ${formatTime(order.ngay_bat_dau)}` : 'Ngày mai lấy'})
@@ -558,7 +558,7 @@ export default function TongQuanPage() {
                               </Link>
                             </div>
 
-                            <div className="flex items-center justify-between pt-2 pl-1 border-t border-outline-variant/15">
+                            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 pl-1 border-t border-outline-variant/15">
                               <div className="flex flex-col">
                                 <span className="font-label-sm text-label-sm text-on-surface-variant">
                                   Dự kiến thu
@@ -569,10 +569,10 @@ export default function TongQuanPage() {
                               </div>
                               <Link
                                 href={`/don-thue/${order.id}?action=giao-do`}
-                                className="px-3.5 h-9 rounded-full bg-tertiary-container hover:bg-tertiary text-on-tertiary font-label-sm text-label-sm flex items-center gap-1 active:scale-95 transition-all"
+                                className="px-3.5 h-9 rounded-full bg-tertiary-container hover:bg-tertiary text-on-tertiary font-label-sm text-label-sm whitespace-nowrap shrink-0 flex items-center gap-1 active:scale-95 transition-all"
                               >
-                                <span className="material-symbols-outlined text-[16px]">check_circle</span>
-                                Giao đồ
+                                <span className="material-symbols-outlined text-[1rem]">check_circle</span>
+                                <span>Giao đồ</span>
                               </Link>
                             </div>
                           </div>

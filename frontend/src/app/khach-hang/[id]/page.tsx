@@ -146,9 +146,9 @@ export default function KhachHangDetailPage() {
 
         {error && !loading && (
           <div className="p-6 rounded-2xl bg-error-container text-on-error-container flex flex-col items-center text-center gap-2">
-            <span className="material-symbols-outlined text-[32px]">error</span>
+            <span className="material-symbols-outlined text-[2rem]">error</span>
             <span>{error}</span>
-            <Link href="/khach-hang" className="px-4 py-2 rounded-xl bg-error text-on-error font-label-md">
+            <Link href="/khach-hang" className="px-4 py-2 rounded-xl bg-error text-on-error font-label-md whitespace-nowrap">
               Quay lại danh sách
             </Link>
           </div>
@@ -160,16 +160,16 @@ export default function KhachHangDetailPage() {
             <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-20">
               <section className="p-4 lg:p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-4">
                 <div className="flex items-center lg:flex-col lg:text-center gap-3.5">
-                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-headline-lg lg:text-[28px] shrink-0">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-headline-lg text-headline-lg lg:text-[1.75rem] shrink-0">
                     {getInitials(kh.ten)}
                   </div>
                   <div className="min-w-0 flex-1 lg:w-full">
-                    <h1 className="font-headline-md lg:text-[20px] text-on-surface truncate">{kh.ten}</h1>
+                    <h1 className="font-headline-md text-headline-md text-on-surface truncate">{kh.ten}</h1>
                     <a
                       href={`tel:${kh.so_dien_thoai}`}
                       className="font-body-md text-primary-container hover:text-primary font-semibold flex items-center lg:justify-center gap-1 mt-0.5 w-fit lg:mx-auto transition-colors"
                     >
-                      <span className="material-symbols-outlined text-[16px]">call</span>
+                      <span className="material-symbols-outlined text-[1rem]">call</span>
                       {formatPhone(kh.so_dien_thoai)}
                     </a>
                     <span className="font-label-sm text-outline block mt-1">
@@ -196,7 +196,7 @@ export default function KhachHangDetailPage() {
 
                 {kh.dia_chi && (
                   <div className="p-3 rounded-xl bg-surface-container-low font-body-sm text-on-surface-variant flex items-start gap-2">
-                    <span className="material-symbols-outlined text-[16px] shrink-0 mt-0.5 text-primary-container">
+                    <span className="material-symbols-outlined text-[1rem] shrink-0 mt-0.5 text-primary-container">
                       location_on
                     </span>
                     <span>{kh.dia_chi}</span>
@@ -206,27 +206,27 @@ export default function KhachHangDetailPage() {
                 <div className="flex flex-wrap lg:flex-col gap-2">
                   <Link
                     href={`/don-thue/tao-moi?khach_hang_id=${kh.id}`}
-                    className="flex-1 lg:w-full min-w-[130px] h-11 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
+                    className="flex-1 lg:w-full min-w-fit h-11 px-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-bold whitespace-nowrap flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
                   >
-                    <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-                    Tạo đơn mới
+                    <span className="material-symbols-outlined text-[1.125rem]">receipt_long</span>
+                    <span>Tạo đơn mới</span>
                   </Link>
                   <div className="flex gap-2 lg:w-full">
                     <button
                       type="button"
                       onClick={openEdit}
-                      className="flex-1 h-11 px-3.5 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
+                      className="flex-1 h-11 px-3.5 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high transition-colors"
                     >
-                      <span className="material-symbols-outlined text-[18px]">edit</span>
-                      Sửa
+                      <span className="material-symbols-outlined text-[1.125rem]">edit</span>
+                      <span>Sửa</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowDelete(true)}
-                      className="flex-1 h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md flex items-center justify-center gap-1 hover:bg-error-container transition-colors"
+                      className="flex-1 h-11 px-3.5 rounded-xl bg-error-container/70 text-on-error-container font-label-md text-label-md flex items-center justify-center gap-1 hover:bg-error-container transition-colors"
                     >
-                      <span className="material-symbols-outlined text-[18px]">delete</span>
-                      Xóa
+                      <span className="material-symbols-outlined text-[1.125rem]">delete</span>
+                      <span>Xóa</span>
                     </button>
                   </div>
                 </div>
@@ -238,7 +238,7 @@ export default function KhachHangDetailPage() {
               {/* Đang thuê / Quá hạn / Chờ xác nhận */}
               <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
                 <h2 className="font-title-sm text-on-surface flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[18px] text-secondary">pending_actions</span>
+                  <span className="material-symbols-outlined text-[1.125rem] text-secondary">pending_actions</span>
                   Phiếu đang hoạt động ({detail.dang_thue.length})
                 </h2>
                 {detail.dang_thue.length === 0 ? (
@@ -257,7 +257,7 @@ export default function KhachHangDetailPage() {
               {/* Lịch sử đã trả / đã hủy */}
               <section className="p-4 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm flex flex-col gap-3">
                 <h2 className="font-title-sm text-on-surface flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[18px] text-primary-container">history</span>
+                  <span className="material-symbols-outlined text-[1.125rem] text-primary-container">history</span>
                   Lịch sử thuê ({detail.lich_su.length})
                 </h2>
                 {detail.lich_su.length === 0 ? (
@@ -291,7 +291,7 @@ export default function KhachHangDetailPage() {
                 onClick={() => setShowEdit(false)}
                 className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[1.125rem]">close</span>
               </button>
             </div>
             <div className="flex flex-col gap-1">
@@ -330,14 +330,14 @@ export default function KhachHangDetailPage() {
               <button
                 type="button"
                 onClick={() => setShowEdit(false)}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md"
+                className="shrink-0 min-w-[5.5rem] h-11 px-4 rounded-xl bg-surface-container font-label-md"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-11 px-4 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
               >
                 {busy ? 'Đang lưu...' : 'Lưu thay đổi'}
               </button>
@@ -359,7 +359,7 @@ export default function KhachHangDetailPage() {
               <button
                 type="button"
                 onClick={() => setShowDelete(false)}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md"
+                className="shrink-0 min-w-[6rem] h-11 px-4 rounded-xl bg-surface-container font-label-md"
               >
                 Quay lại
               </button>
@@ -367,7 +367,7 @@ export default function KhachHangDetailPage() {
                 type="button"
                 disabled={busy}
                 onClick={handleDelete}
-                className="flex-1 h-11 rounded-xl bg-error text-on-error font-label-md font-bold disabled:opacity-60"
+                className="flex-1 h-11 px-4 rounded-xl bg-error text-on-error font-label-md font-bold disabled:opacity-60"
               >
                 {busy ? 'Đang xóa...' : 'Xóa khách'}
               </button>

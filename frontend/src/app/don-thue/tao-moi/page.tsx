@@ -61,7 +61,7 @@ function SelectGarmentModal({
     <div className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6">
       <div className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[28px] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10">
+      <div className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[1.75rem] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10">
         <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
           <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
         </div>
@@ -72,7 +72,7 @@ function SelectGarmentModal({
               Chọn sản phẩm
             </h2>
             {selectedIds.length > 0 && (
-              <span className="px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-[11px] font-bold">
+              <span className="px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-[0.6875rem] font-bold whitespace-nowrap">
                 Đã chọn {selectedIds.length}
               </span>
             )}
@@ -82,14 +82,14 @@ function SelectGarmentModal({
             onClick={onClose}
             type="button"
           >
-            <span className="material-symbols-outlined text-[20px]">close</span>
+            <span className="material-symbols-outlined text-[1.25rem]">close</span>
           </button>
         </div>
 
         <div className="p-4 md:px-6 flex flex-col md:flex-row md:items-center gap-3 shrink-0 bg-surface-container-low/40 border-b border-outline-variant/15">
           <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
-              <span className="material-symbols-outlined text-[19px]">search</span>
+              <span className="material-symbols-outlined text-[1.1875rem]">search</span>
             </div>
             <input
               className="w-full h-11 pl-10 pr-4 bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-xl focus:outline-none border border-outline-variant/40 focus:border-primary-container"
@@ -127,7 +127,7 @@ function SelectGarmentModal({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 min-h-[280px]">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 min-h-[17.5rem]">
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-3">
               {filtered.map((garment) => {
@@ -149,7 +149,7 @@ function SelectGarmentModal({
                         className="w-full h-full"
                       />
                     </div>
-                    <div className="flex-1 min-w-0 flex flex-col justify-between min-h-[80px] py-0.5">
+                    <div className="flex-1 min-w-0 flex flex-col justify-between min-h-20 py-0.5">
                       <div>
                         <span className="font-title-sm text-body-md font-bold text-on-surface line-clamp-1">
                           {garment.ten_san_pham}
@@ -161,19 +161,19 @@ function SelectGarmentModal({
                           <SanPhamStatusBadge status={garment.trang_thai} />
                         </div>
                       </div>
-                      <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center justify-between gap-2 mt-2">
                         <span className="font-currency-lg text-currency-lg text-primary-container font-bold tabular-nums">
                           {formatCurrency(garment.gia_thue_ngay)}
-                          <span className="text-[11px] font-normal text-on-surface-variant">/ngày</span>
+                          <span className="text-[0.6875rem] font-normal text-on-surface-variant">/ngày</span>
                         </span>
                         <span
-                          className={`h-7 px-2.5 rounded-full font-label-sm text-label-sm font-semibold flex items-center gap-1 ${
+                          className={`h-7 px-2.5 rounded-full font-label-sm text-label-sm font-semibold whitespace-nowrap shrink-0 flex items-center gap-1 ${
                             isSelected
                               ? 'bg-primary-container text-on-primary'
                               : 'bg-primary-fixed text-on-primary-fixed-variant'
                           }`}
                         >
-                          <span className="material-symbols-outlined text-[15px]">
+                          <span className="material-symbols-outlined text-[0.9375rem]">
                             {isSelected ? 'check' : 'add'}
                           </span>
                           <span>{isSelected ? 'Đã chọn' : 'Chọn'}</span>
@@ -186,7 +186,7 @@ function SelectGarmentModal({
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-10 text-center">
-              <span className="material-symbols-outlined text-[40px] text-outline mb-2">search_off</span>
+              <span className="material-symbols-outlined text-[2.5rem] text-outline mb-2">search_off</span>
               <span className="font-body-md text-body-md text-on-surface-variant">
                 Không có sản phẩm phù hợp (sản phẩm đang bảo dưỡng được ẩn)
               </span>
@@ -194,7 +194,7 @@ function SelectGarmentModal({
           )}
         </div>
 
-        <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-between gap-4 shrink-0">
+        <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex flex-wrap items-center justify-between gap-3 shrink-0">
           <div className="flex flex-col">
             <span className="font-label-sm text-label-sm text-on-surface-variant">
               Đã chọn {selectedIds.length} món
@@ -206,9 +206,9 @@ function SelectGarmentModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 md:flex-none md:min-w-[220px] h-12 px-6 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary active:scale-95 transition-all"
+            className="flex-1 md:flex-none md:min-w-[13.75rem] h-12 px-5 sm:px-6 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary active:scale-95 transition-all"
           >
-            <span className="material-symbols-outlined text-[20px]">check_circle</span>
+            <span className="material-symbols-outlined text-[1.25rem]">check_circle</span>
             <span>Xác nhận ({selectedIds.length})</span>
           </button>
         </div>
@@ -525,7 +525,7 @@ function TaoMoiDonThueContent() {
             </span>
           </div>
           <span
-            className={`px-3 py-1 rounded-full font-label-sm text-label-sm font-semibold shrink-0 ${
+            className={`px-3 py-1 rounded-full font-label-sm text-label-sm font-semibold whitespace-nowrap shrink-0 ${
               isFutureBooking
                 ? 'bg-[#FFF8E7] text-[#946E18]'
                 : 'bg-[#FEF4E6] text-[#B57300]'
@@ -537,7 +537,7 @@ function TaoMoiDonThueContent() {
 
         {errorMsg && (
           <div className="p-3.5 rounded-xl bg-error-container text-on-error-container font-body-sm text-body-sm flex items-start gap-2">
-            <span className="material-symbols-outlined text-[18px] shrink-0 mt-0.5">warning</span>
+            <span className="material-symbols-outlined text-[1.125rem] shrink-0 mt-0.5">warning</span>
             <span>{errorMsg}</span>
           </div>
         )}
@@ -548,10 +548,10 @@ function TaoMoiDonThueContent() {
           <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4 lg:gap-5">
             {/* Section 1: Khách hàng */}
             <section className="w-full bg-surface-container-lowest rounded-xl lg:rounded-2xl p-4 lg:p-5 border border-outline-variant/20 shadow-[0_4px_16px_-2px_rgba(107,33,63,0.05)] flex flex-col gap-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container">
-                    <span className="material-symbols-outlined text-[17px]">person</span>
+                  <div className="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container shrink-0">
+                    <span className="material-symbols-outlined text-[1.0625rem]">person</span>
                   </div>
                   <h2 className="font-title-sm text-title-sm text-on-surface">1. Khách hàng</h2>
                 </div>
@@ -562,7 +562,7 @@ function TaoMoiDonThueContent() {
                       setSelectedCustomer(null)
                       setQuickAddMode(false)
                     }}
-                    className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold transition-colors"
+                    className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold transition-colors shrink-0"
                   >
                     Đổi khách
                   </button>
@@ -571,22 +571,22 @@ function TaoMoiDonThueContent() {
 
               {selectedCustomer ? (
                 <div className="bg-surface-container-low rounded-xl p-3.5 flex flex-col gap-1.5 border border-primary-container/15">
-                  <div className="flex items-center justify-between">
-                    <span className="font-title-sm text-title-sm text-on-surface">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-title-sm text-title-sm text-on-surface truncate">
                       {selectedCustomer.ten}
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#EAF5EE] text-[#236B48] font-label-sm text-[11px] font-semibold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#EAF5EE] text-[#236B48] font-label-sm text-[0.6875rem] font-semibold whitespace-nowrap shrink-0">
                       Đã chọn
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                     <span className="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[15px]">call</span>
+                      <span className="material-symbols-outlined text-[0.9375rem]">call</span>
                       {formatPhone(selectedCustomer.so_dien_thoai)}
                     </span>
                     {selectedCustomer.dia_chi && (
                       <span className="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[15px]">location_on</span>
+                        <span className="material-symbols-outlined text-[0.9375rem]">location_on</span>
                         {selectedCustomer.dia_chi}
                       </span>
                     )}
@@ -595,7 +595,7 @@ function TaoMoiDonThueContent() {
               ) : (
                 <>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-3 text-outline text-[20px] pointer-events-none">
+                    <span className="material-symbols-outlined absolute left-3 top-3 text-outline text-[1.25rem] pointer-events-none">
                       search
                     </span>
                     <input
@@ -633,11 +633,11 @@ function TaoMoiDonThueContent() {
                             }}
                             className="w-full text-left p-2.5 rounded-lg bg-surface-container-low hover:bg-primary-fixed/30 flex items-center justify-between gap-2 transition-colors"
                           >
-                            <div className="min-w-0">
+                            <div className="min-w-0 flex-1">
                               <div className="font-body-md text-body-md font-semibold text-on-surface truncate">
                                 {kh.ten}
                               </div>
-                              <div className="font-label-sm text-label-sm text-on-surface-variant">
+                              <div className="font-label-sm text-label-sm text-on-surface-variant truncate">
                                 {formatPhone(kh.so_dien_thoai)}
                                 {kh.dia_chi ? ` • ${kh.dia_chi}` : ''}
                               </div>
@@ -659,9 +659,9 @@ function TaoMoiDonThueContent() {
                         if (digits) setNewCusPhone(digits)
                         else if (customerQuery.trim()) setNewCusName(customerQuery.trim())
                       }}
-                      className="h-10 rounded-xl border border-dashed border-primary-container/50 text-primary-container font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-primary-fixed/20 transition-colors"
+                      className="h-10 px-4 rounded-xl border border-dashed border-primary-container/50 text-primary-container font-label-md text-label-md flex items-center justify-center gap-1.5 hover:bg-primary-fixed/20 transition-colors"
                     >
-                      <span className="material-symbols-outlined text-[18px]">person_add</span>
+                      <span className="material-symbols-outlined text-[1.125rem]">person_add</span>
                       <span>Thêm nhanh khách hàng mới</span>
                     </button>
                   ) : (
@@ -704,7 +704,7 @@ function TaoMoiDonThueContent() {
                       <button
                         type="button"
                         onClick={handleCreateQuickCustomer}
-                        className="h-10 sm:w-fit sm:px-5 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-semibold transition-colors"
+                        className="h-10 px-4 sm:w-fit sm:px-5 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-semibold transition-colors"
                       >
                         Xác nhận khách hàng
                       </button>
@@ -716,21 +716,21 @@ function TaoMoiDonThueContent() {
 
             {/* Section 2: Sản phẩm */}
             <section className="w-full bg-surface-container-lowest rounded-xl lg:rounded-2xl p-4 lg:p-5 border border-outline-variant/20 shadow-[0_4px_16px_-2px_rgba(107,33,63,0.05)] flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container">
-                    <span className="material-symbols-outlined text-[17px]">checkroom</span>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container shrink-0">
+                    <span className="material-symbols-outlined text-[1.0625rem]">checkroom</span>
                   </div>
-                  <h2 className="font-title-sm text-title-sm text-on-surface">
+                  <h2 className="font-title-sm text-title-sm text-on-surface truncate">
                     2. Trang phục &amp; Phụ kiện ({selectedProducts.length})
                   </h2>
                 </div>
                 <button
-                  className="h-8 lg:h-9 px-3.5 rounded-full lg:rounded-xl bg-primary-fixed text-on-primary-fixed-variant hover:bg-primary-container hover:text-on-primary flex items-center gap-1 font-label-md text-label-md transition-all active:scale-95"
+                  className="h-8 lg:h-9 px-3.5 rounded-full lg:rounded-xl bg-primary-fixed text-on-primary-fixed-variant hover:bg-primary-container hover:text-on-primary flex items-center gap-1 font-label-md text-label-md shrink-0 transition-all active:scale-95"
                   type="button"
                   onClick={() => setShowModal(true)}
                 >
-                  <span className="material-symbols-outlined text-[16px]">add</span>
+                  <span className="material-symbols-outlined text-[1rem]">add</span>
                   <span>Chọn đồ</span>
                 </button>
               </div>
@@ -739,7 +739,7 @@ function TaoMoiDonThueContent() {
                 <div className="h-20 rounded-xl bg-surface-container-low animate-pulse" />
               ) : selectedProducts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-6 lg:py-8 text-center bg-surface-container-low/60 rounded-xl border border-dashed border-outline-variant/40">
-                  <span className="material-symbols-outlined text-[36px] text-outline mb-1">checkroom</span>
+                  <span className="material-symbols-outlined text-[2.25rem] text-outline mb-1">checkroom</span>
                   <span className="font-body-sm text-body-sm text-on-surface-variant">
                     Chưa chọn trang phục nào
                   </span>
@@ -779,20 +779,20 @@ function TaoMoiDonThueContent() {
                               className="text-outline hover:text-error p-0.5 shrink-0"
                               title="Bỏ chọn"
                             >
-                              <span className="material-symbols-outlined text-[18px]">close</span>
+                              <span className="material-symbols-outlined text-[1.125rem]">close</span>
                             </button>
                           </div>
                           <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                             <span className="font-label-sm text-label-sm text-primary-container font-semibold">
                               {sp.ma_san_pham}
                             </span>
-                            <span className="font-label-sm text-[11px] text-on-surface-variant">
+                            <span className="font-label-sm text-[0.6875rem] text-on-surface-variant">
                               • Cọc gợi ý: {formatCurrency(cocSP)}
                             </span>
                           </div>
                           <div className="mt-1 font-currency-lg text-body-md font-bold text-primary-container tabular-nums">
                             {formatCurrency(sp.gia_thue_ngay)}
-                            <span className="text-[11px] font-normal text-on-surface-variant">/ngày</span>
+                            <span className="text-[0.6875rem] font-normal text-on-surface-variant">/ngày</span>
                           </div>
                         </div>
                       </div>
@@ -807,7 +807,7 @@ function TaoMoiDonThueContent() {
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container">
-                    <span className="material-symbols-outlined text-[17px]">calendar_month</span>
+                    <span className="material-symbols-outlined text-[1.0625rem]">calendar_month</span>
                   </div>
                   <h2 className="font-title-sm text-title-sm text-on-surface">3. Lịch trình thuê</h2>
                 </div>
@@ -815,7 +815,7 @@ function TaoMoiDonThueContent() {
                   <button
                     type="button"
                     onClick={applyPresetNow}
-                    className={`px-3 py-1 rounded-full font-label-sm text-[11px] transition-colors ${
+                    className={`px-3 py-1 rounded-full font-label-sm text-[0.6875rem] transition-colors ${
                       !isFutureBooking
                         ? 'bg-primary-container text-on-primary'
                         : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
@@ -826,7 +826,7 @@ function TaoMoiDonThueContent() {
                   <button
                     type="button"
                     onClick={applyPresetTomorrow}
-                    className={`px-3 py-1 rounded-full font-label-sm text-[11px] transition-colors ${
+                    className={`px-3 py-1 rounded-full font-label-sm text-[0.6875rem] transition-colors ${
                       isFutureBooking
                         ? 'bg-primary-container text-on-primary'
                         : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
@@ -840,7 +840,7 @@ function TaoMoiDonThueContent() {
               {/* Số ngày thuê */}
               <div className="bg-surface-container-low rounded-xl p-3 flex items-center justify-between">
                 <span className="font-label-md text-label-md text-on-surface flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[18px] text-primary-container">
+                  <span className="material-symbols-outlined text-[1.125rem] text-primary-container">
                     timelapse
                   </span>
                   Số ngày thuê
@@ -925,7 +925,7 @@ function TaoMoiDonThueContent() {
             {/* Section 4: Ghi chú */}
             <section className="w-full bg-surface-container-lowest rounded-xl lg:rounded-2xl p-4 lg:p-5 border border-outline-variant/20 shadow-[0_4px_16px_-2px_rgba(107,33,63,0.05)] flex flex-col gap-2">
               <label className="font-title-sm text-title-sm text-on-surface flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px] text-primary-container">
+                <span className="material-symbols-outlined text-[1.125rem] text-primary-container">
                   edit_note
                 </span>
                 4. Ghi chú (không bắt buộc)
@@ -945,7 +945,7 @@ function TaoMoiDonThueContent() {
             <section className="w-full bg-surface-container-lowest rounded-xl lg:rounded-2xl p-4 lg:p-5 border border-outline-variant/20 shadow-[0_6px_20px_-4px_rgba(107,33,63,0.08)] flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container">
-                  <span className="material-symbols-outlined text-[17px]">payments</span>
+                  <span className="material-symbols-outlined text-[1.0625rem]">payments</span>
                 </div>
                 <h2 className="font-title-sm text-title-sm text-on-surface">Chi phí &amp; Đặt cọc</h2>
               </div>
@@ -955,7 +955,7 @@ function TaoMoiDonThueContent() {
                 <span className="font-label-sm text-label-sm text-on-surface-variant">
                   Hình thức đặt cọc
                 </span>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {[
                     { value: 1 as LoaiCoc, label: 'Tiền mặt', icon: 'payments' },
                     { value: 2 as LoaiCoc, label: 'Chuyển khoản', icon: 'qr_code_2' },
@@ -965,13 +965,13 @@ function TaoMoiDonThueContent() {
                       key={opt.value}
                       type="button"
                       onClick={() => setLoaiCoc(opt.value)}
-                      className={`py-2 px-1.5 min-h-[54px] rounded-xl font-label-sm text-label-sm font-semibold flex flex-col items-center justify-center gap-1 text-center leading-tight transition-all ${
+                      className={`flex-1 min-w-fit py-2 px-2 min-h-[3.375rem] rounded-xl font-label-sm text-label-sm font-semibold whitespace-nowrap flex flex-col items-center justify-center gap-1 text-center leading-tight transition-all ${
                         loaiCoc === opt.value
                           ? 'bg-primary-container text-on-primary shadow-sm'
                           : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
                       }`}
                     >
-                      <span className="material-symbols-outlined text-[18px]">{opt.icon}</span>
+                      <span className="material-symbols-outlined text-[1.125rem]">{opt.icon}</span>
                       <span>{opt.label}</span>
                     </button>
                   ))}
@@ -1003,7 +1003,7 @@ function TaoMoiDonThueContent() {
                           setManualDeposit(false)
                           setTienCocInput(String(suggestedDeposit))
                         }}
-                        className="font-label-sm text-[11px] text-primary-container hover:text-primary transition-colors shrink-0"
+                        className="font-label-sm text-[0.6875rem] text-primary-container hover:text-primary transition-colors shrink-0"
                       >
                         Dùng gợi ý
                       </button>
@@ -1057,7 +1057,7 @@ function TaoMoiDonThueContent() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full h-12 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-[0_8px_20px_-2px_rgba(107,33,63,0.35)] hover:bg-primary disabled:opacity-60 transition-all active:scale-[0.98]"
+                className="w-full h-12 px-4 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-[0_8px_20px_-2px_rgba(107,33,63,0.35)] hover:bg-primary disabled:opacity-60 transition-all active:scale-[0.98]"
               >
                 {submitting ? (
                   <>
@@ -1066,7 +1066,7 @@ function TaoMoiDonThueContent() {
                   </>
                 ) : (
                   <>
-                    <span className="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+                    <span className="material-symbols-outlined text-[1.25rem]">assignment_turned_in</span>
                     <span>Lưu phiếu thuê</span>
                   </>
                 )}

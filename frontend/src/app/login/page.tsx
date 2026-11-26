@@ -63,10 +63,10 @@ export default function LoginPage() {
 
           <div className="relative z-10 flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg">
-              <span className="material-symbols-outlined text-[26px] text-on-primary">storefront</span>
+              <span className="material-symbols-outlined text-[1.625rem] text-on-primary">storefront</span>
             </div>
             <div>
-              <div className="font-headline-lg text-[20px] font-bold tracking-tight leading-tight">
+              <div className="font-headline-lg text-[1.25rem] font-bold tracking-tight leading-tight">
                 MiuMiu Atelier
               </div>
               <div className="font-label-sm text-primary-fixed/85">
@@ -77,10 +77,10 @@ export default function LoginPage() {
 
           <div className="relative z-10 flex flex-col gap-6 my-8">
             <div>
-              <h1 className="font-headline-xl text-[30px] leading-[1.2] font-bold tracking-tight">
+              <h1 className="font-headline-xl text-[clamp(1.5rem,1.2rem+0.9vw,1.875rem)] leading-[1.2] font-bold tracking-tight">
                 Quản lý tiệm áo dài tinh gọn &amp; chuẩn xác
               </h1>
-              <p className="font-body-md text-[14px] text-primary-fixed/85 mt-3 leading-relaxed">
+              <p className="font-body-md text-[0.875rem] text-primary-fixed/85 mt-3 leading-relaxed">
                 Đồng bộ thao tác giữa quầy thu ngân trên máy tính và di động cho chủ tiệm cùng nhân viên.
               </p>
             </div>
@@ -89,15 +89,15 @@ export default function LoginPage() {
               {atelierHighlights.map((item) => (
                 <div key={item.title} className="flex items-start gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white/12 border border-white/15 flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="material-symbols-outlined text-[19px] text-secondary-fixed">
+                    <span className="material-symbols-outlined text-[1.1875rem] text-secondary-fixed">
                       {item.icon}
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-title-sm text-[14px] text-on-primary font-semibold">
+                    <span className="font-title-sm text-[0.875rem] text-on-primary font-semibold">
                       {item.title}
                     </span>
-                    <span className="font-body-sm text-[12.5px] text-primary-fixed/80 mt-0.5 leading-snug">
+                    <span className="font-body-sm text-[0.78125rem] text-primary-fixed/80 mt-0.5 leading-snug">
                       {item.desc}
                     </span>
                   </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="relative z-10 flex items-center justify-between pt-4 border-t border-white/15 text-[12px] text-primary-fixed/75">
+          <div className="relative z-10 flex items-center justify-between pt-4 border-t border-white/15 text-[0.75rem] text-primary-fixed/75">
             <span>MiuMiu Rent Stuff</span>
             <span>Áo dài &amp; Phụ kiện truyền thống</span>
           </div>
@@ -117,7 +117,7 @@ export default function LoginPage() {
           {/* Mobile Brand Header */}
           <div className="flex lg:hidden flex-col items-center text-center gap-3">
             <div className="w-16 h-16 rounded-2xl bg-primary-container text-on-primary flex items-center justify-center shadow-[0_12px_28px_-4px_rgba(107,33,63,0.3)]">
-              <span className="material-symbols-outlined text-[34px]">storefront</span>
+              <span className="material-symbols-outlined text-[2.125rem]">storefront</span>
             </div>
             <div>
               <h1 className="font-headline-xl text-headline-xl text-primary tracking-tight">MiuMiu Atelier</h1>
@@ -134,10 +134,10 @@ export default function LoginPage() {
           >
             <div className="flex flex-col gap-1">
               <span className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed/60 text-primary font-label-sm w-fit mb-1">
-                <span className="material-symbols-outlined text-[14px]">verified_user</span>
+                <span className="material-symbols-outlined text-[0.875rem]">verified_user</span>
                 Cổng nhân viên
               </span>
-              <h2 className="font-headline-md text-headline-md lg:text-[24px] lg:font-bold text-on-surface">
+              <h2 className="font-headline-md text-headline-md lg:text-headline-lg lg:font-bold text-on-surface">
                 Đăng nhập nhân viên
               </h2>
               <p className="font-body-sm text-body-sm text-on-surface-variant">
@@ -147,7 +147,7 @@ export default function LoginPage() {
 
             {errorMsg && (
               <div className="p-3 rounded-xl bg-error-container text-on-error-container font-body-sm text-body-sm flex items-start gap-2">
-                <span className="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
+                <span className="material-symbols-outlined text-[1.125rem] shrink-0 mt-0.5">error</span>
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -157,7 +157,7 @@ export default function LoginPage() {
                 Email
               </label>
               <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">
+                <span className="material-symbols-outlined absolute left-3.5 text-outline text-[1.25rem] pointer-events-none">
                   mail
                 </span>
                 <input
@@ -178,7 +178,7 @@ export default function LoginPage() {
                 Mật khẩu
               </label>
               <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">
+                <span className="material-symbols-outlined absolute left-3.5 text-outline text-[1.25rem] pointer-events-none">
                   lock
                 </span>
                 <input
@@ -197,7 +197,7 @@ export default function LoginPage() {
                   aria-label={showPass ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                   className="absolute right-2 w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-primary"
                 >
-                  <span className="material-symbols-outlined text-[20px]">
+                  <span className="material-symbols-outlined text-[1.25rem]">
                     {showPass ? 'visibility_off' : 'visibility'}
                   </span>
                 </button>
@@ -207,7 +207,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="mt-2 w-full h-12 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-[0_8px_20px_-2px_rgba(107,33,63,0.35)] hover:bg-primary disabled:opacity-60 transition-all active:scale-[0.98]"
+              className="mt-2 w-full h-12 px-4 rounded-xl bg-primary-container text-on-primary font-title-sm text-title-sm font-bold whitespace-nowrap flex items-center justify-center gap-2 shadow-[0_8px_20px_-2px_rgba(107,33,63,0.35)] hover:bg-primary disabled:opacity-60 transition-all active:scale-[0.98]"
             >
               {submitting ? (
                 <>
@@ -216,7 +216,7 @@ export default function LoginPage() {
                 </>
               ) : (
                 <>
-                  <span className="material-symbols-outlined text-[20px]">login</span>
+                  <span className="material-symbols-outlined text-[1.25rem]">login</span>
                   <span>Đăng nhập</span>
                 </>
               )}
