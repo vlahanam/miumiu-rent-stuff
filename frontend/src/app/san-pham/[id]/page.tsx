@@ -34,7 +34,6 @@ export default function SanPhamDetailPage() {
 
   // Edit modal
   const [showEditModal, setShowEditModal] = useState(false)
-  const [editMa, setEditMa] = useState('')
   const [editTen, setEditTen] = useState('')
   const [editGiaGoc, setEditGiaGoc] = useState('')
   const [editGiaThue, setEditGiaThue] = useState('')
@@ -76,7 +75,6 @@ export default function SanPhamDetailPage() {
 
   const openEditModal = () => {
     if (!product) return
-    setEditMa(product.ma_san_pham)
     setEditTen(product.ten_san_pham)
     setEditGiaGoc(String(Math.round(parseMoney(product.gia_goc_san_pham))))
     setEditGiaThue(String(Math.round(parseMoney(product.gia_thue_ngay))))
@@ -107,22 +105,15 @@ export default function SanPhamDetailPage() {
   const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!product) return
-    const hasHistory = (product.lich_su_thue?.length || 0) > 0
-    const trimmedMa = editMa.trim()
     const trimmedTen = editTen.trim()
     if (!trimmedTen) {
       toast.error('Tên sản phẩm không được để trống')
-      return
-    }
-    if (!hasHistory && !trimmedMa) {
-      toast.error('Mã sản phẩm không được để trống')
       return
     }
     setBusy(true)
     try {
       const imgs = newImgUrl.trim() ? [...editImages, newImgUrl.trim()] : editImages
       await sanPhamApi.update(product.id, {
-        ...(hasHistory ? {} : { ma_san_pham: trimmedMa }),
         ten_san_pham: trimmedTen,
         gia_goc_san_pham: Math.max(0, parseFormattedNumber(editGiaGoc)),
         gia_thue_ngay: Math.max(0, parseFormattedNumber(editGiaThue)),
@@ -162,7 +153,6 @@ export default function SanPhamDetailPage() {
       : product?.da_thu_hoi_von
       ? 100
       : 0
-  const hasHistory = (product?.lich_su_thue?.length || 0) > 0
   const suggestedDeposit = Math.round((giaGoc * depositPercent) / 100)
 
   return (
@@ -482,18 +472,14 @@ export default function SanPhamDetailPage() {
                   <label className="font-label-sm text-on-surface-variant">Mã sản phẩm (SKU)</label>
                   <input
                     type="text"
-                    required={!hasHistory}
-                    maxLength={30}
-                    disabled={hasHistory}
-                    value={editMa}
-                    onChange={(e) => setEditMa(e.target.value)}
-                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors disabled:opacity-60"
+                    disabled
+                    readOnly
+                    value={product.ma_san_pham}
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container border border-outline-variant/40 text-on-surface-variant text-body-md cursor-not-allowed disabled:opacity-60"
                   />
-                  {hasHistory && (
-                    <span className="font-label-sm text-outline">
-                      Không thể đổi SKU vì sản phẩm đã có phiếu thuê.
-                    </span>
-                  )}
+                  <span className="font-label-sm text-outline">
+                    Mã sản phẩm không thể chỉnh sửa.
+                  </span>
                 </div>
 
                 <div className="flex flex-col gap-1">
