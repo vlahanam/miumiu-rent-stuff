@@ -7,7 +7,7 @@ import AppShell from '@/components/AppShell'
 import { ThueDoStatusBadge } from '@/components/StatusBadge'
 import { useToast } from '@/components/ToastProvider'
 import { ApiError, khachHangApi } from '@/lib/api'
-import { formatCurrency, formatDate, formatDateShort, formatPhone, getInitials } from '@/lib/format'
+import { formatCurrency, formatDate, formatPhone, getInitials } from '@/lib/format'
 import type { KhachHangDetail, ThueDo } from '@/types'
 
 function OrderRow({ order }: { order: ThueDo }) {
@@ -35,7 +35,7 @@ function OrderRow({ order }: { order: ThueDo }) {
           </div>
         </div>
         <div className="font-label-sm text-on-surface-variant shrink-0 tabular-nums">
-          {formatDateShort(order.ngay_bat_dau)} → {formatDateShort(order.ngay_hen_tra)}
+          {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)}
         </div>
       </div>
       <ThueDoStatusBadge status={order.trang_thai} />
@@ -167,7 +167,7 @@ export default function KhachHangDetailPage() {
                     <h1 className="font-headline-md lg:text-[20px] text-on-surface truncate">{kh.ten}</h1>
                     <a
                       href={`tel:${kh.so_dien_thoai}`}
-                      className="font-body-md text-primary-container font-semibold flex items-center lg:justify-center gap-1 mt-0.5 w-fit lg:mx-auto hover:underline"
+                      className="font-body-md text-primary-container hover:text-primary font-semibold flex items-center lg:justify-center gap-1 mt-0.5 w-fit lg:mx-auto transition-colors"
                     >
                       <span className="material-symbols-outlined text-[16px]">call</span>
                       {formatPhone(kh.so_dien_thoai)}

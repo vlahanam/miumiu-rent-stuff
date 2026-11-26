@@ -19,6 +19,13 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  a,
+  a:hover,
+  a:focus,
+  a:active,
+  a:visited {
+    text-decoration: none;
+  }
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }

@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import AppShell from '@/components/AppShell'
+import DateInput from '@/components/DateInput'
 import NumberInput from '@/components/NumberInput'
 import ProductImage from '@/components/ProductImage'
 import { SanPhamStatusBadge } from '@/components/StatusBadge'
@@ -561,7 +562,7 @@ function TaoMoiDonThueContent() {
                       setSelectedCustomer(null)
                       setQuickAddMode(false)
                     }}
-                    className="font-label-sm text-label-sm text-primary-container font-semibold hover:underline"
+                    className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold transition-colors"
                   >
                     Đổi khách
                   </button>
@@ -892,28 +893,30 @@ function TaoMoiDonThueContent() {
                   <label className="font-label-sm text-label-sm text-on-surface-variant">
                     Ngày bắt đầu nhận đồ
                   </label>
-                  <input
-                    type="datetime-local"
+                  <DateInput
+                    mode="datetime"
+                    aria-label="Ngày bắt đầu nhận đồ"
                     value={ngayBatDauStr}
-                    onChange={(e) => {
+                    onChange={(val) => {
                       setManualReturnDate(false)
-                      setNgayBatDauStr(e.target.value)
+                      setNgayBatDauStr(val)
                     }}
-                    className="h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm font-medium text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
+                    className="h-11 pl-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm font-medium text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="font-label-sm text-label-sm text-on-surface-variant">
                     Ngày hẹn trả (tự tính, chỉnh được)
                   </label>
-                  <input
-                    type="datetime-local"
+                  <DateInput
+                    mode="datetime"
+                    aria-label="Ngày hẹn trả"
                     value={ngayHenTraStr}
-                    onChange={(e) => {
+                    onChange={(val) => {
                       setManualReturnDate(true)
-                      setNgayHenTraStr(e.target.value)
+                      setNgayHenTraStr(val)
                     }}
-                    className="h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm font-medium text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
+                    className="h-11 pl-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm font-medium text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
                   />
                 </div>
               </div>
@@ -1000,7 +1003,7 @@ function TaoMoiDonThueContent() {
                           setManualDeposit(false)
                           setTienCocInput(String(suggestedDeposit))
                         }}
-                        className="font-label-sm text-[11px] text-primary-container hover:underline shrink-0"
+                        className="font-label-sm text-[11px] text-primary-container hover:text-primary transition-colors shrink-0"
                       >
                         Dùng gợi ý
                       </button>

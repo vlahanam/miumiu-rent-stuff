@@ -359,7 +359,7 @@ export default function CaiDatPage() {
                 </div>
                 <Link
                   href="/bao-cao"
-                  className="font-label-sm text-primary-container font-semibold hover:underline"
+                  className="font-label-sm text-primary-container hover:text-primary font-semibold transition-colors"
                 >
                   Mở trang báo cáo →
                 </Link>

@@ -12,7 +12,7 @@ import {
   daysOverdue,
   daysRemaining,
   formatCurrency,
-  formatDateShort,
+  formatDate,
   formatPhone,
   parseMoney,
 } from '@/lib/format'
@@ -416,7 +416,7 @@ export default function DonThuePage() {
                       <div className="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant mt-0.5">
                         <span className="material-symbols-outlined text-[14px]">calendar_today</span>
                         <span>
-                          {formatDateShort(order.ngay_bat_dau)} → {formatDateShort(order.ngay_hen_tra)} (
+                          {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)} (
                           {order.so_ngay_thue || 1} ngày)
                         </span>
                       </div>
@@ -441,7 +441,7 @@ export default function DonThuePage() {
                       )}
                       {order.trang_thai === 3 && order.ngay_tra_thuc_te && (
                         <span className="font-label-sm text-label-sm font-medium text-[#236B48] mt-0.5">
-                          Đã trả ngày {formatDateShort(order.ngay_tra_thuc_te)}
+                          Đã trả ngày {formatDate(order.ngay_tra_thuc_te)}
                           {parseMoney(order.tien_phat) > 0
                             ? ` • Phạt ${formatCurrency(order.tien_phat)}`
                             : ''}
@@ -561,7 +561,7 @@ export default function DonThuePage() {
                           <div className="flex flex-col gap-1.5">
                             <Link
                               href={`/don-thue/${order.id}`}
-                              className="font-title-sm text-[14px] text-primary-container font-bold hover:underline w-fit"
+                              className="font-title-sm text-[14px] text-primary-container hover:text-primary font-bold transition-colors w-fit"
                             >
                               {order.ma_phieu_thue}
                             </Link>
@@ -631,7 +631,7 @@ export default function DonThuePage() {
                         <td className="py-3.5 px-3 align-middle whitespace-nowrap">
                           <div className="flex flex-col">
                             <span className="font-body-sm font-medium text-on-surface tabular-nums">
-                              {formatDateShort(order.ngay_bat_dau)} → {formatDateShort(order.ngay_hen_tra)}
+                              {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)}
                             </span>
                             <span className="font-label-sm text-on-surface-variant mt-0.5">
                               {order.so_ngay_thue || 1} ngày
@@ -642,7 +642,7 @@ export default function DonThuePage() {
                               )}
                               {order.trang_thai === 3 && order.ngay_tra_thuc_te && (
                                 <span className="text-[#236B48] font-medium">
-                                  {' '}• Trả {formatDateShort(order.ngay_tra_thuc_te)}
+                                  {' '}• Trả {formatDate(order.ngay_tra_thuc_te)}
                                 </span>
                               )}
                             </span>

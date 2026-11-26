@@ -172,6 +172,10 @@ export function findCaretPositionFromRight(
 
 export function formatDate(iso?: string | null): string {
   if (!iso) return '—'
+  const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim())
+  if (dateOnly) {
+    return `${dateOnly[3]}/${dateOnly[2]}/${dateOnly[1]}`
+  }
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return '—'
   const dd = String(d.getDate()).padStart(2, '0')
@@ -181,12 +185,7 @@ export function formatDate(iso?: string | null): string {
 }
 
 export function formatDateShort(iso?: string | null): string {
-  if (!iso) return '—'
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return '—'
-  const dd = String(d.getDate()).padStart(2, '0')
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  return `${dd}/${mm}`
+  return formatDate(iso)
 }
 
 export function formatTime(iso?: string | null): string {
@@ -207,7 +206,16 @@ export function formatDateTime(iso?: string | null): string {
 
 export function formatVietnameseToday(now = new Date()): string {
   const days = ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
-  return `Hôm nay, ${days[now.getDay()]}, ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`
+  const dd = String(now.getDate()).padStart(2, '0')
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  return `Hôm nay, ${days[now.getDay()]}, ${dd}/${mm}/${now.getFullYear()}`
+}
+
+export function toDateValue(date: Date): string {
+  const yyyy = date.getFullYear()
+  const mm = String(date.getMonth() + 1).padStart(2, '0')
+  const dd = String(date.getDate()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd}`
 }
 
 export function toDateTimeLocalValue(date: Date): string {
@@ -223,6 +231,111 @@ export function fromDateTimeLocalValue(val: string): string {
   const d = new Date(val)
   if (Number.isNaN(d.getTime())) return new Date().toISOString()
   return d.toISOString()
+}
+
+function isValidCalendarDate(year: number, month: number, day: number): boolean {
+  if (year < 1900 || year > 2100 || month < 1 || month > 12 || day < 1 || day > 31) {
+    return false
+  }
+  const d = new Date(year, month - 1, day)
+  return d.getFullYear() === year && d.getMonth() === month - 1 && d.getDate() === day
+}
+
+/**
+ * Chuyển chuỗi ngày chuẩn 'YYYY-MM-DD' sang hiển thị 'dd/mm/yyyy'.
+ */
+export function formatDateInputDisplay(value?: string | null): string {
+  if (!value) return ''
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim())
+  if (!m) return ''
+  const year = Number(m[1])
+  const month = Number(m[2])
+  const day = Number(m[3])
+  if (!isValidCalendarDate(year, month, day)) return ''
+  return `${m[3]}/${m[2]}/${m[1]}`
+}
+
+/**
+ * Phân tích chuỗi người dùng nhập theo thứ tự ngày/tháng/năm ('dd/mm/yyyy', 'd/m/yyyy', 'dd-mm-yyyy', 'ddmmyyyy')
+ * sang chuỗi chuẩn 'YYYY-MM-DD'. Trả về '' nếu rỗng, null nếu không hợp lệ.
+ */
+export function parseDateInputDisplay(display: string): string | null {
+  const trimmed = display.trim()
+  if (!trimmed) return ''
+
+  let day: number
+  let month: number
+  let year: number
+
+  const separated = /^(\d{1,2})\s*[/\-.]\s*(\d{1,2})\s*[/\-.]\s*(\d{4})$/.exec(trimmed)
+  if (separated) {
+    day = Number(separated[1])
+    month = Number(separated[2])
+    year = Number(separated[3])
+  } else {
+    const compact = /^(\d{2})(\d{2})(\d{4})$/.exec(trimmed)
+    if (!compact) return null
+    day = Number(compact[1])
+    month = Number(compact[2])
+    year = Number(compact[3])
+  }
+
+  if (!isValidCalendarDate(year, month, day)) return null
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+}
+
+/**
+ * Chuyển chuỗi ngày giờ chuẩn 'YYYY-MM-DDTHH:mm' sang hiển thị 'dd/mm/yyyy HH:mm'.
+ */
+export function formatDateTimeInputDisplay(value?: string | null): string {
+  if (!value) return ''
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value.trim())
+  if (!m) return ''
+  const year = Number(m[1])
+  const month = Number(m[2])
+  const day = Number(m[3])
+  const hours = Number(m[4])
+  const minutes = Number(m[5])
+  if (!isValidCalendarDate(year, month, day) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+    return ''
+  }
+  return `${m[3]}/${m[2]}/${m[1]} ${m[4]}:${m[5]}`
+}
+
+/**
+ * Phân tích chuỗi ngày giờ người dùng nhập ('dd/mm/yyyy HH:mm' hoặc chỉ 'dd/mm/yyyy')
+ * sang chuỗi chuẩn 'YYYY-MM-DDTHH:mm'. Trả về '' nếu rỗng, null nếu không hợp lệ.
+ */
+export function parseDateTimeInputDisplay(
+  display: string,
+  fallbackTime: { hours: number; minutes: number } = { hours: 0, minutes: 0 }
+): string | null {
+  const trimmed = display.trim()
+  if (!trimmed) return ''
+
+  const withTime =
+    /^(\d{1,2})\s*[/\-.]\s*(\d{1,2})\s*[/\-.]\s*(\d{4})[\s,T]+(\d{1,2})\s*:\s*(\d{1,2})$/.exec(
+      trimmed
+    )
+  if (withTime) {
+    const day = Number(withTime[1])
+    const month = Number(withTime[2])
+    const year = Number(withTime[3])
+    const hours = Number(withTime[4])
+    const minutes = Number(withTime[5])
+    if (!isValidCalendarDate(year, month, day) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      return null
+    }
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(
+      hours
+    ).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+  }
+
+  const dateOnly = parseDateInputDisplay(trimmed)
+  if (!dateOnly) return null
+  const hh = String(Math.min(23, Math.max(0, fallbackTime.hours))).padStart(2, '0')
+  const mi = String(Math.min(59, Math.max(0, fallbackTime.minutes))).padStart(2, '0')
+  return `${dateOnly}T${hh}:${mi}`
 }
 
 export function daysOverdue(ngayHenTra?: string | null): number {

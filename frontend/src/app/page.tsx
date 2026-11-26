@@ -10,7 +10,7 @@ import { dashboardApi, ApiError } from '@/lib/api'
 import {
   daysOverdue,
   formatCurrency,
-  formatDateShort,
+  formatDate,
   formatTime,
   formatVietnameseToday,
   isSameDay,
@@ -115,7 +115,7 @@ export default function TongQuanPage() {
           </div>
           <Link
             href="/bao-cao"
-            className="font-label-sm text-label-sm text-primary-container font-semibold flex items-center gap-0.5 hover:underline"
+            className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold flex items-center gap-0.5 transition-colors"
           >
             <span>Báo cáo</span>
             <span className="material-symbols-outlined text-[15px]">chevron_right</span>
@@ -141,15 +141,12 @@ export default function TongQuanPage() {
           <div className="order-1 lg:order-2 lg:col-span-12 xl:col-span-7 grid grid-cols-3 gap-space-sm lg:gap-4">
             <Link
               href="/san-pham?trang_thai=1"
-              className="group flex flex-col items-center lg:items-start justify-center lg:justify-between p-3 lg:p-5 rounded-xl lg:rounded-2xl bg-[#EAF5EE] text-center lg:text-left shadow-sm hover:shadow-md active:scale-[0.98] transition-all border border-[#236B48]/10"
+              className="flex flex-col items-center lg:items-start justify-center lg:justify-between p-3 lg:p-5 rounded-xl lg:rounded-2xl bg-[#EAF5EE] text-center lg:text-left shadow-sm hover:shadow-md active:scale-[0.98] transition-all border border-[#236B48]/10"
             >
-              <div className="flex items-center justify-center lg:justify-between w-full mb-1 lg:mb-3">
+              <div className="flex items-center justify-center lg:justify-start w-full mb-1 lg:mb-3">
                 <div className="flex items-center justify-center w-7 h-7 lg:w-10 lg:h-10 rounded-full lg:rounded-xl bg-tertiary-fixed text-tertiary">
                   <span className="material-symbols-outlined text-[16px] lg:text-[21px]">checkroom</span>
                 </div>
-                <span className="hidden lg:inline-flex material-symbols-outlined text-[18px] text-[#236B48]/60 group-hover:translate-x-0.5 transition-transform">
-                  arrow_forward
-                </span>
               </div>
               <div className="flex flex-col items-center lg:items-start w-full">
                 <span className="font-headline-lg text-headline-lg lg:text-[30px] lg:leading-none text-[#236B48] tracking-tight leading-none mb-1 tabular-nums font-bold">
@@ -163,15 +160,12 @@ export default function TongQuanPage() {
 
             <Link
               href="/san-pham?trang_thai=2"
-              className="group flex flex-col items-center lg:items-start justify-center lg:justify-between p-3 lg:p-5 rounded-xl lg:rounded-2xl bg-[#FEF4E6] text-center lg:text-left shadow-sm hover:shadow-md active:scale-[0.98] transition-all border border-[#B57300]/10"
+              className="flex flex-col items-center lg:items-start justify-center lg:justify-between p-3 lg:p-5 rounded-xl lg:rounded-2xl bg-[#FEF4E6] text-center lg:text-left shadow-sm hover:shadow-md active:scale-[0.98] transition-all border border-[#B57300]/10"
             >
-              <div className="flex items-center justify-center lg:justify-between w-full mb-1 lg:mb-3">
+              <div className="flex items-center justify-center lg:justify-start w-full mb-1 lg:mb-3">
                 <div className="flex items-center justify-center w-7 h-7 lg:w-10 lg:h-10 rounded-full lg:rounded-xl bg-secondary-fixed text-secondary">
                   <span className="material-symbols-outlined text-[16px] lg:text-[21px]">shopping_bag</span>
                 </div>
-                <span className="hidden lg:inline-flex material-symbols-outlined text-[18px] text-[#B57300]/60 group-hover:translate-x-0.5 transition-transform">
-                  arrow_forward
-                </span>
               </div>
               <div className="flex flex-col items-center lg:items-start w-full">
                 <span className="font-headline-lg text-headline-lg lg:text-[30px] lg:leading-none text-[#B57300] tracking-tight leading-none mb-1 tabular-nums font-bold">
@@ -185,15 +179,12 @@ export default function TongQuanPage() {
 
             <Link
               href="/san-pham?trang_thai=3"
-              className="group flex flex-col items-center lg:items-start justify-center lg:justify-between p-3 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-high text-center lg:text-left shadow-sm hover:shadow-md active:scale-[0.98] transition-all border border-outline-variant/25"
+              className="flex flex-col items-center lg:items-start justify-center lg:justify-between p-3 lg:p-5 rounded-xl lg:rounded-2xl bg-surface-container-high text-center lg:text-left shadow-sm hover:shadow-md active:scale-[0.98] transition-all border border-outline-variant/25"
             >
-              <div className="flex items-center justify-center lg:justify-between w-full mb-1 lg:mb-3">
+              <div className="flex items-center justify-center lg:justify-start w-full mb-1 lg:mb-3">
                 <div className="flex items-center justify-center w-7 h-7 lg:w-10 lg:h-10 rounded-full lg:rounded-xl bg-surface-variant text-on-surface-variant">
                   <span className="material-symbols-outlined text-[16px] lg:text-[21px]">dry_cleaning</span>
                 </div>
-                <span className="hidden lg:inline-flex material-symbols-outlined text-[18px] text-on-surface-variant/60 group-hover:translate-x-0.5 transition-transform">
-                  arrow_forward
-                </span>
               </div>
               <div className="flex flex-col items-center lg:items-start w-full">
                 <span className="font-headline-lg text-headline-lg lg:text-[30px] lg:leading-none text-on-surface tracking-tight leading-none mb-1 tabular-nums font-bold">
@@ -321,7 +312,7 @@ export default function TongQuanPage() {
                               href={`/don-thue/${order.id}`}
                               className="flex items-center gap-1.5 min-w-0 flex-1 group"
                             >
-                              <span className="font-title-sm text-title-sm text-primary font-bold shrink-0 group-hover:underline">
+                              <span className="font-title-sm text-title-sm text-primary group-hover:text-primary-container font-bold shrink-0 transition-colors">
                                 {order.ma_phieu_thue}
                               </span>
                               <span className="text-outline-variant font-bold">•</span>
@@ -348,7 +339,7 @@ export default function TongQuanPage() {
                               <div className="flex items-center gap-1 font-body-sm text-body-sm text-error font-medium mt-0.5">
                                 <span className="material-symbols-outlined text-[15px]">schedule</span>
                                 <span>
-                                  {formatDateShort(order.ngay_bat_dau)} → {formatDateShort(order.ngay_hen_tra)} (Trễ{' '}
+                                  {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)} (Trễ{' '}
                                   {lateDays} ngày)
                                 </span>
                               </div>
@@ -434,7 +425,7 @@ export default function TongQuanPage() {
                                   href={`/don-thue/${order.id}`}
                                   className="flex items-center gap-1.5 min-w-0 flex-1 group"
                                 >
-                                  <span className="font-title-sm text-title-sm text-primary font-bold shrink-0 group-hover:underline">
+                                  <span className="font-title-sm text-title-sm text-primary group-hover:text-primary-container font-bold shrink-0 transition-colors">
                                     {order.ma_phieu_thue}
                                   </span>
                                   <span className="text-outline-variant font-bold">•</span>
@@ -463,7 +454,7 @@ export default function TongQuanPage() {
                                       event_available
                                     </span>
                                     <span>
-                                      {formatDateShort(order.ngay_bat_dau)} → {formatDateShort(order.ngay_hen_tra)}{' '}
+                                      {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)}{' '}
                                       (Hạn trả: {formatTime(order.ngay_hen_tra) || 'Hôm nay'})
                                     </span>
                                   </div>
@@ -532,7 +523,7 @@ export default function TongQuanPage() {
                                   href={`/don-thue/${order.id}`}
                                   className="flex items-center gap-1.5 min-w-0 flex-1 group"
                                 >
-                                  <span className="font-title-sm text-title-sm text-primary font-bold shrink-0 group-hover:underline">
+                                  <span className="font-title-sm text-title-sm text-primary group-hover:text-primary-container font-bold shrink-0 transition-colors">
                                     {order.ma_phieu_thue}
                                   </span>
                                   <span className="text-outline-variant font-bold">•</span>
@@ -559,7 +550,7 @@ export default function TongQuanPage() {
                                   <div className="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm mt-0.5">
                                     <span className="material-symbols-outlined text-[15px] text-tertiary">today</span>
                                     <span>
-                                      {formatDateShort(order.ngay_bat_dau)} → {formatDateShort(order.ngay_hen_tra)} (
+                                      {formatDate(order.ngay_bat_dau)} → {formatDate(order.ngay_hen_tra)} (
                                       {isToday ? `Hôm nay ${formatTime(order.ngay_bat_dau)}` : 'Ngày mai lấy'})
                                     </span>
                                   </div>

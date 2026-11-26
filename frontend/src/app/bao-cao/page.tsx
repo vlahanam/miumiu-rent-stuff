@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import AppShell from '@/components/AppShell'
+import DateInput from '@/components/DateInput'
 import { ThueDoStatusBadge } from '@/components/StatusBadge'
 import { useToast } from '@/components/ToastProvider'
 import { ApiError, baoCaoApi } from '@/lib/api'
-import { formatCurrency, formatDateShort, formatPhone, parseMoney } from '@/lib/format'
+import { formatCurrency, formatDate, formatPhone, parseMoney } from '@/lib/format'
 import type { DoanhThuThang, HieuQuaSanPham, KhachHangBaoCao, ThueDo } from '@/types'
 
 type ReportTab = 'doanh_thu' | 'san_pham' | 'phieu_thue' | 'khach_hang'
@@ -145,12 +146,12 @@ export default function BaoCaoPage() {
           </div>
 
           {/* Mobile Export Buttons */}
-          <div className="flex lg:hidden items-center justify-end gap-2">
+          <div className="grid grid-cols-2 lg:hidden gap-2 w-full">
             <button
               type="button"
               disabled={exporting}
               onClick={() => handleExport('csv')}
-              className="h-9 px-3.5 rounded-xl bg-surface-container text-on-surface font-label-sm font-semibold flex items-center gap-1 hover:bg-surface-container-high disabled:opacity-50"
+              className="w-full h-9 px-3.5 rounded-xl bg-surface-container text-on-surface font-label-sm font-semibold flex items-center justify-center gap-1.5 hover:bg-surface-container-high disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-[16px]">description</span>
               Xuất CSV
@@ -159,7 +160,7 @@ export default function BaoCaoPage() {
               type="button"
               disabled={exporting}
               onClick={() => handleExport('excel')}
-              className="h-9 px-3.5 rounded-xl bg-primary-container text-on-primary font-label-sm font-semibold flex items-center gap-1 shadow-sm disabled:opacity-50"
+              className="w-full h-9 px-3.5 rounded-xl bg-primary-container text-on-primary font-label-sm font-semibold flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-[16px]">table_view</span>
               Xuất Excel
@@ -359,7 +360,7 @@ export default function BaoCaoPage() {
                               <td className="py-3.5 pl-5 pr-3 whitespace-nowrap">
                                 <Link
                                   href={`/san-pham/${sp.id}`}
-                                  className="font-label-md text-primary-container font-bold hover:underline"
+                                  className="font-label-md text-primary-container hover:text-primary font-bold transition-colors"
                                 >
                                   {sp.ma_san_pham}
                                 </Link>
@@ -435,20 +436,24 @@ export default function BaoCaoPage() {
               </div>
               <div className="flex flex-col gap-1">
                 <label className="font-label-sm text-on-surface-variant">Từ ngày tạo</label>
-                <input
-                  type="date"
+                <DateInput
+                  mode="date"
+                  clearable
+                  aria-label="Từ ngày tạo"
                   value={tuNgay}
-                  onChange={(e) => setTuNgay(e.target.value)}
-                  className="h-10 px-2.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm"
+                  onChange={setTuNgay}
+                  className="h-10 pl-2.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
                 />
               </div>
               <div className="flex flex-col gap-1">
                 <label className="font-label-sm text-on-surface-variant">Đến ngày tạo</label>
-                <input
-                  type="date"
+                <DateInput
+                  mode="date"
+                  clearable
+                  aria-label="Đến ngày tạo"
                   value={denNgay}
-                  onChange={(e) => setDenNgay(e.target.value)}
-                  className="h-10 px-2.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm"
+                  onChange={setDenNgay}
+                  className="h-10 pl-2.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
                 />
               </div>
               <div className="font-label-md text-on-surface-variant lg:text-right pb-2">
@@ -483,7 +488,7 @@ export default function BaoCaoPage() {
                           </span>
                         </div>
                         <div className="font-label-sm text-on-surface-variant mt-0.5">
-                          {formatDateShort(td.ngay_bat_dau)} → {formatDateShort(td.ngay_hen_tra)} • Thuê:{' '}
+                          {formatDate(td.ngay_bat_dau)} → {formatDate(td.ngay_hen_tra)} • Thuê:{' '}
                           <strong className="text-on-surface">{formatCurrency(td.tong_tien_thue)}</strong>
                           {parseMoney(td.tien_phat) > 0 && ` • Phạt: ${formatCurrency(td.tien_phat)}`}
                         </div>
@@ -513,7 +518,7 @@ export default function BaoCaoPage() {
                             <td className="py-3.5 pl-5 pr-3 whitespace-nowrap">
                               <Link
                                 href={`/don-thue/${td.id}`}
-                                className="font-title-sm text-[14px] text-primary-container font-bold hover:underline"
+                                className="font-title-sm text-[14px] text-primary-container hover:text-primary font-bold transition-colors"
                               >
                                 {td.ma_phieu_thue}
                               </Link>
@@ -524,7 +529,7 @@ export default function BaoCaoPage() {
                               </span>
                             </td>
                             <td className="py-3.5 px-3 font-body-sm text-on-surface-variant whitespace-nowrap tabular-nums">
-                              {formatDateShort(td.ngay_bat_dau)} → {formatDateShort(td.ngay_hen_tra)}
+                              {formatDate(td.ngay_bat_dau)} → {formatDate(td.ngay_hen_tra)}
                             </td>
                             <td className="py-3.5 px-3 text-right font-currency-lg text-[14px] text-on-surface font-bold tabular-nums whitespace-nowrap">
                               {formatCurrency(td.tong_tien_thue)}

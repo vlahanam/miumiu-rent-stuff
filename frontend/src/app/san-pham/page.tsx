@@ -304,16 +304,11 @@ function SanPhamContent() {
                       </h2>
                     </div>
 
-                    <div className="pt-2.5 mt-1.5 border-t border-outline-variant/15 flex flex-col gap-1">
-                      <div className="flex items-baseline justify-between min-w-0">
-                        <span className="font-currency-lg text-[14px] lg:text-[15px] leading-none text-on-surface font-bold tabular-nums">
-                          {formatCurrency(product.gia_thue_ngay)}
-                        </span>
-                        <span className="font-label-sm text-[10px] lg:text-[11px] text-on-surface-variant">/ngày</span>
-                      </div>
-                      <span className="font-label-sm text-[10px] lg:text-[11px] text-outline tabular-nums">
-                        Giá gốc: {formatCurrency(product.gia_goc_san_pham)}
+                    <div className="pt-2.5 mt-1.5 border-t border-outline-variant/15 flex items-baseline justify-between min-w-0">
+                      <span className="font-currency-lg text-[14px] lg:text-[15px] leading-none text-on-surface font-bold tabular-nums">
+                        {formatCurrency(product.gia_thue_ngay)}
                       </span>
+                      <span className="font-label-sm text-[10px] lg:text-[11px] text-on-surface-variant">/ngày</span>
                     </div>
                   </div>
                 </Link>

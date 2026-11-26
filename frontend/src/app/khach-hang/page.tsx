@@ -456,68 +456,93 @@ export default function KhachHangPage() {
 
       {/* Modal thêm khách hàng */}
       {showAddModal && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="add-customer-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => !saving && setShowAddModal(false)}
+          />
+
           <form
             onSubmit={handleCreateCustomer}
-            className="w-full max-w-md bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[28px] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline-md text-on-surface">Thêm khách hàng mới</h3>
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h3
+                id="add-customer-modal-title"
+                className="font-headline-md text-headline-md font-bold text-on-surface"
+              >
+                Thêm khách hàng mới
+              </h3>
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface-variant">Tên khách hàng *</label>
-              <input
-                type="text"
-                required
-                maxLength={100}
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="Nguyễn Thu Hà"
-                className="h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
-              />
+
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-3.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Tên khách hàng *</label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={100}
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Nguyễn Thu Hà"
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Số điện thoại *</label>
+                  <input
+                    type="tel"
+                    required
+                    maxLength={20}
+                    value={newPhone}
+                    onChange={(e) => setNewPhone(e.target.value)}
+                    placeholder="0912345678"
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="font-label-sm text-on-surface-variant">Địa chỉ (không bắt buộc)</label>
+                <input
+                  type="text"
+                  maxLength={255}
+                  value={newAddress}
+                  onChange={(e) => setNewAddress(e.target.value)}
+                  placeholder="Cầu Giấy, Hà Nội"
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface-variant">Số điện thoại *</label>
-              <input
-                type="tel"
-                required
-                maxLength={20}
-                value={newPhone}
-                onChange={(e) => setNewPhone(e.target.value)}
-                placeholder="0912345678"
-                className="h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface-variant">Địa chỉ (không bắt buộc)</label>
-              <input
-                type="text"
-                maxLength={255}
-                value={newAddress}
-                onChange={(e) => setNewAddress(e.target.value)}
-                placeholder="Cầu Giấy, Hà Nội"
-                className="h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
-              />
-            </div>
-            <div className="flex gap-2 pt-1">
+
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md"
+                className="flex-1 md:flex-none md:min-w-[120px] h-11 md:h-12 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 h-11 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[200px] h-11 md:h-12 px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {saving ? 'Đang lưu...' : 'Lưu khách hàng'}
               </button>

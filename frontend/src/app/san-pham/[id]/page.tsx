@@ -11,7 +11,7 @@ import { useToast } from '@/components/ToastProvider'
 import { ApiError, caiDatApi, sanPhamApi } from '@/lib/api'
 import {
   formatCurrency,
-  formatDateShort,
+  formatDate,
   parseFormattedNumber,
   parseImages,
   parseMoney,
@@ -254,38 +254,43 @@ export default function SanPhamDetailPage() {
                   <h1 className="font-headline-lg text-headline-lg lg:text-[24px] text-on-surface mt-0.5 leading-snug">
                     {product.ten_san_pham}
                   </h1>
-                  <div className="font-label-sm text-outline mt-1">Slug: {product.slug}</div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2.5 lg:gap-3">
-                  <div className="p-3 lg:p-3.5 rounded-xl bg-surface-container-low">
-                    <div className="font-label-sm text-on-surface-variant">Giá thuê/ngày</div>
-                    <div className="font-currency-lg text-[15px] xl:text-[18px] text-primary-container font-bold mt-1 tabular-nums">
+                <div className="rounded-xl bg-surface-container-low px-3.5 lg:px-4 divide-y divide-outline-variant/20">
+                  <div className="py-2.5 lg:py-3 flex items-center justify-between gap-3">
+                    <span className="font-body-sm text-body-sm text-on-surface-variant">
+                      Giá thuê/ngày
+                    </span>
+                    <span className="font-currency-lg text-[15px] xl:text-[18px] text-primary-container font-bold tabular-nums">
                       {formatCurrency(product.gia_thue_ngay)}
-                    </div>
+                    </span>
                   </div>
-                  <div className="p-3 lg:p-3.5 rounded-xl bg-surface-container-low">
-                    <div className="font-label-sm text-on-surface-variant">Giá gốc</div>
-                    <div className="font-currency-lg text-[15px] xl:text-[18px] text-on-surface font-bold mt-1 tabular-nums">
+                  <div className="py-2.5 lg:py-3 flex items-center justify-between gap-3">
+                    <span className="font-body-sm text-body-sm text-on-surface-variant">
+                      Giá gốc
+                    </span>
+                    <span className="font-currency-lg text-[15px] xl:text-[18px] text-on-surface font-bold tabular-nums">
                       {formatCurrency(product.gia_goc_san_pham)}
-                    </div>
+                    </span>
                   </div>
-                  <div className="p-3 lg:p-3.5 rounded-xl bg-surface-container-low">
-                    <div className="font-label-sm text-on-surface-variant">
+                  <div className="py-2.5 lg:py-3 flex items-center justify-between gap-3">
+                    <span className="font-body-sm text-body-sm text-on-surface-variant">
                       Cọc ({depositPercent}%)
-                    </div>
-                    <div className="font-currency-lg text-[15px] xl:text-[18px] text-secondary font-bold mt-1 tabular-nums">
+                    </span>
+                    <span className="font-currency-lg text-[15px] xl:text-[18px] text-secondary font-bold tabular-nums">
                       {formatCurrency(suggestedDeposit)}
-                    </div>
+                    </span>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-wrap gap-2 pt-1">
+                <div className="grid grid-cols-2 gap-2 pt-1">
                   {product.trang_thai !== 3 && (
                     <Link
                       href={`/don-thue/tao-moi?san_pham_id=${product.id}`}
-                      className="flex-1 lg:flex-none min-w-[150px] h-11 px-5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
+                      className={`${
+                        product.trang_thai === 2 ? 'col-span-2 ' : ''
+                      }h-11 px-3 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label-md font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all`}
                     >
                       <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
                       Tạo đơn thuê
@@ -297,7 +302,7 @@ export default function SanPhamDetailPage() {
                       type="button"
                       disabled={busy}
                       onClick={handleToggleMaintenance}
-                      className="h-11 px-4 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center gap-1.5 hover:bg-surface-container-high transition-colors"
+                      className="h-11 px-3 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center justify-center gap-1.5 hover:bg-surface-container-high transition-colors disabled:opacity-60"
                     >
                       <span className="material-symbols-outlined text-[18px]">dry_cleaning</span>
                       Bảo dưỡng
@@ -309,7 +314,7 @@ export default function SanPhamDetailPage() {
                       type="button"
                       disabled={busy}
                       onClick={handleToggleMaintenance}
-                      className="flex-1 lg:flex-none h-11 px-5 rounded-xl bg-[#236B48] hover:opacity-90 text-white font-label-md font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                      className="col-span-2 h-11 px-3 rounded-xl bg-[#236B48] hover:opacity-90 text-white font-label-md font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all disabled:opacity-60"
                     >
                       <span className="material-symbols-outlined text-[18px]">check_circle</span>
                       Hoàn tất bảo dưỡng
@@ -319,7 +324,7 @@ export default function SanPhamDetailPage() {
                   <button
                     type="button"
                     onClick={openEditModal}
-                    className="h-11 px-4 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center gap-1.5 hover:bg-surface-container-high transition-colors"
+                    className="h-11 px-3 rounded-xl bg-surface-container text-on-surface font-label-md flex items-center justify-center gap-1.5 hover:bg-surface-container-high transition-colors"
                   >
                     <span className="material-symbols-outlined text-[18px]">edit</span>
                     Sửa
@@ -328,7 +333,7 @@ export default function SanPhamDetailPage() {
                   <button
                     type="button"
                     onClick={() => setShowDeleteModal(true)}
-                    className="h-11 px-4 rounded-xl bg-error-container/70 text-on-error-container font-label-md flex items-center gap-1.5 hover:bg-error-container transition-colors"
+                    className="h-11 px-3 rounded-xl bg-error-container/70 text-on-error-container font-label-md flex items-center justify-center gap-1.5 hover:bg-error-container transition-colors"
                   >
                     <span className="material-symbols-outlined text-[18px]">delete</span>
                     Xóa
@@ -420,7 +425,7 @@ export default function SanPhamDetailPage() {
                             </span>
                           </div>
                           <div className="font-label-sm text-on-surface-variant shrink-0 tabular-nums">
-                            {formatDateShort(ls.ngay_bat_dau)} → {formatDateShort(ls.ngay_hen_tra)}
+                            {formatDate(ls.ngay_bat_dau)} → {formatDate(ls.ngay_hen_tra)}
                           </div>
                         </div>
                         <ThueDoStatusBadge status={ls.trang_thai} />
@@ -436,130 +441,156 @@ export default function SanPhamDetailPage() {
 
       {/* Edit Modal */}
       {showEditModal && product && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="edit-product-modal-title"
+          className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center md:items-center md:p-6"
+        >
+          <div
+            className="absolute inset-0 bg-[#1e1b1c]/60 backdrop-blur-sm"
+            onClick={() => !busy && setShowEditModal(false)}
+          />
+
           <form
             onSubmit={handleSaveEdit}
-            className="w-full max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto bg-surface-container-lowest rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5"
+            className="relative w-full max-w-2xl md:max-w-4xl mx-auto max-h-[88vh] md:max-h-[84vh] bg-surface-container-lowest rounded-t-[28px] md:rounded-2xl shadow-[0_-8px_32px_rgba(79,9,41,0.18)] md:shadow-2xl flex flex-col overflow-hidden pb-safe md:pb-0 z-10"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline-md text-on-surface">Chỉnh sửa sản phẩm</h3>
+            <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-outline-variant/60" />
+            </div>
+
+            <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-surface-container-high shrink-0">
+              <h3
+                id="edit-product-modal-title"
+                className="font-headline-md text-headline-md font-bold text-on-surface"
+              >
+                Chỉnh sửa sản phẩm
+              </h3>
               <button
                 type="button"
                 onClick={() => setShowEditModal(false)}
-                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface-variant">Mã sản phẩm (SKU)</label>
-              <input
-                type="text"
-                required={!hasHistory}
-                maxLength={30}
-                disabled={hasHistory}
-                value={editMa}
-                onChange={(e) => setEditMa(e.target.value)}
-                className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md disabled:opacity-60"
-              />
-              {hasHistory && (
-                <span className="font-label-sm text-outline">
-                  Không thể đổi SKU vì sản phẩm đã có phiếu thuê.
-                </span>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="font-label-sm text-on-surface-variant">Tên sản phẩm *</label>
-              <input
-                type="text"
-                required
-                value={editTen}
-                onChange={(e) => setEditTen(e.target.value)}
-                className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              <div className="flex flex-col gap-1">
-                <label className="font-label-sm text-on-surface-variant">Giá gốc (VND)</label>
-                <NumberInput
-                  min={0}
-                  step={10000}
-                  value={editGiaGoc}
-                  onValueChange={setEditGiaGoc}
-                  placeholder="2.000.000"
-                  className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md tabular-nums"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="font-label-sm text-on-surface-variant">Giá thuê/ngày (VND)</label>
-                <NumberInput
-                  min={0}
-                  step={10000}
-                  value={editGiaThue}
-                  onValueChange={setEditGiaThue}
-                  placeholder="300.000"
-                  className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-md tabular-nums"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-label-sm text-on-surface-variant">Hình ảnh (URL)</label>
-              <div className="flex gap-1.5">
-                <input
-                  type="url"
-                  value={newImgUrl}
-                  onChange={(e) => setNewImgUrl(e.target.value)}
-                  placeholder="https://..."
-                  className="flex-1 h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (newImgUrl.trim()) {
-                      setEditImages((prev) => [...prev, newImgUrl.trim()])
-                      setNewImgUrl('')
-                    }
-                  }}
-                  className="px-3 h-10 rounded-xl bg-primary-fixed text-on-primary-fixed-variant font-label-sm font-semibold"
-                >
-                  Thêm
-                </button>
-              </div>
-              {editImages.length > 0 && (
-                <div className="flex gap-2 overflow-x-auto py-1">
-                  {editImages.map((u, idx) => (
-                    <div key={`${u}-${idx}`} className="relative w-14 h-16 rounded-lg overflow-hidden shrink-0">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={u} alt="" className="w-full h-full object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => setEditImages((prev) => prev.filter((_, i) => i !== idx))}
-                        className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white flex items-center justify-center"
-                      >
-                        <span className="material-symbols-outlined text-[13px]">close</span>
-                      </button>
-                    </div>
-                  ))}
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-3.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Mã sản phẩm (SKU)</label>
+                  <input
+                    type="text"
+                    required={!hasHistory}
+                    maxLength={30}
+                    disabled={hasHistory}
+                    value={editMa}
+                    onChange={(e) => setEditMa(e.target.value)}
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors disabled:opacity-60"
+                  />
+                  {hasHistory && (
+                    <span className="font-label-sm text-outline">
+                      Không thể đổi SKU vì sản phẩm đã có phiếu thuê.
+                    </span>
+                  )}
                 </div>
-              )}
+
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Tên sản phẩm *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editTen}
+                    onChange={(e) => setEditTen(e.target.value)}
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 md:gap-3.5">
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Giá gốc (VND)</label>
+                  <NumberInput
+                    min={0}
+                    step={10000}
+                    value={editGiaGoc}
+                    onValueChange={setEditGiaGoc}
+                    placeholder="2.000.000"
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-label-sm text-on-surface-variant">Giá thuê/ngày (VND)</label>
+                  <NumberInput
+                    min={0}
+                    step={10000}
+                    value={editGiaThue}
+                    onValueChange={setEditGiaThue}
+                    placeholder="300.000"
+                    className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-label-sm text-on-surface-variant">Hình ảnh (URL)</label>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    value={newImgUrl}
+                    onChange={(e) => setNewImgUrl(e.target.value)}
+                    placeholder="https://..."
+                    className="flex-1 min-w-0 h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (newImgUrl.trim()) {
+                        setEditImages((prev) => [...prev, newImgUrl.trim()])
+                        setNewImgUrl('')
+                      }
+                    }}
+                    className="px-4 h-11 rounded-xl bg-primary-fixed text-on-primary-fixed-variant hover:bg-primary-container hover:text-on-primary font-label-md font-semibold shrink-0 transition-colors"
+                  >
+                    Thêm
+                  </button>
+                </div>
+                {editImages.length > 0 && (
+                  <div className="flex gap-2.5 overflow-x-auto md:flex-wrap py-1">
+                    {editImages.map((u, idx) => (
+                      <div
+                        key={`${u}-${idx}`}
+                        className="relative w-16 h-20 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30 bg-surface-container"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={u} alt="" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setEditImages((prev) => prev.filter((_, i) => i !== idx))}
+                          className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">close</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="flex gap-2 pt-1">
+            <div className="p-4 md:px-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-end gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setShowEditModal(false)}
-                className="flex-1 h-11 rounded-xl bg-surface-container font-label-md"
+                className="flex-1 md:flex-none md:min-w-[120px] h-11 md:h-12 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md font-semibold transition-colors"
               >
                 Huỷ
               </button>
               <button
                 type="submit"
                 disabled={busy}
-                className="flex-1 h-11 rounded-xl bg-primary-container text-on-primary font-label-md font-bold disabled:opacity-60"
+                className="flex-1 md:flex-none md:min-w-[200px] h-11 md:h-12 px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-bold shadow-md active:scale-95 transition-all disabled:opacity-60"
               >
                 {busy ? 'Đang lưu...' : 'Lưu thay đổi'}
               </button>

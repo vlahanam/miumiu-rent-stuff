@@ -2,11 +2,20 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   findCaretPositionFromRight,
+  formatDate,
+  formatDateInputDisplay,
+  formatDateShort,
+  formatDateTime,
+  formatDateTimeInputDisplay,
   formatNumberInput,
+  formatVietnameseToday,
+  parseDateInputDisplay,
+  parseDateTimeInputDisplay,
   parseDisplayToRawNumber,
   parseFormattedNumber,
   parseMoney,
   sanitizeIntegerDigits,
+  toDateValue,
 } from './format'
 
 test('formatNumberInput formats integers with dot thousand separators across all magnitudes', () => {
@@ -135,4 +144,55 @@ test('findCaretPositionFromRight places cursor accurately after formatting', () 
   assert.equal(findCaretPositionFromRight('1.000,5', 1, true), 6)
   // "1.000|,5" (2 sig chars after cursor: ',' and '5')
   assert.equal(findCaretPositionFromRight('1.000,5', 2, true), 5)
+})
+
+test('date display helpers always format as dd/mm/yyyy (and HH:mm when included)', () => {
+  assert.equal(formatDate(null), '—')
+  assert.equal(formatDate(''), '—')
+  assert.equal(formatDate('invalid'), '—')
+  assert.equal(formatDate('2026-03-05'), '05/03/2026')
+  assert.equal(formatDate('2026-11-26'), '26/11/2026')
+  assert.equal(formatDateShort('2026-03-05'), '05/03/2026')
+
+  const localSample = new Date(2026, 2, 5, 9, 7) // 05/03/2026 09:07 local
+  assert.equal(formatDate(localSample.toISOString()), '05/03/2026')
+  assert.equal(formatDateTime(localSample.toISOString()), '05/03/2026 09:07')
+  assert.equal(formatVietnameseToday(localSample), 'Hôm nay, Thứ Năm, 05/03/2026')
+  assert.equal(toDateValue(localSample), '2026-03-05')
+})
+
+test('date input display/parse helpers convert cleanly between YYYY-MM-DD and dd/mm/yyyy', () => {
+  assert.equal(formatDateInputDisplay(''), '')
+  assert.equal(formatDateInputDisplay('2026-11-26'), '26/11/2026')
+  assert.equal(formatDateInputDisplay('2026-03-05'), '05/03/2026')
+  assert.equal(formatDateInputDisplay('2026-02-29'), '') // non-leap year
+
+  assert.equal(parseDateInputDisplay(''), '')
+  assert.equal(parseDateInputDisplay('26/11/2026'), '2026-11-26')
+  assert.equal(parseDateInputDisplay('5/3/2026'), '2026-03-05')
+  assert.equal(parseDateInputDisplay('05-03-2026'), '2026-03-05')
+  assert.equal(parseDateInputDisplay('05.03.2026'), '2026-03-05')
+  assert.equal(parseDateInputDisplay('26112026'), '2026-11-26')
+  assert.equal(parseDateInputDisplay('29/02/2024'), '2024-02-29') // leap year
+  assert.equal(parseDateInputDisplay('29/02/2026'), null) // non-leap year
+  assert.equal(parseDateInputDisplay('31/04/2026'), null) // April has 30 days
+  assert.equal(parseDateInputDisplay('2026-11-26'), null) // rejects yyyy-mm-dd order
+})
+
+test('datetime input display/parse helpers convert cleanly between YYYY-MM-DDTHH:mm and dd/mm/yyyy HH:mm', () => {
+  assert.equal(formatDateTimeInputDisplay(''), '')
+  assert.equal(formatDateTimeInputDisplay('2026-11-26T14:05'), '26/11/2026 14:05')
+  assert.equal(formatDateTimeInputDisplay('2026-03-05T00:00'), '05/03/2026 00:00')
+  assert.equal(formatDateTimeInputDisplay('2026-03-05T25:00'), '')
+
+  assert.equal(parseDateTimeInputDisplay(''), '')
+  assert.equal(parseDateTimeInputDisplay('26/11/2026 14:05'), '2026-11-26T14:05')
+  assert.equal(parseDateTimeInputDisplay('5/3/2026 9:5'), '2026-03-05T09:05')
+  assert.equal(
+    parseDateTimeInputDisplay('26/11/2026', { hours: 9, minutes: 30 }),
+    '2026-11-26T09:30'
+  )
+  assert.equal(parseDateTimeInputDisplay('26/11/2026 24:00'), null)
+  assert.equal(parseDateTimeInputDisplay('26/11/2026 12:60'), null)
+  assert.equal(parseDateTimeInputDisplay('31/02/2026 10:00'), null)
 })

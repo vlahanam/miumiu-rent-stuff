@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import AppShell from '@/components/AppShell'
+import DateInput from '@/components/DateInput'
 import NumberInput from '@/components/NumberInput'
 import ProductImage from '@/components/ProductImage'
 import { ThueDoStatusBadge } from '@/components/StatusBadge'
@@ -553,7 +554,7 @@ function DonThueDetailContent() {
                     {order.khach_hang && (
                       <Link
                         href={`/khach-hang/${order.khach_hang.id}`}
-                        className="font-label-sm text-label-sm text-primary-container font-semibold hover:underline print:hidden"
+                        className="font-label-sm text-label-sm text-primary-container hover:text-primary font-semibold transition-colors print:hidden"
                       >
                         Hồ sơ khách →
                       </Link>
@@ -1002,20 +1003,22 @@ function DonThueDetailContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="flex flex-col gap-1">
                     <label className="font-label-sm text-on-surface-variant">Ngày bắt đầu</label>
-                    <input
-                      type="datetime-local"
+                    <DateInput
+                      mode="datetime"
+                      aria-label="Ngày bắt đầu"
                       value={editNgayBD}
-                      onChange={(e) => setEditNgayBD(e.target.value)}
-                      className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm"
+                      onChange={setEditNgayBD}
+                      className="h-10 pl-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
                     <label className="font-label-sm text-on-surface-variant">Ngày hẹn trả</label>
-                    <input
-                      type="datetime-local"
+                    <DateInput
+                      mode="datetime"
+                      aria-label="Ngày hẹn trả"
                       value={editNgayHT}
-                      onChange={(e) => setEditNgayHT(e.target.value)}
-                      className="h-10 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm"
+                      onChange={setEditNgayHT}
+                      className="h-10 pl-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
                     />
                   </div>
                 </div>
