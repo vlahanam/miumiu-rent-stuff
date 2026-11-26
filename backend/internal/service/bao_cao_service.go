@@ -339,7 +339,7 @@ func (s *BaoCaoService) excelPhieuThue(f *excelize.File, headerStyle int, params
 	headers := []string{
 		"Mã phiếu", "Khách hàng", "Sản phẩm",
 		"Ngày bắt đầu", "Ngày hẹn trả", "Ngày trả thực tế",
-		"Tiền thuê (VND)", "Tiền cọc (VND)", "Tiền phạt (VND)", "Trạng thái",
+		"Tiền thuê (VND)", "Tiền ship (VND)", "Tiền cọc (VND)", "Tiền phạt (VND)", "Trạng thái",
 	}
 	for i, h := range headers {
 		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
@@ -374,6 +374,7 @@ func (s *BaoCaoService) excelPhieuThue(f *excelize.File, headerStyle int, params
 			td.MaPhieuThue, tenKH, formatSanPhamNames(td.ChiTiet),
 			ngayBD, ngayHT, ngayTra,
 			td.TongTienThue.InexactFloat64(),
+			td.TienShip.InexactFloat64(),
 			td.TienCoc.InexactFloat64(),
 			td.TienPhat.InexactFloat64(),
 			trangThaiText[td.TrangThai],
@@ -444,7 +445,7 @@ func (s *BaoCaoService) XuatCSV(loai string, params map[string]string) ([]byte, 
 		_ = w.Write([]string{
 			"Mã phiếu", "Khách hàng", "Sản phẩm",
 			"Ngày bắt đầu", "Ngày hẹn trả", "Ngày trả thực tế",
-			"Tiền thuê (VND)", "Tiền cọc (VND)", "Tiền phạt (VND)", "Trạng thái",
+			"Tiền thuê (VND)", "Tiền ship (VND)", "Tiền cọc (VND)", "Tiền phạt (VND)", "Trạng thái",
 		})
 		list, err := s.queryPhieuThue(params)
 		if err != nil {
@@ -472,6 +473,7 @@ func (s *BaoCaoService) XuatCSV(loai string, params map[string]string) ([]byte, 
 				td.MaPhieuThue, tenKH, formatSanPhamNames(td.ChiTiet),
 				ngayBD, ngayHT, ngayTra,
 				td.TongTienThue.StringFixed(0),
+				td.TienShip.StringFixed(0),
 				td.TienCoc.StringFixed(0),
 				td.TienPhat.StringFixed(0),
 				trangThaiText[td.TrangThai],

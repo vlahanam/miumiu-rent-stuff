@@ -253,11 +253,12 @@ function TaoMoiDonThueContent() {
   })
   const [manualReturnDate, setManualReturnDate] = useState(false)
 
-  // Deposit & notes
+  // Deposit, shipping & notes
   const [loaiCoc, setLoaiCoc] = useState<LoaiCoc>(1)
   const [tienCocInput, setTienCocInput] = useState<string>('0')
   const [manualDeposit, setManualDeposit] = useState(false)
   const [cccdConfirmed, setCccdConfirmed] = useState(false)
+  const [tienShipInput, setTienShipInput] = useState<string>('0')
   const [ghiChu, setGhiChu] = useState('')
 
   // Submit state
@@ -479,6 +480,7 @@ function TaoMoiDonThueContent() {
     }
 
     const tienCocNumber = loaiCoc === 3 ? 0 : Math.max(0, parseFormattedNumber(tienCocInput))
+    const tienShipNumber = Math.max(0, parseFormattedNumber(tienShipInput))
 
     setSubmitting(true)
     try {
@@ -489,6 +491,7 @@ function TaoMoiDonThueContent() {
         so_ngay_thue: soNgay,
         loai_coc: loaiCoc,
         tien_coc: tienCocNumber,
+        tien_ship: tienShipNumber,
         ghi_chu: ghiChu.trim() || null,
         chi_tiet: selectedProductIds.map((san_pham_id) => ({ san_pham_id })),
       })
@@ -505,6 +508,7 @@ function TaoMoiDonThueContent() {
   }
 
   const tienCocDisplay = loaiCoc === 3 ? 0 : Math.max(0, parseFormattedNumber(tienCocInput))
+  const tienShipDisplay = Math.max(0, parseFormattedNumber(tienShipInput))
 
   return (
     <AppShell title="Tạo Đơn Thuê" subtitle="Lập phiếu thuê mới hoặc đặt trước" backHref="/don-thue" backLabel="Đơn thuê">
@@ -1023,6 +1027,30 @@ function TaoMoiDonThueContent() {
                 </div>
               )}
 
+              {/* Tiền ship */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <label className="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[0.9375rem] text-primary-container">
+                      local_shipping
+                    </span>
+                    <span>Tiền ship (VND)</span>
+                  </label>
+                  <span className="font-label-sm text-[0.6875rem] text-outline">
+                    Để 0 nếu lấy tại tiệm
+                  </span>
+                </div>
+                <NumberInput
+                  min={0}
+                  step={5000}
+                  value={tienShipInput}
+                  onValueChange={setTienShipInput}
+                  placeholder="0"
+                  aria-label="Tiền ship"
+                  className="h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 font-title-sm text-title-sm text-on-surface tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container"
+                />
+              </div>
+
               {/* Bảng tính tổng */}
               <div className="p-4 bg-surface-container rounded-xl flex flex-col gap-2.5">
                 <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
@@ -1038,6 +1066,12 @@ function TaoMoiDonThueContent() {
                   </span>
                 </div>
                 <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+                  <span>Tiền ship:</span>
+                  <span className="font-semibold text-on-surface tabular-nums">
+                    {formatCurrency(tienShipDisplay)}
+                  </span>
+                </div>
+                <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
                   <span>Tiền cọc (hoàn khi trả):</span>
                   <span className="font-semibold text-on-surface tabular-nums">
                     {loaiCoc === 3 ? '0đ (Giữ CCCD)' : formatCurrency(tienCocDisplay)}
@@ -1048,7 +1082,7 @@ function TaoMoiDonThueContent() {
                     Tổng khách cần đưa
                   </span>
                   <span className="font-headline-lg text-headline-lg text-primary-container font-bold tabular-nums">
-                    {formatCurrency(tongTienThue + tienCocDisplay)}
+                    {formatCurrency(tongTienThue + tienShipDisplay + tienCocDisplay)}
                   </span>
                 </div>
               </div>

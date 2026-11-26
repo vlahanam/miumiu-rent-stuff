@@ -91,6 +91,7 @@ export interface ThueDo {
   loai_coc: LoaiCoc
   tien_coc: string | number
   tien_phat: string | number
+  tien_ship: string | number
   trang_thai: ThueDoTrangThai
   ghi_chu: string | null
   ngay_tao: string

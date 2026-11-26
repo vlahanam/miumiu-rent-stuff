@@ -46,6 +46,7 @@ function DonThueDetailContent() {
   const [giaoLoaiCoc, setGiaoLoaiCoc] = useState<LoaiCoc>(1)
   const [giaoTienCoc, setGiaoTienCoc] = useState('0')
   const [giaoCCCD, setGiaoCCCD] = useState(false)
+  const [giaoTienShip, setGiaoTienShip] = useState('0')
   const [giaoGhiChu, setGiaoGhiChu] = useState('')
 
   // Trả đồ form
@@ -63,6 +64,7 @@ function DonThueDetailContent() {
   const [editLoaiCoc, setEditLoaiCoc] = useState<LoaiCoc>(1)
   const [editTienCoc, setEditTienCoc] = useState('0')
   const [editTienPhat, setEditTienPhat] = useState('0')
+  const [editTienShip, setEditTienShip] = useState('0')
   const [editGhiChu, setEditGhiChu] = useState('')
   const [editProductIds, setEditProductIds] = useState<number[]>([])
   const [allProducts, setAllProducts] = useState<SanPham[]>([])
@@ -98,6 +100,7 @@ function DonThueDetailContent() {
     setGiaoLoaiCoc(td.loai_coc)
     setGiaoTienCoc(String(Math.round(parseMoney(td.tien_coc))))
     setGiaoCCCD(td.loai_coc === 3)
+    setGiaoTienShip(String(Math.round(parseMoney(td.tien_ship))))
     setGiaoGhiChu('')
     setActiveModal('giao-do')
   }, [])
@@ -125,6 +128,7 @@ function DonThueDetailContent() {
     setEditLoaiCoc(td.loai_coc)
     setEditTienCoc(String(Math.round(parseMoney(td.tien_coc))))
     setEditTienPhat(String(Math.round(parseMoney(td.tien_phat))))
+    setEditTienShip(String(Math.round(parseMoney(td.tien_ship))))
     setEditGhiChu(td.ghi_chu || '')
     setEditProductIds((td.chi_tiet || []).map((c) => c.san_pham_id))
     setActiveModal('sua')
@@ -164,6 +168,7 @@ function DonThueDetailContent() {
       const updated = await thueDoApi.giaoDo(order.id, {
         loai_coc: giaoLoaiCoc,
         tien_coc: giaoLoaiCoc === 3 ? 0 : Math.max(0, parseFormattedNumber(giaoTienCoc)),
+        tien_ship: Math.max(0, parseFormattedNumber(giaoTienShip)),
         ghi_chu: giaoGhiChu.trim() || undefined,
       })
       setOrder(updated)
@@ -241,6 +246,7 @@ function DonThueDetailContent() {
           so_ngay_thue: editSoNgayNum,
           loai_coc: editLoaiCoc,
           tien_coc: editLoaiCoc === 3 ? 0 : Math.max(0, parseFormattedNumber(editTienCoc)),
+          tien_ship: Math.max(0, parseFormattedNumber(editTienShip)),
           ghi_chu: editGhiChu,
           chi_tiet: editProductIds.map((san_pham_id) => ({ san_pham_id })),
         })
@@ -249,6 +255,7 @@ function DonThueDetailContent() {
         const updated = await thueDoApi.update(order.id, {
           so_ngay_thue: editSoNgayNum,
           tien_phat: Math.max(0, parseFormattedNumber(editTienPhat)),
+          tien_ship: Math.max(0, parseFormattedNumber(editTienShip)),
           ghi_chu: editGhiChu,
         })
         setOrder(updated)
@@ -265,6 +272,7 @@ function DonThueDetailContent() {
 
   const tienCoc = parseMoney(order?.tien_coc)
   const tienPhat = parseMoney(order?.tien_phat)
+  const tienShip = parseMoney(order?.tien_ship)
   const tongThue = parseMoney(order?.tong_tien_thue)
   const previewFine = Math.max(0, parseFormattedNumber(traTienPhat))
   const previewRefund = tienCoc - previewFine
@@ -590,6 +598,12 @@ function DonThueDetailContent() {
                       </span>
                     </div>
                     <div className="flex justify-between">
+                      <span className="text-on-surface-variant">Tiền ship:</span>
+                      <span className="font-semibold text-on-surface tabular-nums">
+                        {formatCurrency(tienShip)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="text-on-surface-variant">
                         Đặt cọc ({LOAI_COC_LABELS[order.loai_coc]}):
                       </span>
@@ -621,11 +635,37 @@ function DonThueDetailContent() {
                         </span>
                       </div>
                     )}
-                    <div className="border-t border-outline-variant/30 pt-3 mt-1 flex justify-between items-center">
-                      <span className="font-title-sm text-on-surface">Tổng doanh thu phiếu</span>
-                      <span className="font-headline-md text-headline-md text-primary-container font-bold tabular-nums">
-                        {formatCurrency(tongThue + tienPhat)}
-                      </span>
+                    <div className="border-t border-outline-variant/30 pt-3 mt-1 flex flex-col gap-1.5">
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="font-title-sm text-on-surface">
+                          {tienShip > 0
+                            ? tienPhat > 0
+                              ? 'Tổng cộng (thuê + ship + phạt)'
+                              : 'Tổng cộng (thuê + ship)'
+                            : 'Tổng doanh thu phiếu'}
+                        </span>
+                        <span className="font-headline-md text-headline-md text-primary-container font-bold tabular-nums shrink-0">
+                          {formatCurrency(tongThue + tienShip + tienPhat)}
+                        </span>
+                      </div>
+                      {tienShip > 0 && (
+                        <div className="flex justify-between font-label-sm text-on-surface-variant tabular-nums">
+                          <span>Doanh thu cho thuê (không gồm ship):</span>
+                          <span className="font-semibold text-on-surface">
+                            {formatCurrency(tongThue + tienPhat)}
+                          </span>
+                        </div>
+                      )}
+                      {(order.trang_thai === 1 || order.trang_thai === 2 || order.trang_thai === 4) &&
+                        order.loai_coc !== 3 &&
+                        tienCoc > 0 && (
+                          <div className="flex justify-between font-label-sm text-on-surface-variant tabular-nums">
+                            <span>Tổng khách cần đưa (gồm cọc):</span>
+                            <span className="font-semibold text-on-surface">
+                              {formatCurrency(tongThue + tienShip + tienCoc)}
+                            </span>
+                          </div>
+                        )}
                     </div>
                   </div>
 
@@ -752,6 +792,21 @@ function DonThueDetailContent() {
                   />
                 </div>
               )}
+
+              <div className="flex flex-col gap-1">
+                <label className="font-label-sm text-on-surface-variant">
+                  Tiền ship (VND — để 0 nếu khách nhận tại tiệm)
+                </label>
+                <NumberInput
+                  min={0}
+                  step={5000}
+                  value={giaoTienShip}
+                  onValueChange={setGiaoTienShip}
+                  placeholder="0"
+                  aria-label="Tiền ship"
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface font-title-sm tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                />
+              </div>
 
               <input
                 type="text"
@@ -1199,6 +1254,21 @@ function DonThueDetailContent() {
                   />
                 </div>
               )}
+
+              <div className="flex flex-col gap-1">
+                <label className="font-label-sm text-on-surface-variant">
+                  Tiền ship (VND)
+                </label>
+                <NumberInput
+                  min={0}
+                  step={5000}
+                  value={editTienShip}
+                  onValueChange={setEditTienShip}
+                  placeholder="0"
+                  aria-label="Tiền ship"
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-body-md tabular-nums focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-colors"
+                />
+              </div>
 
               <div className="flex flex-col gap-1">
                 <label className="font-label-sm text-on-surface-variant">Ghi chú</label>

@@ -353,6 +353,11 @@ export default function TongQuanPage() {
                             <span className="font-currency-lg text-currency-lg text-on-surface tabular-nums">
                               {formatCurrency(order.tong_tien_thue)}
                             </span>
+                            {parseMoney(order.tien_ship) > 0 && (
+                              <span className="font-label-sm text-label-sm text-secondary font-medium tabular-nums">
+                                + Ship {formatCurrency(order.tien_ship)}
+                              </span>
+                            )}
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             {phone && (
@@ -470,6 +475,11 @@ export default function TongQuanPage() {
                                 <span className="font-currency-lg text-currency-lg text-on-surface tabular-nums">
                                   {formatCurrency(order.tong_tien_thue)}
                                 </span>
+                                {parseMoney(order.tien_ship) > 0 && (
+                                  <span className="font-label-sm text-label-sm text-secondary font-medium tabular-nums">
+                                    + Ship {formatCurrency(order.tien_ship)}
+                                  </span>
+                                )}
                               </div>
                               <Link
                                 href={`/don-thue/${order.id}?action=tra-do`}
@@ -571,6 +581,11 @@ export default function TongQuanPage() {
                                 <span className="font-currency-lg text-currency-lg text-on-surface tabular-nums">
                                   {formatCurrency(order.tong_tien_thue)}
                                 </span>
+                                {parseMoney(order.tien_ship) > 0 && (
+                                  <span className="font-label-sm text-label-sm text-secondary font-medium tabular-nums">
+                                    + Ship {formatCurrency(order.tien_ship)}
+                                  </span>
+                                )}
                               </div>
                               <Link
                                 href={`/don-thue/${order.id}?action=giao-do`}

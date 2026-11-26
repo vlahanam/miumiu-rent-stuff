@@ -7,12 +7,13 @@ import AppShell from '@/components/AppShell'
 import { ThueDoStatusBadge } from '@/components/StatusBadge'
 import { useToast } from '@/components/ToastProvider'
 import { ApiError, khachHangApi } from '@/lib/api'
-import { formatCurrency, formatDate, formatPhone, getInitials } from '@/lib/format'
+import { formatCurrency, formatDate, formatPhone, getInitials, parseMoney } from '@/lib/format'
 import type { KhachHangDetail, ThueDo } from '@/types'
 
 function OrderRow({ order }: { order: ThueDo }) {
   const firstItem = order.chi_tiet?.[0]?.san_pham?.ten_san_pham || `${order.chi_tiet?.length || 0} sản phẩm`
   const extra = Math.max(0, (order.chi_tiet?.length || 0) - 1)
+  const tienShip = parseMoney(order.tien_ship)
   return (
     <Link
       href={`/don-thue/${order.id}`}
@@ -20,7 +21,7 @@ function OrderRow({ order }: { order: ThueDo }) {
     >
       <div className="min-w-0 flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4">
         <div className="min-w-0">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <span className="font-title-sm text-body-md text-primary-container font-bold">
               {order.ma_phieu_thue}
             </span>
@@ -28,6 +29,11 @@ function OrderRow({ order }: { order: ThueDo }) {
             <span className="font-currency-lg text-body-md text-on-surface font-bold tabular-nums">
               {formatCurrency(order.tong_tien_thue)}
             </span>
+            {tienShip > 0 && (
+              <span className="font-label-sm text-secondary font-medium tabular-nums">
+                + Ship {formatCurrency(tienShip)}
+              </span>
+            )}
           </div>
           <div className="font-body-sm text-on-surface truncate mt-0.5">
             {firstItem}

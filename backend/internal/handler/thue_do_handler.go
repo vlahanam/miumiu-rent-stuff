@@ -148,7 +148,7 @@ func (h *ThueDoHandler) Create(c *gin.Context) {
 }
 
 // PUT /api/v1/thue-do/:id
-// Quy tắc: Chờ xác nhận → sửa tự do (kể cả chi_tiet); Đang thuê/Quá hạn → chỉ so_ngay_thue, tien_phat, ghi_chu
+// Quy tắc: Chờ xác nhận → sửa tự do (kể cả chi_tiet); Đang thuê/Quá hạn → chỉ so_ngay_thue, tien_phat, tien_ship, ghi_chu
 func (h *ThueDoHandler) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

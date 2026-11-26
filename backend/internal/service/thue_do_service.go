@@ -101,6 +101,15 @@ func layPhamTramCoc(db *gorm.DB) decimal.Decimal {
 	return decimal.NewFromFloat(val)
 }
 
+func setEncodedGhiChu(updates map[string]interface{}, ghiChu *string, tienShip decimal.Decimal) {
+	encoded := model.EncodeThueDoGhiChu(ghiChu, tienShip)
+	if encoded == nil {
+		updates["ghi_chu"] = nil
+	} else {
+		updates["ghi_chu"] = *encoded
+	}
+}
+
 // TaoPhieu tạo phiếu thuê với đầy đủ logic nghiệp vụ trong 1 transaction
 func (s *ThueDoService) TaoPhieu(input model.CreateThueDoInput, nguoiDungID uint) (*model.ThueDo, error) {
 	var thueDo model.ThueDo
@@ -215,6 +224,7 @@ func (s *ThueDoService) TaoPhieu(input model.CreateThueDoInput, nguoiDungID uint
 			LoaiCoc:      loaiCoc,
 			TienCoc:      tienCoc,
 			TienPhat:     decimal.Zero,
+			TienShip:     input.TienShip.Round(2),
 			TrangThai:    trangThai,
 			GhiChu:       input.GhiChu,
 		}
@@ -418,8 +428,22 @@ func (s *ThueDoService) CapNhatPhieu(id uint, input model.UpdateThueDoInput) (*m
 			}
 		}
 
+		effectiveTienShip := td.TienShip
+		shipChanged := false
+		if input.TienShip != nil {
+			effectiveTienShip = input.TienShip.Round(2)
+			shipChanged = true
+		}
+
+		effectiveGhiChu := td.GhiChu
+		noteChanged := false
 		if input.GhiChu != nil {
-			updates["ghi_chu"] = *input.GhiChu
+			effectiveGhiChu = input.GhiChu
+			noteChanged = true
+		}
+
+		if shipChanged || noteChanged {
+			setEncodedGhiChu(updates, effectiveGhiChu, effectiveTienShip)
 		}
 
 		if len(updates) > 0 {
@@ -479,12 +503,25 @@ func (s *ThueDoService) GiaoDo(id uint, input *model.GiaoDoInput) (*model.ThueDo
 			} else if input.TienCoc != nil {
 				updates["tien_coc"] = *input.TienCoc
 			}
+
+			effectiveTienShip := td.TienShip
+			effectiveGhiChu := td.GhiChu
+			needUpdateGhiChu := false
+
+			if input.TienShip != nil {
+				effectiveTienShip = input.TienShip.Round(2)
+				needUpdateGhiChu = true
+			}
 			if input.GhiChu != nil && strings.TrimSpace(*input.GhiChu) != "" {
 				note := strings.TrimSpace(*input.GhiChu)
-				if td.GhiChu != nil && strings.TrimSpace(*td.GhiChu) != "" {
-					note = strings.TrimSpace(*td.GhiChu) + " | Giao đồ: " + note
+				if effectiveGhiChu != nil && strings.TrimSpace(*effectiveGhiChu) != "" {
+					note = strings.TrimSpace(*effectiveGhiChu) + " | Giao đồ: " + note
 				}
-				updates["ghi_chu"] = note
+				effectiveGhiChu = &note
+				needUpdateGhiChu = true
+			}
+			if needUpdateGhiChu {
+				setEncodedGhiChu(updates, effectiveGhiChu, effectiveTienShip)
 			}
 		}
 
@@ -551,7 +588,7 @@ func (s *ThueDoService) TraDo(id uint, input model.TraDoInput) (*model.ThueDo, *
 			if td.GhiChu != nil && strings.TrimSpace(*td.GhiChu) != "" {
 				note = strings.TrimSpace(*td.GhiChu) + " | Trả đồ: " + note
 			}
-			updates["ghi_chu"] = note
+			setEncodedGhiChu(updates, &note, td.TienShip)
 		}
 		if err := tx.Model(&td).Updates(updates).Error; err != nil {
 			return err
@@ -629,10 +666,11 @@ func (s *ThueDoService) HuyPhieu(id uint, input model.HuyPhieuInput) (*model.Thu
 		if td.GhiChu != nil && strings.TrimSpace(*td.GhiChu) != "" {
 			ghiChu = strings.TrimSpace(*td.GhiChu) + " | Hủy: " + lyDo
 		}
-		if err := tx.Model(&td).Updates(map[string]interface{}{
+		updates := map[string]interface{}{
 			"trang_thai": uint8(5),
-			"ghi_chu":    ghiChu,
-		}).Error; err != nil {
+		}
+		setEncodedGhiChu(updates, &ghiChu, td.TienShip)
+		if err := tx.Model(&td).Updates(updates).Error; err != nil {
 			return err
 		}
 

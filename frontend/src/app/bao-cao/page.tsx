@@ -490,6 +490,7 @@ export default function BaoCaoPage() {
                         <div className="font-label-sm text-on-surface-variant mt-0.5">
                           {formatDate(td.ngay_bat_dau)} → {formatDate(td.ngay_hen_tra)} • Thuê:{' '}
                           <strong className="text-on-surface">{formatCurrency(td.tong_tien_thue)}</strong>
+                          {parseMoney(td.tien_ship) > 0 && ` • Ship: ${formatCurrency(td.tien_ship)}`}
                           {parseMoney(td.tien_phat) > 0 && ` • Phạt: ${formatCurrency(td.tien_phat)}`}
                         </div>
                       </div>
@@ -508,6 +509,7 @@ export default function BaoCaoPage() {
                           <th className="py-3.5 px-3">Khách hàng</th>
                           <th className="py-3.5 px-3">Thời gian thuê</th>
                           <th className="py-3.5 px-3 text-right">Tiền thuê</th>
+                          <th className="py-3.5 px-3 text-right">Tiền ship</th>
                           <th className="py-3.5 px-3 text-right">Tiền phạt</th>
                           <th className="py-3.5 pl-3 pr-5 text-right">Trạng thái</th>
                         </tr>
@@ -533,6 +535,11 @@ export default function BaoCaoPage() {
                             </td>
                             <td className="py-3.5 px-3 text-right font-currency-lg text-[0.875rem] text-on-surface font-bold tabular-nums whitespace-nowrap">
                               {formatCurrency(td.tong_tien_thue)}
+                            </td>
+                            <td className="py-3.5 px-3 text-right font-body-sm tabular-nums whitespace-nowrap">
+                              <span className={parseMoney(td.tien_ship) > 0 ? 'text-secondary font-semibold' : 'text-outline'}>
+                                {formatCurrency(td.tien_ship)}
+                              </span>
                             </td>
                             <td className="py-3.5 px-3 text-right font-body-sm tabular-nums whitespace-nowrap">
                               <span className={parseMoney(td.tien_phat) > 0 ? 'text-error font-semibold' : 'text-outline'}>

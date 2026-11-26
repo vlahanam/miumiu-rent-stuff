@@ -260,3 +260,143 @@ func TestOverdueUpdateAndConflictBlock(t *testing.T) {
 		t.Fatalf("expected recalculated total 3000000, got %s", updated.TongTienThue)
 	}
 }
+
+func TestTienShipLifecycle(t *testing.T) {
+	db := openTestDB(t)
+	nd, kh, sp1, sp2 := seedBaseData(t, db)
+	svc := NewThueDoService(db)
+
+	// 1. Tạo phiếu thuê ngay kèm tiền ship và ghi chú
+	now := time.Now().Add(-1 * time.Minute)
+	soNgay2 := uint16(2)
+	initNote := "Giao qua Grab Express"
+	td, err := svc.TaoPhieu(model.CreateThueDoInput{
+		KhachHangID: kh.ID,
+		NgayBatDau:  &now,
+		SoNgayThue:  &soNgay2,
+		LoaiCoc:     1,
+		TienCoc:     decimal.NewFromInt(1000000),
+		TienShip:    decimal.NewFromInt(35000),
+		GhiChu:      &initNote,
+		ChiTiet:     []model.ChiTietThueDoInput{{SanPhamID: sp1.ID}},
+	}, nd.ID)
+	if err != nil {
+		t.Fatalf("TaoPhieu with tien_ship failed: %v", err)
+	}
+	if !td.TienShip.Equal(decimal.NewFromInt(35000)) {
+		t.Fatalf("expected tien_ship=35000, got %s", td.TienShip)
+	}
+	if td.GhiChu == nil || *td.GhiChu != initNote {
+		t.Fatalf("expected clean ghi_chu=%q, got %v", initNote, td.GhiChu)
+	}
+	// Tiền ship không làm thay đổi tổng tiền thuê
+	if !td.TongTienThue.Equal(decimal.NewFromInt(600000)) {
+		t.Fatalf("expected tong_tien_thue=600000, got %s", td.TongTienThue)
+	}
+
+	// 2. Sửa ghi chú mà không gửi tien_ship → giữ nguyên tien_ship=35000
+	updatedNote := "Đổi sang Ahamove"
+	td, err = svc.CapNhatPhieu(td.ID, model.UpdateThueDoInput{GhiChu: &updatedNote})
+	if err != nil {
+		t.Fatalf("CapNhatPhieu note only failed: %v", err)
+	}
+	if !td.TienShip.Equal(decimal.NewFromInt(35000)) {
+		t.Fatalf("expected tien_ship preserved as 35000, got %s", td.TienShip)
+	}
+	if td.GhiChu == nil || *td.GhiChu != updatedNote {
+		t.Fatalf("expected ghi_chu=%q, got %v", updatedNote, td.GhiChu)
+	}
+
+	// 3. Sửa tien_ship mà không gửi ghi_chu → giữ nguyên ghi_chu
+	shipZero := decimal.Zero
+	td, err = svc.CapNhatPhieu(td.ID, model.UpdateThueDoInput{TienShip: &shipZero})
+	if err != nil {
+		t.Fatalf("CapNhatPhieu reset ship failed: %v", err)
+	}
+	if !td.TienShip.IsZero() {
+		t.Fatalf("expected tien_ship=0, got %s", td.TienShip)
+	}
+	if td.GhiChu == nil || *td.GhiChu != updatedNote {
+		t.Fatalf("expected ghi_chu preserved as %q, got %v", updatedNote, td.GhiChu)
+	}
+	// Khi ship=0, cột DB ghi_chu lưu thuần văn bản (không chứa tiền tố metadata)
+	var rawGhiChu string
+	if err := db.Raw("SELECT ghi_chu FROM thue_do WHERE id = ?", td.ID).Scan(&rawGhiChu).Error; err != nil {
+		t.Fatalf("query raw ghi_chu: %v", err)
+	}
+	if rawGhiChu != updatedNote {
+		t.Fatalf("expected raw DB ghi_chu=%q when ship=0, got %q", updatedNote, rawGhiChu)
+	}
+
+	// 4. Đặt lại tien_ship=40000 rồi trả đồ có ghi chú → giữ nguyên tien_ship=40000, hoàn cọc không trừ ship
+	ship40 := decimal.NewFromInt(40000)
+	td, err = svc.CapNhatPhieu(td.ID, model.UpdateThueDoInput{TienShip: &ship40})
+	if err != nil {
+		t.Fatalf("CapNhatPhieu set ship 40000 failed: %v", err)
+	}
+	traNote := "Áo sạch đẹp"
+	tdReturned, xuLyCoc, err := svc.TraDo(td.ID, model.TraDoInput{
+		TienPhat: decimal.NewFromInt(50000),
+		GhiChu:   &traNote,
+		SanPhamTrangThai: []model.SanPhamTrangThaiItem{
+			{SanPhamID: sp1.ID, TrangThai: 1},
+		},
+	})
+	if err != nil {
+		t.Fatalf("TraDo failed: %v", err)
+	}
+	if !tdReturned.TienShip.Equal(decimal.NewFromInt(40000)) {
+		t.Fatalf("expected tien_ship=40000 after TraDo, got %s", tdReturned.TienShip)
+	}
+	if tdReturned.GhiChu == nil || *tdReturned.GhiChu != "Đổi sang Ahamove | Trả đồ: Áo sạch đẹp" {
+		t.Fatalf("unexpected ghi_chu after TraDo: %v", tdReturned.GhiChu)
+	}
+	if !xuLyCoc.HoanLai.Equal(decimal.NewFromInt(950000)) {
+		t.Fatalf("expected hoan_lai=950000 (1000000 - 50000), got %s", xuLyCoc.HoanLai)
+	}
+
+	// 5. Phiếu đặt trước → Giao đồ cập nhật tiền ship + ghi chú → Hủy phiếu vẫn giữ nguyên tiền ship
+	nextWeek := time.Now().Add(7 * 24 * time.Hour)
+	tdFuture, err := svc.TaoPhieu(model.CreateThueDoInput{
+		KhachHangID: kh.ID,
+		NgayBatDau:  &nextWeek,
+		SoNgayThue:  &soNgay2,
+		LoaiCoc:     1,
+		TienCoc:     decimal.NewFromInt(500000),
+		TienShip:    decimal.NewFromInt(25000),
+		ChiTiet:     []model.ChiTietThueDoInput{{SanPhamID: sp2.ID}},
+	}, nd.ID)
+	if err != nil {
+		t.Fatalf("TaoPhieu future with ship failed: %v", err)
+	}
+	if tdFuture.GhiChu != nil || !tdFuture.TienShip.Equal(decimal.NewFromInt(25000)) {
+		t.Fatalf("expected (nil, 25000), got (%v, %s)", tdFuture.GhiChu, tdFuture.TienShip)
+	}
+
+	ship45 := decimal.NewFromInt(45000)
+	giaoNote := "Shipper đã nhận"
+	tdHanded, err := svc.GiaoDo(tdFuture.ID, &model.GiaoDoInput{
+		TienShip: &ship45,
+		GhiChu:   &giaoNote,
+	})
+	if err != nil {
+		t.Fatalf("GiaoDo with tien_ship failed: %v", err)
+	}
+	if !tdHanded.TienShip.Equal(decimal.NewFromInt(45000)) {
+		t.Fatalf("expected tien_ship=45000 after GiaoDo, got %s", tdHanded.TienShip)
+	}
+	if tdHanded.GhiChu == nil || *tdHanded.GhiChu != giaoNote {
+		t.Fatalf("expected ghi_chu=%q after GiaoDo, got %v", giaoNote, tdHanded.GhiChu)
+	}
+
+	tdCancelled, err := svc.HuyPhieu(tdFuture.ID, model.HuyPhieuInput{GhiChu: "Khách hủy đơn"})
+	if err != nil {
+		t.Fatalf("HuyPhieu failed: %v", err)
+	}
+	if !tdCancelled.TienShip.Equal(decimal.NewFromInt(45000)) {
+		t.Fatalf("expected tien_ship=45000 preserved after HuyPhieu, got %s", tdCancelled.TienShip)
+	}
+	if tdCancelled.GhiChu == nil || *tdCancelled.GhiChu != "Shipper đã nhận | Hủy: Khách hủy đơn" {
+		t.Fatalf("unexpected ghi_chu after HuyPhieu: %v", tdCancelled.GhiChu)
+	}
+}

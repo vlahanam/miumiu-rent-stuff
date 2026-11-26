@@ -354,6 +354,7 @@ export default function DonThuePage() {
               const extraCount = Math.max(0, (order.chi_tiet?.length || 0) - 1)
               const lateDays = order.trang_thai === 4 ? daysOverdue(order.ngay_hen_tra) : 0
               const leftDays = order.trang_thai === 2 ? daysRemaining(order.ngay_hen_tra) : 0
+              const tienShip = parseMoney(order.tien_ship)
               const totalRevenue = parseMoney(order.tong_tien_thue) + parseMoney(order.tien_phat)
 
               return (
@@ -459,6 +460,11 @@ export default function DonThuePage() {
                       <span className="font-currency-lg text-currency-lg text-on-surface font-bold tabular-nums">
                         {formatCurrency(order.trang_thai === 3 ? totalRevenue : order.tong_tien_thue)}
                       </span>
+                      {tienShip > 0 && (
+                        <span className="font-label-sm text-label-sm text-secondary font-medium tabular-nums">
+                          + Ship {formatCurrency(tienShip)}
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
@@ -548,6 +554,7 @@ export default function DonThuePage() {
                     const extraCount = Math.max(0, (order.chi_tiet?.length || 0) - 1)
                     const lateDays = order.trang_thai === 4 ? daysOverdue(order.ngay_hen_tra) : 0
                     const leftDays = order.trang_thai === 2 ? daysRemaining(order.ngay_hen_tra) : 0
+                    const tienShip = parseMoney(order.tien_ship)
                     const totalRevenue = parseMoney(order.tong_tien_thue) + parseMoney(order.tien_phat)
 
                     return (
@@ -659,6 +666,11 @@ export default function DonThuePage() {
                               {LOAI_COC_LABELS[order.loai_coc]}
                               {order.loai_coc !== 3 ? `: ${formatCurrency(order.tien_coc)}` : ''}
                             </span>
+                            {tienShip > 0 && (
+                              <span className="font-label-sm text-secondary font-medium tabular-nums">
+                                Ship: {formatCurrency(tienShip)}
+                              </span>
+                            )}
                             {parseMoney(order.tien_phat) > 0 && (
                               <span className="font-label-sm text-error font-semibold tabular-nums">
                                 Phạt: {formatCurrency(order.tien_phat)}

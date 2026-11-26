@@ -327,6 +327,7 @@ export interface CreateThueDoPayload {
   so_ngay_thue: number
   loai_coc: LoaiCoc
   tien_coc: number
+  tien_ship?: number
   ghi_chu?: string | null
   chi_tiet: { san_pham_id: number }[]
 }
@@ -338,6 +339,7 @@ export interface UpdateThueDoPayload {
   loai_coc?: LoaiCoc
   tien_coc?: number
   tien_phat?: number
+  tien_ship?: number
   ghi_chu?: string | null
   chi_tiet?: { san_pham_id: number }[]
 }
@@ -376,7 +378,7 @@ export const thueDoApi = {
 
   async giaoDo(
     id: number | string,
-    data?: { loai_coc?: LoaiCoc; tien_coc?: number; ghi_chu?: string }
+    data?: { loai_coc?: LoaiCoc; tien_coc?: number; tien_ship?: number; ghi_chu?: string }
   ): Promise<ThueDo> {
     const res = await request<ApiResponse<ThueDo>>(`/v1/thue-do/${id}/giao-do`, {
       method: 'POST',

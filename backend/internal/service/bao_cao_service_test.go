@@ -93,3 +93,60 @@ func TestBaoCaoMultiItemNoDoubleCount(t *testing.T) {
 		}
 	}
 }
+
+func TestBaoCaoXuatTienShip(t *testing.T) {
+	db := openTestDB(t)
+	nd, kh, sp1, _ := seedBaseData(t, db)
+	thueSvc := NewThueDoService(db)
+	bcSvc := NewBaoCaoService(db)
+
+	now := time.Now().Add(-2 * time.Minute)
+	soNgay1 := uint16(1)
+	td, err := thueSvc.TaoPhieu(model.CreateThueDoInput{
+		KhachHangID: kh.ID,
+		NgayBatDau:  &now,
+		SoNgayThue:  &soNgay1,
+		LoaiCoc:     1,
+		TienCoc:     decimal.NewFromInt(1000000),
+		TienShip:    decimal.NewFromInt(35000),
+		ChiTiet:     []model.ChiTietThueDoInput{{SanPhamID: sp1.ID}},
+	}, nd.ID)
+	if err != nil {
+		t.Fatalf("TaoPhieu failed: %v", err)
+	}
+
+	_, _, err = thueSvc.TraDo(td.ID, model.TraDoInput{
+		TienPhat: decimal.Zero,
+		SanPhamTrangThai: []model.SanPhamTrangThaiItem{
+			{SanPhamID: sp1.ID, TrangThai: 1},
+		},
+	})
+	if err != nil {
+		t.Fatalf("TraDo failed: %v", err)
+	}
+
+	// Doanh thu tháng vẫn tính theo tiền thuê + tiền phạt (không gộp tiền ship)
+	dt, err := bcSvc.GetDoanhThuThang(int(time.Now().Month()), time.Now().Year())
+	if err != nil {
+		t.Fatalf("GetDoanhThuThang failed: %v", err)
+	}
+	if !dt.TongTien.Equal(decimal.NewFromInt(300000)) {
+		t.Fatalf("expected revenue 300000 (excluding ship), got %s", dt.TongTien)
+	}
+
+	// CSV phiếu thuê phải có cột Tiền ship (VND) và giá trị 35000
+	csvBytes, _, err := bcSvc.XuatCSV("phieu_thue", map[string]string{})
+	if err != nil {
+		t.Fatalf("XuatCSV failed: %v", err)
+	}
+	csvStr := string(csvBytes)
+	if !strings.Contains(csvStr, "Tiền ship (VND)") || !strings.Contains(csvStr, ",35000,") {
+		t.Fatalf("expected CSV to include shipping column and 35000, got: %s", csvStr)
+	}
+
+	// Excel phiếu thuê phải sinh thành công
+	xlsxBytes, xlsxName, err := bcSvc.XuatExcel("phieu_thue", map[string]string{})
+	if err != nil || len(xlsxBytes) == 0 || xlsxName != "danh_sach_phieu_thue.xlsx" {
+		t.Fatalf("XuatExcel(phieu_thue) failed: name=%s len=%d err=%v", xlsxName, len(xlsxBytes), err)
+	}
+}
