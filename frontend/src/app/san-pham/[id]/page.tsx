@@ -43,10 +43,12 @@ export default function SanPhamDetailPage() {
   // Delete confirm modal
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
-  const loadProduct = useCallback(async () => {
+  const loadProduct = useCallback(async (silent = false) => {
     if (!productId) return
-    setLoading(true)
-    setError('')
+    if (!silent) {
+      setLoading(true)
+      setError('')
+    }
     try {
       const [detail, settings] = await Promise.all([
         sanPhamApi.getById(productId),
@@ -59,18 +61,20 @@ export default function SanPhamDetailPage() {
         if (!Number.isNaN(n) && n >= 0) setDepositPercent(n)
       }
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Không thể tải chi tiết sản phẩm')
+      const message = err instanceof ApiError ? err.message : 'Không thể tải chi tiết sản phẩm'
+      if (silent) toast.error(message)
+      else setError(message)
     } finally {
-      setLoading(false)
+      if (!silent) setLoading(false)
     }
-  }, [productId])
+  }, [productId, toast])
 
   useEffect(() => {
     loadProduct()
   }, [loadProduct])
 
   useWSEvents(() => {
-    loadProduct()
+    loadProduct(true)
   })
 
   const openEditModal = () => {
@@ -88,13 +92,13 @@ export default function SanPhamDetailPage() {
     const nextStatus = product.trang_thai === 3 ? 1 : 3
     setBusy(true)
     try {
-      await sanPhamApi.patchTrangThai(product.id, nextStatus)
+      const updated = await sanPhamApi.patchTrangThai(product.id, nextStatus)
+      setProduct((prev) => prev ? { ...prev, ...updated } : prev)
       toast.success(
         nextStatus === 1
           ? 'Đã hoàn tất bảo dưỡng → Trống lịch'
           : 'Đã chuyển sản phẩm sang Đang bảo dưỡng'
       )
-      await loadProduct()
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : 'Không thể đổi trạng thái')
     } finally {
@@ -113,15 +117,16 @@ export default function SanPhamDetailPage() {
     setBusy(true)
     try {
       const imgs = newImgUrl.trim() ? [...editImages, newImgUrl.trim()] : editImages
-      await sanPhamApi.update(product.id, {
+      const updated = await sanPhamApi.update(product.id, {
         ten_san_pham: trimmedTen,
         gia_goc_san_pham: Math.max(0, parseFormattedNumber(editGiaGoc)),
         gia_thue_ngay: Math.max(0, parseFormattedNumber(editGiaThue)),
         hinh_anh: serializeImages(imgs),
       })
+      setProduct((prev) => prev ? { ...prev, ...updated } : prev)
       setShowEditModal(false)
       toast.success('Đã cập nhật thông tin sản phẩm')
-      await loadProduct()
+      await loadProduct(true)
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : 'Không thể cập nhật sản phẩm')
     } finally {

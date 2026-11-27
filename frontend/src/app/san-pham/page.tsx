@@ -53,9 +53,9 @@ function SanPhamContent() {
   }, [])
 
   const loadProducts = useCallback(
-    async (pageNum = 1, append = false) => {
+    async (pageNum = 1, append = false, silent = false) => {
       if (append) setLoadingMore(true)
-      else setLoading(true)
+      else if (!silent) setLoading(true)
       try {
         const res = await sanPhamApi.getAll({
           search: debouncedSearch || undefined,
@@ -71,8 +71,8 @@ function SanPhamContent() {
       } catch (err) {
         toast.error(err instanceof ApiError ? err.message : 'Không thể tải danh sách sản phẩm')
       } finally {
-        setLoading(false)
-        setLoadingMore(false)
+        if (append) setLoadingMore(false)
+        else if (!silent) setLoading(false)
       }
     },
     [debouncedSearch, statusFilter, sortBy, toast]
@@ -87,7 +87,7 @@ function SanPhamContent() {
   }, [loadCounts])
 
   useWSEvents(() => {
-    loadProducts(1, false)
+    loadProducts(1, false, true)
     loadCounts()
   })
 

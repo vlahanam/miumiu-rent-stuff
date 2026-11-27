@@ -41,9 +41,9 @@ export default function KhachHangPage() {
   }, [searchInput])
 
   const loadCustomers = useCallback(
-    async (pageNum = 1, append = false) => {
+    async (pageNum = 1, append = false, silent = false) => {
       if (append) setLoadingMore(true)
-      else setLoading(true)
+      else if (!silent) setLoading(true)
       try {
         const res = await khachHangApi.getAll({
           search: debouncedSearch || undefined,
@@ -58,8 +58,8 @@ export default function KhachHangPage() {
       } catch (err) {
         toast.error(err instanceof ApiError ? err.message : 'Không thể tải danh sách khách hàng')
       } finally {
-        setLoading(false)
-        setLoadingMore(false)
+        if (append) setLoadingMore(false)
+        else if (!silent) setLoading(false)
       }
     },
     [debouncedSearch, filter, toast]
@@ -87,7 +87,7 @@ export default function KhachHangPage() {
       setNewName('')
       setNewPhone('')
       setNewAddress('')
-      loadCustomers(1, false)
+      loadCustomers(1, false, true)
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : 'Không thể thêm khách hàng')
     } finally {

@@ -73,9 +73,22 @@ export default function CaiDatPage() {
   const handleSaveSetting = async (khoa: string, value: string, label: string) => {
     setSavingKey(khoa)
     try {
-      await caiDatApi.updateByKhoa(khoa, value)
+      const updated = await caiDatApi.updateByKhoa(khoa, value)
+      setSettings((prev) => prev.map((item) => item.khoa === khoa ? updated : item))
+      const savedValue = updated.gia_tri ?? ''
+      if (khoa === 'pham_tram_gia_coc') {
+        setDepositRateInput((prev) => String(Math.max(0, Math.min(100, parseFormattedNumber(prev, true)))) === value ? savedValue : prev)
+      } else if (khoa === 'so_dien_thoai_lien_he') {
+        setShopPhone((prev) => prev.replace(/\s+/g, '').trim() === value ? savedValue : prev)
+      } else {
+        setExtraDrafts((prev) => {
+          const draft = prev[khoa] ?? ''
+          return draft === value || (draft.endsWith('.') && draft.slice(0, -1) === value)
+            ? { ...prev, [khoa]: savedValue }
+            : prev
+        })
+      }
       toast.success(`Đã lưu ${label}`)
-      await loadData()
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : `Không thể lưu ${label}`)
     } finally {

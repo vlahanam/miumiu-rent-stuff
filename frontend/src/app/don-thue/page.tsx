@@ -59,9 +59,9 @@ export default function DonThuePage() {
   }, [])
 
   const loadOrders = useCallback(
-    async (pageNum = 1, append = false) => {
+    async (pageNum = 1, append = false, silent = false) => {
       if (append) setLoadingMore(true)
-      else setLoading(true)
+      else if (!silent) setLoading(true)
       try {
         const res = await thueDoApi.getAll({
           trang_thai: statusFilter || undefined,
@@ -76,8 +76,8 @@ export default function DonThuePage() {
       } catch (err) {
         toast.error(err instanceof ApiError ? err.message : 'Không thể tải danh sách đơn thuê')
       } finally {
-        setLoading(false)
-        setLoadingMore(false)
+        if (append) setLoadingMore(false)
+        else if (!silent) setLoading(false)
       }
     },
     [statusFilter, debouncedSearch, toast]
@@ -92,7 +92,7 @@ export default function DonThuePage() {
   }, [loadStats])
 
   useWSEvents(() => {
-    loadOrders(1, false)
+    loadOrders(1, false, true)
     loadStats()
   })
 

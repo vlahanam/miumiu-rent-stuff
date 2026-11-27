@@ -100,14 +100,14 @@ export default function KhachHangDetailPage() {
     if (!detail) return
     setBusy(true)
     try {
-      await khachHangApi.update(detail.khach_hang.id, {
+      const updated = await khachHangApi.update(detail.khach_hang.id, {
         ten: editName.trim(),
         so_dien_thoai: editPhone.replace(/\s+/g, '').trim(),
         dia_chi: editAddress.trim() || null,
       })
+      setDetail((prev) => prev ? { ...prev, khach_hang: updated } : prev)
       setShowEdit(false)
       toast.success('Đã cập nhật thông tin khách hàng')
-      await loadDetail()
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : 'Không thể cập nhật')
     } finally {

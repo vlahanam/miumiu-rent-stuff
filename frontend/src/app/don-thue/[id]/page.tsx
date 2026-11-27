@@ -69,10 +69,12 @@ function DonThueDetailContent() {
   const [editProductIds, setEditProductIds] = useState<number[]>([])
   const [allProducts, setAllProducts] = useState<SanPham[]>([])
 
-  const loadOrder = useCallback(async () => {
+  const loadOrder = useCallback(async (silent = false) => {
     if (!orderId) return
-    setLoading(true)
-    setError('')
+    if (!silent) {
+      setLoading(true)
+      setError('')
+    }
     try {
       const [td, settings] = await Promise.all([
         thueDoApi.getById(orderId),
@@ -82,18 +84,20 @@ function DonThueDetailContent() {
       const phoneSetting = settings.find((c) => c.khoa === 'so_dien_thoai_lien_he')
       if (phoneSetting?.gia_tri) setShopPhone(phoneSetting.gia_tri)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Không thể tải thông tin phiếu thuê')
+      const message = err instanceof ApiError ? err.message : 'Không thể tải thông tin phiếu thuê'
+      if (silent) toast.error(message)
+      else setError(message)
     } finally {
-      setLoading(false)
+      if (!silent) setLoading(false)
     }
-  }, [orderId])
+  }, [orderId, toast])
 
   useEffect(() => {
     loadOrder()
   }, [loadOrder])
 
   useWSEvents(() => {
-    loadOrder()
+    loadOrder(true)
   })
 
   const openGiaoDoModal = useCallback((td: ThueDo) => {
