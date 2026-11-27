@@ -9,7 +9,7 @@ interface AddButtonProps {
 
 export default function AddButton({ label = 'Thêm đơn thuê', href = '/don-thue/tao-moi' }: AddButtonProps) {
   return (
-    <div className="lg:hidden fixed bottom-20 inset-x-0 z-40 pointer-events-none print:hidden">
+    <div className="lg:hidden fixed bottom-[calc(5rem+1px+env(safe-area-inset-bottom,0px))] inset-x-0 z-40 pointer-events-none print:hidden">
       <div className="max-w-2xl md:max-w-3xl mx-auto px-margin flex justify-end">
         <Link
           href={href}

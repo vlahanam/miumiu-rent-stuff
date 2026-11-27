@@ -48,7 +48,7 @@ export default function AppShell({
 
       <main
         className={`flex-1 flex flex-col relative w-full max-w-2xl md:max-w-3xl ${maxWidthClass} mx-auto px-margin lg:px-8 pt-4 lg:pt-6 ${
-          fabConfig ? 'pb-32' : 'pb-24'
+          fabConfig ? 'pb-[calc(9rem+1px+env(safe-area-inset-bottom,0px))]' : 'pb-[calc(6rem+env(safe-area-inset-bottom,0px))]'
         } lg:pb-10 bg-surface print:max-w-none print:p-0`}
       >
         {children}
